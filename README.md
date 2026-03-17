@@ -3,7 +3,6 @@ NOTE: During Dec 2025 development, bundle is in its own repo, NOT the mono-repo!
 
 composer config repositories.survos_admin_bundle '{"type": "vcs", "url": "git@github.com:survos/SurvosTablerBundle.git"}'
 composer req survos/tabler-bundle
->>>>>>> 850d10b769ef645b816c99647d7e3f5f8a0df124
 
 composer config repositories.survos_tabler_bundle '{"type": "vcs", "url": "git@github.com:survos/SurvosTablerBundle.git"}'
 composer req survos/tabler-bundle
@@ -105,9 +104,6 @@ composer req survos/base-bundle:"^2.0.3"
 composer req survos/tabler-bundle:dev-tac
 
 composer require symfony/webpack-encore-bundle
-yarn install
-yarn add sass-loader@^11.0.0 sass --dev
-yarn add https://github.com/survos/adminkit.git
 
 #echo '@import "~bootstrap/dist/css/bootstrap.min.css";' > assets/styles/app.scss
 #echo '@import "../../public/bundles/survosbase/volt-dist/css/volt.css";' >>assets/styles/app.scss

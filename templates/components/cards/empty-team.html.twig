@@ -1,0 +1,30 @@
+{# templates/components/cards/empty-team.html.twig v4.8 #}
+<div class="card card-lg card-dashed card-transparent">
+	<div class="card-body text-center">
+		<div class="mb-3">
+         <twig:ui:avatar-list/>
+		</div>
+		<h3 class="card-title">No Team Members</h3>
+		<p class="text-secondary">Invite your team to<br>collaborate on this project.</p>
+		<div class="mt-4">
+			<twig:ui:button text="Invite Members" color="primary" icon="plus"/>
+		</div>
+	</div>
+</div>
+
+{#
+=== Original Liquid (empty-team.html) ===
+<div class="card card-lg card-dashed card-transparent">
+	<div class="card-body text-center">
+		<div class="mb-3">
+         {% include "ui/avatar-list.html" stacked %}
+		</div>
+		<h3 class="card-title">No Team Members</h3>
+		<p class="text-secondary">Invite your team to<br>collaborate on this project.</p>
+		<div class="mt-4">
+			{% include "ui/button.html" text="Invite Members" color="primary" icon="plus" %}
+		</div>
+	</div>
+</div>
+
+#}

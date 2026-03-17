@@ -1,0 +1,26 @@
+{# templates/components/ui/card-title.html.twig v4.8 #}
+<div class="d-flex">
+   <h3 class="card-title{% if class %} {{ class }}{% endif %}">
+      {{ text | default(title) | default('Card title') }}
+   </h3>
+   {% if more %}
+   <div class="ms-auto">
+      <twig:ui:button icon="dots" size="sm"/>
+   </div>
+   {% endif %}
+</div>
+
+{#
+=== Original Liquid (card-title.html) ===
+<div class="d-flex">
+   <h3 class="card-title{% if include.class %} {{ include.class }}{% endif %}">
+      {{ include.text | default: include.title | default: 'Card title' }}
+   </h3>
+   {% if include.more %}
+   <div class="ms-auto">
+      {% include "ui/button.html" icon="dots" size="sm" icon-only action %}
+   </div>
+   {% endif %}
+</div>
+
+#}

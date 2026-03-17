@@ -1,5 +1,5 @@
 <?php
-/* config/component-services.php v4.8 - Generated 2025-12-30 */
+/* config/component-services.php v4.8 - Generated 2026-03-17 */
 /* Import this file in SurvosTablerBundle::loadExtension() */
 
 declare(strict_types=1);
@@ -29,6 +29,7 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Components\Ui\ButtonGroupComponent::class);
     $services->set(Components\Ui\StarsComponent::class);
     $services->set(Components\Ui\StatusIndicatorComponent::class);
+    $services->set(Components\Ui\CardTitleComponent::class);
     $services->set(Components\Ui\TagComponent::class);
     $services->set(Components\Ui\FlagComponent::class);
     $services->set(Components\Ui\PaymentComponent::class);
@@ -103,6 +104,9 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Components\Cards\UserInfoComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
+    $services->set(Components\Cards\CardRibbonTextComponent::class)
+        ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
+        ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\UserCardComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
@@ -128,6 +132,9 @@ return static function (ContainerConfigurator $container): void {
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\IconsComponent::class)
+        ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
+        ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
+    $services->set(Components\Cards\EmptyTeamComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\CompanyLookupComponent::class)
@@ -161,6 +168,9 @@ return static function (ContainerConfigurator $container): void {
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\PricingCardEnterpriseComponent::class)
+        ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
+        ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
+    $services->set(Components\Cards\CardRibbonTopComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\CardGroupComponent::class)
@@ -209,6 +219,9 @@ return static function (ContainerConfigurator $container): void {
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\DeleteConfirmComponent::class)
+        ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
+        ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
+    $services->set(Components\Cards\CardBackgroundIconComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\ForgotPasswordComponent::class)
@@ -275,6 +288,9 @@ return static function (ContainerConfigurator $container): void {
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\CarouselComponent::class)
+        ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
+        ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
+    $services->set(Components\Cards\PaymentComponent::class)
         ->arg('$fixtureService', service(FixtureService::class)->nullOnInvalid())
         ->arg('$httpClient', service(HttpClientInterface::class)->nullOnInvalid());
     $services->set(Components\Cards\LayoutComponent::class)

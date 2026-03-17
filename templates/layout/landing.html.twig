@@ -9,10 +9,15 @@
 <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
     <div class="container">
         {# Brand #}
-        <a class="navbar-brand" href="{{ path('app_homepage') }}">
+        {% set id = tabler_identity ?? {} %}
+        <a class="navbar-brand" href="{{ id.homepage_route is defined and id.homepage_route ? path(id.homepage_route) : (id.homepage_url is defined and id.homepage_url ? id.homepage_url : path('app_homepage')) }}">
             {% block brand %}
-                {{ ux_icon('tabler:brand-tabler', {height: 32, class: 'navbar-brand-image'}) }}
-                <span class="ms-2">{% block brand_text %}Tabler{% endblock %}</span>
+                {% if id.logo_small ?? id.logo %}
+                    <img src="{{ id.logo_small ?? id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                {% else %}
+                    {{ ux_icon('tabler:brand-tabler', {height: 32, class: 'navbar-brand-image'}) }}
+                {% endif %}
+                <span class="ms-2">{% block brand_text %}{{ (id.abbr ?? id.title ?? 'Tabler')|raw }}{% endblock %}</span>
             {% endblock %}
         </a>
         
@@ -69,9 +74,14 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 {% block footer_brand %}
+                {% set id = tabler_identity ?? {} %}
                 <div class="mb-3">
-                    {{ ux_icon('tabler:brand-tabler', {height: 32, class: 'text-white'}) }}
-                    <span class="ms-2 h4 text-white">{{ block('brand_text') }}</span>
+                    {% if id.logo_small ?? id.logo %}
+                        <img src="{{ id.logo_small ?? id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                    {% else %}
+                        {{ ux_icon('tabler:brand-tabler', {height: 32, class: 'text-white'}) }}
+                    {% endif %}
+                    <span class="ms-2 h4 text-white">{{ (id.abbr ?? id.title ?? 'Tabler')|raw }}</span>
                 </div>
                 <p class="text-muted">{% block footer_description %}{% endblock %}</p>
                 {% endblock %}
