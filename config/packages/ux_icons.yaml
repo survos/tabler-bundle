@@ -1,0 +1,16 @@
+ux_icons:
+  aliases:
+    show: bx:show
+    code: tabler:api
+    external: tabler:external-link
+    search: tabler:search
+    inst: material-symbols:museum-outline
+    obj: material-symbols:wall-art-outline-rounded
+    facebook: tabler:brand-facebook
+    'chevron-right':  tabler:chevron-right
+    'layout-grid': tabler:list
+
+  default_icon_attributes:
+    fill: currentColor
+    width: 20px
+    height: 20px
