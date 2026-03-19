@@ -2,9 +2,7 @@
 {% extends '@KnpMenu/menu.html.twig' %}
 
 {% block list %}
-{% import '@KnpMenu/menu.html.twig' as knp_menu %}
-
-<ul{{ knp_menu.attributes(listAttributes) }}>
+<ul {{ html_attr(listAttributes) }}>
     {{ block('children') }}
 </ul>
 {% endblock %}

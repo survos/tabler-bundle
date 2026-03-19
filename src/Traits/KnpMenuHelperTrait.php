@@ -8,6 +8,7 @@ use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuItem;
 use Survos\TablerBundle\Event\KnpMenuEvent;
 use Survos\CoreBundle\Entity\RouteParametersInterface;
+use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Event\MenuEvent;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -97,7 +98,7 @@ trait KnpMenuHelperTrait
         ?string $uri = null,
         ?string $id = null,
         ?string $icon = null,
-        string|int|null $badge = null,
+        MenuBadge|string|int|array|null $badge = null,
         ?bool $external = null,
         bool $returnItem = false,
         bool $if = true,
@@ -141,7 +142,7 @@ trait KnpMenuHelperTrait
 
         if ($route) {
             if (isset($this->menuService)) {
-                $routeRequirements = $this->menuService->getRouteRequirements()[$route] ?? [];
+                $routeRequirements = $this->menuService->getRouteRequirements($route);
                 foreach ($routeRequirements as $y) {
                     // in order to check security, $rp must be an entity
                     if (is_a($rp, RouteParametersInterface::class)) {
@@ -312,10 +313,8 @@ trait KnpMenuHelperTrait
             $child->setAttribute('class', $classes);
         }
 
-        if ($badge = $options['badge']) {
-            $child->setExtra('badge', is_array($badge) ? $badge : [
-                'value' => $badge,
-            ]);
+        if ($badge = MenuBadge::fromMixed($options['badge'])) {
+            $child->setExtra('badge', $badge);
         }
         if (! empty($options['safe_label'])) {
             $child->setExtra('safe_label', true);

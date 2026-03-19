@@ -27,8 +27,8 @@
 {%- elseif icons[iconName] -%}
 	<!-- Download SVG icon from http://tabler.io/icons/icon/{{ iconName }} -->
 	{%- set svgIcon = icons[iconName].svg[iconType] | default(null) -%}
-	{%- set svgIcon = svgIcon | replace({'<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>': ''}) -%}
-	{{ svgIcon  | replace({'class=\"': 'ariaHidden=\"true\" focusable=\"false\" class=\"'}) }}
+	{%- set svgIcon = svgIcon | replace({'<path stroke="none" d="M0 0h24v24H0z" fill="none"/>': ''}) -%}
+	{{ svgIcon | replace({'class="': 'ariaHidden="true" focusable="false" class="'}) }}
 {%- endif -%}
 
 {#

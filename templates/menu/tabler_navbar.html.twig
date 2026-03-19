@@ -4,7 +4,7 @@
 {% extends '@KnpMenu/menu.html.twig' %}
 
 {% block root %}
-    {% set listAttributes = item.childrenAttributes|merge({class: (item.childrenAttributes.class|default('') ~ ' navbar-nav')|trim}) %}
+    {% set listAttributes = item.childrenAttributes|merge({class: html_classes(item.childrenAttributes.class|default(null), 'navbar-nav')}) %}
     {{ block('list') }}
 {% endblock %}
 

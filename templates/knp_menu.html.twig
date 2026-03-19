@@ -8,18 +8,14 @@
 {% block list %}
     {% set depth = depth is defined ? depth + 1 : 0 %}
     {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
-        {% import "knp_menu.html.twig" as macros %}
-
-        {% if matcher.isAncestor(item) %}
-            {%- set listAttributes = listAttributes|merge({class: (listAttributes.class|default(''))|trim}) -%}
-        {% endif %}
         {% if item.isRoot %}
-            {%- set listAttributes = item.isRoot
-                ? options['rootAttributes']
-                : (listAttributes|merge({class: (listAttributes.class|default('') ~ ' nav-treeviewXX')}))
-            |trim -%}
+            {%- set listAttributes = options['rootAttributes'] -%}
+        {% else %}
+            {%- set listAttributes = listAttributes|merge({
+                class: html_classes(listAttributes.class|default(null), 'nav-treeviewXX')
+            }) -%}
         {% endif %}
-        <ul{{ macros.attributes(listAttributes) }}>
+        <ul {{ html_attr(listAttributes) }}>
             {{ block('children') }}
         </ul>
         {% set depth = depth - 1 %}
@@ -27,23 +23,22 @@
 {% endblock %}
 
 {% block linkElement %}
-    {% import "knp_menu.html.twig" as macros %}
-    {% import _self as ownmacro %}
-{#    {{ ownmacro.setCssClassAttribute(item, 'LinkAttribute', 'nav-link depth-' ~ item.level ) }}#}
-
     {%- set classes = item.attribute('class') is not empty ? [item.attribute('class'), 'nav-item'] : ['nav-item'] %}
     <!-- linkElement -->
 
     {%- set attributes = item.linkAttributes %}
+    {% set currentClass = matcher.isCurrent(item) ? options.currentClass : null %}
     {% if matcher.isCurrent(item) %}
         {%- set classes = classes|default([])|merge([options.currentClass]) %}
-        {% set attributes = attributes|merge({ 'class': attributes.class|default([])|join(' ') ~ ' ' ~ options.currentClass} ) %}
     {% endif %}
 
     {# there's probably a way to pass this in via render_sidebar.html.twig, but not sure how! #}
-    {% set attributes = attributes|merge({ 'class': attributes.class|default([])|join(' ') ~ ' ' ~ options.link_class} ) %}
+    {% set attributes = attributes|merge({
+        class: html_classes(attributes.class|default(null), currentClass, options.link_class),
+        href: item.uri
+    }) %}
 
-    <a href="{{ item.uri }}" {{ macros.attributes(attributes) }}>
+    <a {{ html_attr(attributes) }}>
         {% if item.attribute('data-icon') is not empty  %}
             <span class="{{ item.attribute('data-icon') }}"></span>
         {% endif %}
@@ -81,11 +76,10 @@
 
         {%- set attributes = item.attributes %}
         {%- if classes is not empty %}
-            {%- set attributes = attributes|merge({'class': classes|join(' ')}) %}
+            {%- set attributes = attributes|merge({'class': html_classes(attributes.class|default(null), classes)}) %}
         {%- endif %}
         {# displaying the item #}
-        {% import _self as knp_menu %}
-        <li{{ knp_menu.attributes(attributes) }}>
+        <li {{ html_attr(attributes) }}>
             {# if uri is set, it must be a leaf. #}
             {%- if item.uri is not empty and (not matcher.isCurrent(item) or options.currentAsLink) %}
                 {{ block('linkElement') }}
@@ -107,19 +101,18 @@
 
             {%- endif %}
             {# render the list of children#}
-            {%- set childrenClasses = item.childrenAttribute('class') is not empty ? [item.childrenAttribute('class')] : [] %}
-            {%- set childrenClasses = childrenClasses|merge(['nav-treeview menu_level_' ~ item.level]) %}
-{#            {%- set childrenClasses = childrenClasses|merge(['nav-treeview']) %}#}
-            {%- set listAttributes = item.childrenAttributes|merge({'class': childrenClasses|join(' ') }) %}
+            {%- set listAttributes = item.childrenAttributes|merge({
+                class: html_classes(item.childrenAttribute('class'), 'nav-treeview', 'menu_level_' ~ item.level)
+            }) %}
             {{ block('list') }}
         </li>
     {% endif %}
 {% endblock %}
 
 
-{% block spanElement %}{% import _self as knp_menu %}
+{% block spanElement %}
     <!-- spanElement, includes label -->
-    <span{{ knp_menu.attributes(item.labelAttributes) }}>{{ block('label') }}</span>
+    <span {{ html_attr(item.labelAttributes) }}>{{ block('label') }}</span>
 {% endblock %}
 
 {% block label %}{% if options.allow_safe_labels and item.getExtra('safe_label', false) %}{{ item.label|raw }}{% else %}{{ item.label }}{% endif %} {% endblock %}

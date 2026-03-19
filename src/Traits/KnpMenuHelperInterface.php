@@ -5,6 +5,7 @@ namespace Survos\TablerBundle\Traits;
 use Knp\Menu\ItemInterface;
 use Survos\TablerBundle\Event\KnpMenuEvent;
 use Survos\CoreBundle\Entity\RouteParametersInterface;
+use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Event\MenuEvent;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -28,7 +29,7 @@ interface KnpMenuHelperInterface
         ?string $uri = null,
         ?string $id = null,
         ?string $icon = null,
-        string|int|null $badge = null,
+        MenuBadge|string|int|array|null $badge = null,
         ?bool $external = null,
         bool $returnItem = false,
         bool $if = true,

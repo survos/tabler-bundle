@@ -2,7 +2,7 @@
 {% extends '@KnpMenu/menu.html.twig' %}
 
 {% block list %}
-<ul{{ knp_menu.attributes(listAttributes) }}>
+<ul {{ html_attr(listAttributes) }}>
     {{ block('children') }}
 </ul>
 {% endblock %}
@@ -13,6 +13,7 @@
     {%- set is_dropdown = item.hasChildren and options.depth is not same as(0) %}
     {%- set icon = item.getExtra('icon') %}
     {%- set badge = item.getExtra('badge') %}
+    {%- set badgeValue = badge.value|default(badge) %}
     
     <li class="nav-item{% if is_dropdown %} dropdown{% endif %}{% if item.isCurrent %} active{% endif %}">
         {% if is_dropdown %}
@@ -29,7 +30,7 @@
             <a class="nav-link" href="{{ item.uri }}">
                 {% if icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ ux_icon('tabler:' ~ icon) }}</span>{% endif %}
                 <span class="nav-link-title">{{ block('label') }}</span>
-                {% if badge %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badge }}</span>{% endif %}
+                {% if badgeValue %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>{% endif %}
             </a>
         {% endif %}
     </li>
@@ -39,6 +40,7 @@
 {% block dropdown_item %}
 {% set icon = item.getExtra('icon') %}
 {% set badge = item.getExtra('badge') %}
+{% set badgeValue = badge.value|default(badge) %}
 {% if item.hasChildren %}
     <div class="dropend">
         <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
@@ -55,7 +57,7 @@
     <a class="dropdown-item" href="{{ item.uri }}">
         {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
         {{ block('label') }}
-        {% if badge %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badge }}</span>{% endif %}
+        {% if badgeValue %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>{% endif %}
     </a>
 {% endif %}
 {% endblock %}

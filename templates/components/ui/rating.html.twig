@@ -17,9 +17,8 @@
 {%- set star -%}
 <twig:ui:icon class="gl-star-full" :icon="icon" :color="color" type="filled" :size="size"/>
 {%- endset -%}
-{%- set star = star | replace_regex: "[\t\s]+\n", "" | trim %}
-{%- set star = star | replace_regex: "[\n\t]{2,}", " " | trim %}
-{%- set star = star | replace_regex: "<!--[^-]*-->", "" | trim %}
+{%- set star = star | replace({'\t': '', '\n': ' '}) | trim %}
+{%- set star = star | replace({'  ': ' '}) | replace({'  ': ' '}) | trim %}
 
 {% capture_script %}
 <script>
@@ -57,12 +56,6 @@
 	<option value="1"{% if value == 1 %} selected{% endif %}>Terrible</option>
 </select>
 
-{% capture star %}
-{% include "ui/icon.html" class="gl-star-full" icon=icon color=color type="filled" size=size %}
-{%- endcapture %}
-{% assign star = star | replace_regex: "[\t\s]+\n", "" | strip %}
-{% assign star = star | replace_regex: "[\n\t]{2,}", " " | strip %}
-{% assign star = star | replace_regex: "<!--[^-]*-->", "" | strip %}
 
 {% capture_script %}
 <script>
@@ -73,11 +66,11 @@
 		tooltip: false,
 		clearable: false,
 		stars: function (el, item, index) {
-			 el.innerHTML = `{{ star }}`; 
+			 el.innerHTML = `{{ star }}`;
 		},
 		classNames: {
 		}
-	 })		
+	 })
     {% if environment == 'development' %}window.tabler_rating["rating-{{ id }}"] = rating;{% endif %}
   })
 </script>

@@ -44,10 +44,11 @@ fixed, layout-boxed, layout-top-nav, sidebar-collapse, sidebar-mini
         {{ _self }}
         <nav class="main-header navbar navbar-expand fixed-top navbar-dark">
 
-            {{ component('menu', {type: NAVBAR_MENU, caller: _self}) }}
-            {{ component('menu', {type: NAVBAR_MENU2, caller: _self}) }}
-            {{ component('menu', {type: NAVBAR_MENU3, caller: _self}) }}
-            {{ component('menu', {type: AUTH_MENU, caller: _self}) }}
+            {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
+            {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
+            {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
+            {{ component('tabler:menu', {type: AUTH, caller: _self}) }}
+            {{ component('tabler:menu', {type: SEARCH, caller: _self}) }}
 
             <ul class="navbar-nav">
                 {% block navbar_toggle %}
@@ -136,7 +137,7 @@ fixed, layout-boxed, layout-top-nav, sidebar-collapse, sidebar-mini
                 {% block sidebar_nav %}
                     BASE
 
-                    {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: 'survos_sidebar_menu'} %}
+                    {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: SIDEBAR} %}
                 {% endblock %}
             </div>
         </aside>
@@ -167,7 +168,7 @@ fixed, layout-boxed, layout-top-nav, sidebar-collapse, sidebar-mini
             {% block page_navigation %}
                 Page menu..
                 {# emit page events populated by the top menu subscriber #}
-                {% include '@SurvosTabler/render_page_menu.html.twig' with {page_title: block('page_title')} %}
+                {% include '@SurvosTabler/render_page_menu.html.twig' with {menuCode: PAGE_ACTIONS, page_title: block('page_title')} %}
             {% endblock %}
         {% endblock %}
 
@@ -213,4 +214,3 @@ fixed, layout-boxed, layout-top-nav, sidebar-collapse, sidebar-mini
 
 </body>
 </html>
-

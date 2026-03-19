@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Menu;
 
 use Knp\Menu\ItemInterface;
+use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -85,7 +86,7 @@ trait MenuBuilderTrait
         ?string $icon = null,
         ?string $id = null, // this was used in to set an element id, e.g. dropdowns
         ?string $style = null, // from bootstrap, not sure it's the best approach
-        string|int|null $badge = null,
+        MenuBadge|string|int|array|null $badge = null,
         bool $external = false,
         bool $dividerBefore = false,
         bool $dividerAfter = false,
@@ -125,8 +126,8 @@ trait MenuBuilderTrait
             $child->setExtra('icon', $resolvedIcon);
         }
 
-        if ($badge !== null) {
-            $child->setExtra('badge', $badge);
+        if ($badgeDto = MenuBadge::fromMixed($badge)) {
+            $child->setExtra('badge', $badgeDto);
         }
 
         $iconService = $this->iconService ?? null;

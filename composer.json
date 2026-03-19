@@ -20,12 +20,13 @@
         "symfony/security-http": "^7.4 || ^8.0",
         "symfony/string": "^7.4 || ^8.0",
         "symfony/twig-bundle": "^7.4 || ^8.0",
+        "symfony/ux-icons": "^2.33",
         "symfony/ux-twig-component": "^2.31",
         "symfony/validator": "^7.4 || ^8.0",
         "symfony/yaml": "^7.4 || ^8.0",
         "twig/intl-extra": "^3.22",
         "twig/string-extra": "^3.22",
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.24"
     },
     "require-dev": {
         "meyfa/php-svg": "^0.16.1",
@@ -36,8 +37,7 @@
         "slevomat/coding-standard": "^8",
         "survos/auth-bundle": "^2.0",
         "symfony/console": "^7.4 || ^8.0",
-        "symfony/translation": "^8.0",
-        "symfony/ux-icons": "^2.31"
+        "symfony/translation": "^8.0"
     },
     "scripts": {
         "test": "vendor/bin/phpunit",

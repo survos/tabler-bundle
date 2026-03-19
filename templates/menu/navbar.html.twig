@@ -8,13 +8,9 @@
     {% set merged = listAttributes|merge(ra) %}
 
     {# Tabler reference: ul.navbar-nav (do NOT force flex-row here) #}
-    {% set cls = merged.class|default('') %}
-    {% if 'navbar-nav' not in cls %}
-        {% set cls = (cls ~ ' navbar-nav')|trim %}
-    {% endif %}
-    {% set merged = merged|merge({ class: cls }) %}
+    {% set merged = merged|merge({ class: html_classes(merged.class|default(null), 'navbar-nav') }) %}
 
-    <ul{{ knp_menu.attributes(merged) }}>
+    <ul {{ html_attr(merged) }}>
         {{ block('children') }}
     </ul>
 {% endblock %}
@@ -24,6 +20,7 @@
         {%- set is_dropdown = item.hasChildren and options.depth is not same as(0) -%}
         {%- set icon = item.getExtra('icon') -%}
         {%- set badge = item.getExtra('badge') -%}
+        {%- set badgeValue = badge.value|default(badge) -%}
 
         <li class="nav-item{% if is_dropdown %} dropdown{% endif %}{% if item.isCurrent %} active{% endif %}">
             {% if is_dropdown %}
@@ -48,8 +45,8 @@
                 <a class="nav-link" href="{{ item.uri }}">
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
-                    {% if badge %}
-                        <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badge }}</span>
+                    {% if badgeValue %}
+                        <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>
                     {% endif %}
                 </a>
             {% endif %}
@@ -60,6 +57,7 @@
 {% block dropdown_item %}
     {%- set icon = item.getExtra('icon') -%}
     {%- set badge = item.getExtra('badge') -%}
+    {%- set badgeValue = badge.value|default(badge) -%}
 
     {% if item.hasChildren %}
         <div class="dropend">
@@ -85,8 +83,8 @@
         <a class="dropdown-item" href="{{ item.uri }}">
             {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
-            {% if badge %}
-                <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badge }}</span>
+            {% if badgeValue %}
+                <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>
             {% endif %}
         </a>
     {% endif %}

@@ -5,6 +5,7 @@
 namespace Survos\BaseBundle\Menu;
 
 use Knp\Menu\ItemInterface;
+use Survos\TablerBundle\Dto\MenuBadge;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -93,8 +94,8 @@ class BaseMenuSubscriber
             $child->setAttribute('class', $classes);
         }
 
-        if ($badge = $options['badge']) {
-            $child->setExtra('badge', is_array($badge) ? $badge: ['value' => $badge]);
+        if ($badge = MenuBadge::fromMixed($options['badge'])) {
+            $child->setExtra('badge', $badge);
         }
 
         if ($style = $options['style']) {
