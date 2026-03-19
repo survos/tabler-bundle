@@ -58,19 +58,40 @@ class SurvosTablerBundle extends AbstractBundle implements CompilerPassInterface
         $container->addCompilerPass($this);
     }
 
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        // Asset mapper registration from HasAssetMapperTrait
+        if ($this->isAssetMapperAvailable($builder)) {
+            $builder->prependExtensionConfig('framework', [
+                'asset_mapper' => [
+                    'paths' => $this->getPaths(),
+                ],
+            ]);
+        }
+
+        // ux_icons config
+        if (!$builder->hasExtension('ux_icons')) {
+            return;
+        }
+
+        $configFile = __DIR__ . '/../config/packages/ux_icons.yaml';
+        if (!file_exists($configFile)) {
+            return;
+        }
+
+        $config = \Symfony\Component\Yaml\Yaml::parseFile($configFile);
+        if (!isset($config['ux_icons']) || !is_array($config['ux_icons'])) {
+            return;
+        }
+
+        $builder->prependExtensionConfig('ux_icons', $config['ux_icons']);
+    }
+
     public function process(ContainerBuilder $container): void
     {
         // Collect route security requirements from IsGranted attributes
         $routeRequirements = $this->collectRouteRequirements($container);
         $container->setParameter('survos_tabler.route_requirements', $routeRequirements);
-
-        // Load UX icons config for applications using ux-icons
-        $configDir = __DIR__ . '/../config/packages';
-        $configFile = $configDir . '/ux_icons.yaml';
-        if (file_exists($configFile)) {
-            $loader = new \Symfony\Component\DependencyInjection\Loader\YamlFileLoader($container, new \Symfony\Component\Config\FileLocator($configDir));
-            $loader->load('ux_icons.yaml');
-        }
 
         // Set up Twig globals
         $this->configureTwigGlobals($container);

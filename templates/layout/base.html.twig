@@ -1,7 +1,7 @@
 {# @SurvosTabler/layout/base.html.twig v2.0 - Base layout with all blocks #}
 {#
     Layouts: horizontal, sidebar, combo, navbar-overlap, navbar-dark, fluid, boxed, landing
-    
+
     Usage:
     {% extends "@SurvosTabler/layout/base.html.twig" %}
     {% set layout = 'sidebar' %}
@@ -22,83 +22,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{% block title %}{{ pageTitle|default('Tabler') }}{% endblock %}</title>
-    
+
     {% block meta %}
         <meta name="description" content="{% block meta_description %}{% endblock %}">
     {% endblock %}
-    
+
     {% block stylesheets %}
         {{ importmap('app') }}
     {% endblock %}
-    
+
     {% block head %}{% endblock %}
 </head>
 
 <body class="{% block body_class %}{% if layout == 'boxed' %}layout-boxed{% endif %}{% endblock %}">
     {% block body_start %}{% endblock %}
-    
+
     {# === BANNER (promotional/announcements) === #}
     {% block banner %}{% endblock %}
-    
+
     <div class="page">
         {# === TOP NAVBAR === #}
         {% if showNavbar %}
+        <style>
+            .page .navbar-toggler-icon {
+                height: 1.5px;
+                width: 1em;
+            }
+            .page .navbar-toggler-icon:before {
+                top: -0.325em;
+            }
+            .page .navbar-toggler-icon:after {
+                bottom: -0.35em;
+            }
+        </style>
         {% block navbar %}
-        <header class="navbar navbar-expand-md{% if layout == 'navbar-dark' %} navbar-dark{% endif %}{% if layout == 'navbar-overlap' %} navbar-overlap{% endif %} d-print-none">
+        <header class="navbar navbar-expand-md {% if layout == 'navbar-dark' %} navbar-dark {% endif %} {% if layout == 'navbar-overlap' %} navbar-overlap {% endif %}">
             <div class="{{ containerClass }}">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
                 {# Brand/Logo #}
                 {% block navbar_brand %}
                 {% set id = tabler_identity ?? {} %}
-                <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    <a href="{{ id.homepage_route is defined and id.homepage_route ? path(id.homepage_route) : (id.homepage_url is defined and id.homepage_url ? id.homepage_url : path('app_homepage')) }}">
+                <h1 class="navbar-brand navbar-brand-autodark">
+                    <a href="{{ id.homepage_route is defined and id.homepage_route ? path(id.homepage_route) : (id.homepage_url is defined and id.homepage_url ? id.homepage_url : path('app_homepage')) }}" class="text-decoration-none">
                         {% block brand %}
                             {% if id.logo_small ?? id.logo %}
                                 <img src="{{ id.logo_small ?? id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
                             {% else %}
-                                {{ ux_icon('tabler:brand-tabler', {height: 32, class: 'navbar-brand-image'}) }}
+                                {{ ux_icon('brand', {height: 32, width: 32, class: 'navbar-brand-image text-primary'}) }}
                             {% endif %}
-                            <span class="ms-2 d-none d-sm-inline">{% block brand_text %}{{ (id.abbr ?? id.title ?? 'Tabler')|raw }}{% endblock %}</span>
+                            <span class="d-none d-sm-inline align-middle ms-1 fs-3 fw-bolder">{% block brand_text %}{{ (id.abbr ?? id.title ?? 'Survos')|raw }}{% endblock %}</span>
                         {% endblock %}
                     </a>
                 </h1>
                 {% endblock %}
-                
+
                 {# Right side: search, notifications, user menu #}
-                <div class="navbar-nav flex-row order-md-last">
+                <div class="navbar-nav align-items-center" style="min-height: auto;">
                     {% block navbar_search %}
                         {# Search form or icon #}
                     {% endblock %}
-                    
+
                     {% block navbar_notifications %}
                         {# Notification dropdown #}
                     {% endblock %}
-                    
+
                     {% block navbar_end %}
                         {# Additional navbar items #}
                     {% endblock %}
-                    
+
                     {% block navbar_auth %}
-                        {# User dropdown / login link #}
                         {% if app.user %}
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="User menu">
-                                    <span class="avatar avatar-sm">{{ app.user.email|slice(0,2)|upper }}</span>
-                                    <div class="d-none d-xl-block ps-2">
-                                        <div>{{ app.user.email }}</div>
-                                    </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    {% block user_menu %}
-                                        <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
-                                    {% endblock %}
-                                </div>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                <span class="avatar avatar-xs rounded-pill shadow-none fw-bolder text-bg-primary" style="--tblr-avatar-font-size: 0.725rem;">{{ app.user.email|slice(0,1)|upper }}</span>
+                                <span class="ms-1">{{ 'app.user.email' }}</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                {% block user_menu %}
+                                    <a href="{{ path('app_homepage') }}" class="dropdown-item small">
+                                        {{ ux_icon('user') }}
+                                        <span class="ms-1">Profile</span>
+                                    </a>
+                                    <a href="{{ path('app_logout') }}" class="dropdown-item small">
+                                        {{ ux_icon('logout') }}
+                                        <span class="ms-1">Logout</span>
+                                    </a>
+                                {% endblock %}
                             </div>
+                        </div>
                         {% else %}
-                            <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Login</a>
+                        <a href="{{ path('app_login') }}" class="btn btn-sm btn-primary">
+                            {{ ux_icon('login') }}
+                            <span class="ms-1">Login</span>
+                        </a>
                         {% endif %}
                     {% endblock %}
                 </div>
@@ -106,12 +125,20 @@
         </header>
         {% endblock %}
         {% endif %}
-        
+
         {# === HORIZONTAL NAV MENU (below top navbar) === #}
         {% if showNavbarMenu %}
+        <style>
+            #navbar-menu {
+                overflow-x: scroll;
+            }
+            #navbar-menu .navbar-nav .nav-item {
+                white-space: nowrap;
+            }
+        </style>
         {% block navbar_menu %}
         <header class="navbar-expand-md">
-            <div class="collapse navbar-collapse" id="navbar-menu">
+            <div id="navbar-menu" class="collapse navbar-collapse overflow-x-scroll">
                 <div class="navbar">
                     <div class="{{ containerClass }}">
                         <ul class="navbar-nav">
@@ -125,7 +152,7 @@
         </header>
         {% endblock %}
         {% endif %}
-        
+
         {# === PAGE WRAPPER (sidebar + content) === #}
         <div class="page-wrapper">
             {# === SIDEBAR === #}
@@ -136,7 +163,7 @@
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle sidebar">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    
+
                     {% block sidebar_brand %}
                     {% set id = tabler_identity ?? {} %}
                     <h1 class="navbar-brand navbar-brand-autodark">
@@ -150,7 +177,7 @@
                         </a>
                     </h1>
                     {% endblock %}
-                    
+
                     <div class="collapse navbar-collapse" id="sidebar-menu">
                         <ul class="navbar-nav pt-lg-3">
                             {% block sidebar_menu_items %}
@@ -162,36 +189,28 @@
             </aside>
             {% endblock %}
             {% endif %}
-            
-            {# === MAIN CONTENT AREA === #}
+
+            {# --- MAIN CONTENT --- #}
             <div class="page-body">
                 <div class="{{ containerClass }}">
                     {# Page Header #}
-                    {% block page_header %}
-                    {% if block('page_title') is defined or block('page_pretitle') is defined or block('page_actions') is defined %}
-                    <div class="page-header d-print-none">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                {% block page_pretitle %}{% endblock %}
-                                <h2 class="page-title">
-                                    {% block page_title %}{% endblock %}
-                                </h2>
-                            </div>
-                            {% if block('page_actions') is defined %}
-                            <div class="col-auto ms-auto d-print-none">
-                                <div class="btn-list">
-                                    {% block page_actions %}{% endblock %}
+                    {% if showPageHeader is defined and showPageHeader %}
+                        {% block page_header %}
+                            <div class="page-header mb-4 mt-0">
+                                <div class="container-fluid">
+                                    {% block page_pretitle %}{% endblock %}
+                                    <h2 class="page-title fw-bolder">
+                                        {% block page_title %}{% endblock %}
+                                    </h2>
+                                    {% block page_subtitle %}{% endblock %}
                                 </div>
                             </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                        {% endblock %}
                     {% endif %}
-                    {% endblock %}
-                    
+
                     {# Breadcrumb #}
                     {% block breadcrumb %}{% endblock %}
-                    
+
                     {# Flash Messages #}
                     {% block flashes %}
                     {% for label, messages in app.flashes %}
@@ -205,46 +224,36 @@
                         {% endfor %}
                     {% endfor %}
                     {% endblock %}
-                    
+
                     {# Main Content #}
                     {% block content %}{% endblock %}
                 </div>
             </div>
-            
-            {# === FOOTER === #}
+
+            {# --- FOOTER --- #}
             {% if showFooter %}
-            {% block footer %}
-            <footer class="footer footer-transparent d-print-none">
-                <div class="{{ containerClass }}">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-lg-auto ms-lg-auto">
+                <footer class="footer py-3">
+                    <div class="{{ containerClass }}">
+                        {% block footer %}
                             {% block footer_links %}{% endblock %}
-                        </div>
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                            <div class="text-center text-muted">
                             {% block footer_copyright %}
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; {{ 'now'|date('Y') }}
-                                    <a href="." class="link-secondary">{{ block('brand_text') }}</a>.
-                                    All rights reserved.
-                                </li>
-                            </ul>
+                                <div>Copyright &copy; {{ 'now'|date('Y') }} <a href="." class="text-decoration-none">{{ block('brand_text') }}</a>. All Rights Reserved.</div>
                             {% endblock %}
-                        </div>
+                        {% endblock %}
                     </div>
-                </div>
-            </footer>
-            {% endblock %}
+                </footer>
             {% endif %}
         </div>
     </div>
-    
-    {# === MODALS === #}
+
+    {# --- MODALS --- #}
     {% block modals %}{% endblock %}
-    
-    {# === SCRIPTS === #}
+
+    {# --- SCRIPTS --- #}
     {% block javascripts %}{% endblock %}
-    
+
     {% block body_end %}{% endblock %}
 </body>
+
 </html>
