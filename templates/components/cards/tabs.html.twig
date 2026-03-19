@@ -1,140 +1,97 @@
-{# templates/components/cards/tabs.html.twig v4.8 #}
-{%- set id = id %}
-{%- set iconClass = "me2" %}
-{% if hideText %}
-   {%- set iconClass = "" %}
-{% endif %}
-{%- set reverse = reverse | default(false) %}
-
-<div class="card">
-	<div class="card-header">
-		<ul class="nav nav-tabs card-header-tabs{% if reverse %} flex-row-reverse{% endif %}{% if justified %} nav-fill{% endif %}" data-bs-toggle="tabs">
-			<li class="nav-item">
-				<a href="#tabs-home-{{ id }}" class="nav-link active" data-bs-toggle="tab">{% if icons %}<twig:ui:icon icon="home" :class="icon-class"/>{% endif %}{%- if not (hideText) -%}Home{%- endif -%}</a>
-			</li>
-			<li class="nav-item">
-				<a href="#tabs-profile-{{ id }}" class="nav-link" data-bs-toggle="tab">{% if icons %}<twig:ui:icon icon="user" :class="icon-class"/>{% endif %}{%- if not (hideText) -%}Profile{%- endif -%}</a>
-			</li>
-
-			{% if activity %}
-			<li class="nav-item">
-				<a href="#tabs-activity-{{ id }}" class="nav-link" data-bs-toggle="tab">{% if icons %}<twig:ui:icon icon="activity" :class="icon-class"/>{% endif %}{%- if not (hideText) -%}Activity{%- endif -%}</a>
-			</li>
-			{% endif %}
-
-			{% if disabled %}
-			<li class="nav-item">
-				<a href="#tabs-activity-{{ id }}" class="nav-link disabled" data-bs-toggle="tab">{% if icons %}<twig:ui:icon icon="x" :class="icon-class"/>{% endif %}{%- if not (hideText) -%}Disabled{%- endif -%}</a>
-			</li>
-			{% endif %}
-
-			{% if dropdown %}
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-				<twig:ui:dropdown-menu/>
-			</li>
-			{% endif %}
-			{% if settings %}
-			<li class="nav-item {% if reverse %}me-auto{% else %}ms-auto{% endif %}">
-				<a href="#tabs-settings-{{ id }}" class="nav-link" title="Settings" data-bs-toggle="tab"><twig:ui:icon icon="settings"/></a>
-			</li>
-			{% endif %}
-		</ul>
-	</div>
-	<div class="card-body">
-		<div class="tab-content">
-			<div class="tab-pane{% if animation %} fade{% endif %} active show" id="tabs-home-{{ id }}">
-				<h4>Home tab</h4>
-				<div>Cursus turpis vestibulum, dui in pharetra vulputate id sed non turpis ultricies fringilla at sed facilisis lacus pellentesque purus nibh</div>
-			</div>
-			<div class="tab-pane{% if animation %} fade{% endif %}" id="tabs-profile-{{ id }}">
-				<h4>Profile tab</h4>
-				<div>Fringilla egestas nunc quis tellus diam rhoncus ultricies tristique enim at diam, sem nunc amet, pellentesque id egestas velit sed</div>
-			</div>
-			{% if settings %}
-			<div class="tab-pane{% if animation %} fade{% endif %}" id="tabs-settings-{{ id }}">
-				<h4>Settings tab</h4>
-				<div>Donec ac vitae diam amet vel leo egestas consequat rhoncus in luctus amet, facilisi sit mauris accumsan nibh habitant senectus</div>
-			</div>
-			{% endif %}
-			{% if activity %}
-			<div class="tab-pane{% if animation %} fade{% endif %}" id="tabs-activity-{{ id }}">
-				<h4>Activity tab</h4>
-				<div>Donec ac vitae diam amet vel leo egestas consequat rhoncus in luctus amet, facilisi sit mauris accumsan nibh habitant senectus</div>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
-
+{# templates/components/cards/tabs.html.twig #}
 {#
-=== Original Liquid (tabs.html) ===
-{% assign id = include.id %}
-{% assign icon-class = "me-2" %}
-{% if include.hide-text %}
-   {% assign icon-class = "" %}
-{% endif %}
-{% assign reverse = include.reverse | default: false %}
+  Renders a Bootstrap tab card.
+  The nav is generated from the `tabs` array.
+  Tab pane content is passed as the component body (inner HTML) via the _content block.
 
-<div class="card">
-	<div class="card-header">
-		<ul class="nav nav-tabs card-header-tabs{% if reverse %} flex-row-reverse{% endif %}{% if include.justified %} nav-fill{% endif %}" data-bs-toggle="tabs">
-			<li class="nav-item">
-				<a href="#tabs-home-{{ id }}" class="nav-link active" data-bs-toggle="tab">{% if include.icons %}{% include "ui/icon.html" icon="home" class=icon-class %}{% endif %}{% unless include.hide-text %}Home{% endunless %}</a>
-			</li>
-			<li class="nav-item">
-				<a href="#tabs-profile-{{ id }}" class="nav-link" data-bs-toggle="tab">{% if include.icons %}{% include "ui/icon.html" icon="user" class=icon-class %}{% endif %}{% unless include.hide-text %}Profile{% endunless %}</a>
-			</li>
+  Usage:
+    <twig:cards:tabs id="my-tabs" :tabs="[
+        {id: 'ocr',     label: 'OCR'},
+        {id: 'details', label: 'Details', icon: 'list'},
+        {id: 'tasks',   label: 'Tasks',   badge: '3'},
+    ]" activeTab="ocr" :hashNavigation="true">
+        <div id="my-tabs-ocr"     class="tab-pane active show" role="tabpanel">...</div>
+        <div id="my-tabs-details" class="tab-pane" role="tabpanel">...</div>
+        <div id="my-tabs-tasks"   class="tab-pane" role="tabpanel">...</div>
+    </twig:cards:tabs>
 
-			{% if include.activity %}
-			<li class="nav-item">
-				<a href="#tabs-activity-{{ id }}" class="nav-link" data-bs-toggle="tab">{% if include.icons %}{% include "ui/icon.html" icon="activity" class=icon-class %}{% endif %}{% unless include.hide-text %}Activity{% endunless %}</a>
-			</li>
-			{% endif %}
+  Tab id convention: {id}-{tab.id}
+#}
 
-			{% if include.disabled %}
-			<li class="nav-item">
-				<a href="#tabs-activity-{{ id }}" class="nav-link disabled" data-bs-toggle="tab">{% if include.icons %}{% include "ui/icon.html" icon="x" class=icon-class %}{% endif %}{% unless include.hide-text %}Disabled{% endunless %}</a>
-			</li>
-			{% endif %}
+{# ── Fallback: fixture demo if no tabs array passed (legacy usage) ─────────── #}
+{% if not tabs or tabs is empty %}
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+        <li class="nav-item"><a href="#tabs-home-{{ id }}" class="nav-link active" data-bs-toggle="tab">Home</a></li>
+        <li class="nav-item"><a href="#tabs-profile-{{ id }}" class="nav-link" data-bs-toggle="tab">Profile</a></li>
+      </ul>
+    </div>
+    <div class="card-body">
+      <div class="tab-content">
+        <div class="tab-pane active show" id="tabs-home-{{ id }}"><h4>Home tab</h4><p class="text-muted">Pass a <code>tabs</code> array to use this component.</p></div>
+        <div class="tab-pane" id="tabs-profile-{{ id }}"><h4>Profile tab</h4></div>
+      </div>
+    </div>
+  </div>
+{% else %}
 
-			{% if include.dropdown %}
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-				{% include "ui/dropdown-menu.html" %}
-			</li>
-			{% endif %}
-			{% if include.settings %}
-			<li class="nav-item {% if reverse %}me-auto{% else %}ms-auto{% endif %}">
-				<a href="#tabs-settings-{{ id }}" class="nav-link" title="Settings" data-bs-toggle="tab">{% include "ui/icon.html" icon="settings" %}</a>
-			</li>
-			{% endif %}
-		</ul>
-	</div>
-	<div class="card-body">
-		<div class="tab-content">
-			<div class="tab-pane{% if include.animation %} fade{% endif %} active show" id="tabs-home-{{ id }}">
-				<h4>Home tab</h4>
-				<div>Cursus turpis vestibulum, dui in pharetra vulputate id sed non turpis ultricies fringilla at sed facilisis lacus pellentesque purus nibh</div>
-			</div>
-			<div class="tab-pane{% if include.animation %} fade{% endif %}" id="tabs-profile-{{ id }}">
-				<h4>Profile tab</h4>
-				<div>Fringilla egestas nunc quis tellus diam rhoncus ultricies tristique enim at diam, sem nunc amet, pellentesque id egestas velit sed</div>
-			</div>
-			{% if include.settings %}
-			<div class="tab-pane{% if include.animation %} fade{% endif %}" id="tabs-settings-{{ id }}">
-				<h4>Settings tab</h4>
-				<div>Donec ac vitae diam amet vel leo egestas consequat rhoncus in luctus amet, facilisi sit mauris accumsan nibh habitant senectus</div>
-			</div>
-			{% endif %}
-			{% if include.activity %}
-			<div class="tab-pane{% if include.animation %} fade{% endif %}" id="tabs-activity-{{ id }}">
-				<h4>Activity tab</h4>
-				<div>Donec ac vitae diam amet vel leo egestas consequat rhoncus in luctus amet, facilisi sit mauris accumsan nibh habitant senectus</div>
-			</div>
-			{% endif %}
-		</div>
-	</div>
+{% set activeId = activeTab ?? (tabs|first).id ?? '' %}
+
+<div class="card" data-tabs-id="{{ id }}"{% if hashNavigation %} data-tabs-hash-navigation="true"{% endif %}>
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs{% if reverse %} flex-row-reverse{% endif %}{% if justified %} nav-fill{% endif %}"
+        id="{{ id }}-nav"
+        data-bs-toggle="tabs"
+        role="tablist">
+      {% for tab in tabs %}
+        {% set tabId = id ~ '-' ~ tab.id %}
+        {% set isActive = tab.id == activeId %}
+        <li class="nav-item" role="presentation">
+          <a href="#{{ tabId }}"
+             id="{{ tabId }}-tab"
+             class="nav-link{% if isActive %} active{% endif %}"
+             data-bs-toggle="tab"
+             data-tab-id="{{ tab.id }}"
+             role="tab"
+             aria-controls="{{ tabId }}"
+             aria-selected="{{ isActive ? 'true' : 'false' }}"
+             {% if not isActive %}tabindex="-1"{% endif %}>
+            {% if tab.icon is defined and tab.icon %}
+              <twig:ui:icon :icon="tab.icon" class="me-1"/>
+            {% endif %}
+            {{ tab.label }}
+            {% if tab.badge is defined and tab.badge %}
+              <span class="badge bg-secondary-lt ms-1">{{ tab.badge }}</span>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="tab-content" id="{{ id }}-content">
+      {% block _content %}{% endblock %}
+    </div>
+  </div>
 </div>
 
-#}
+{% if hashNavigation %}
+<script>
+(function () {
+  var nav = document.getElementById({{ (id ~ '-nav')|json_encode }});
+  if (!nav) return;
+  var hash = location.hash.slice(1);
+  if (hash) {
+    var link = nav.querySelector('[data-tab-id="' + hash + '"]');
+    if (link) bootstrap.Tab.getOrCreateInstance(link).show();
+  }
+  nav.addEventListener('shown.bs.tab', function (e) {
+    var tabId = e.target.getAttribute('data-tab-id');
+    if (tabId) history.replaceState(null, '', '#' + tabId);
+  });
+})();
+</script>
+{% endif %}
+
+{% endif %}
