@@ -27,9 +27,7 @@
         <meta name="description" content="{% block meta_description %}{% endblock %}">
     {% endblock %}
 
-    {% block stylesheets %}
-        {{ importmap('app') }}
-    {% endblock %}
+    {% block stylesheets %}{% endblock %}
 
     {% block head %}{% endblock %}
 </head>
@@ -251,7 +249,9 @@
     {% block modals %}{% endblock %}
 
     {# --- SCRIPTS --- #}
-    {% block javascripts %}{% endblock %}
+    {% block javascripts %}
+        {{ importmap('app') }}
+    {% endblock %}
 
     {% block body_end %}{% endblock %}
 </body>
