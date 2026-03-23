@@ -70,8 +70,8 @@
                                 <img src="{{ id.logo_small ?? id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
                             {% else %}
                                 {{ ux_icon('brand', {height: 32, width: 32, class: 'navbar-brand-image text-primary'}) }}
+                                <span class="d-none d-sm-inline align-middle ms-1 fs-3 fw-bolder">{% block brand_text %}{{ (id.abbr ?? id.title ?? 'Survos')|raw }}{% endblock %}</span>
                             {% endif %}
-                            <span class="d-none d-sm-inline align-middle ms-1 fs-3 fw-bolder">{% block brand_text %}{{ (id.abbr ?? id.title ?? 'Survos')|raw }}{% endblock %}</span>
                         {% endblock %}
                     </a>
                 </h1>
@@ -96,7 +96,7 @@
                         <div class="dropdown">
                             <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                                 <span class="avatar avatar-xs rounded-pill shadow-none fw-bolder text-bg-primary" style="--tblr-avatar-font-size: 0.725rem;">{{ app.user.email|slice(0,1)|upper }}</span>
-                                <span class="ms-1">{{ 'app.user.email' }}</span>
+                                <span class="ms-1">{{ app.user.email }}</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 {% block user_menu %}
@@ -127,16 +127,13 @@
         {# === HORIZONTAL NAV MENU (below top navbar) === #}
         {% if showNavbarMenu %}
         <style>
-            #navbar-menu {
-                overflow-x: scroll;
-            }
             #navbar-menu .navbar-nav .nav-item {
                 white-space: nowrap;
             }
         </style>
         {% block navbar_menu %}
         <header class="navbar-expand-md">
-            <div id="navbar-menu" class="collapse navbar-collapse overflow-x-scroll">
+            <div id="navbar-menu" class="collapse navbar-collapse">
                 <div class="navbar">
                     <div class="{{ containerClass }}">
                         <ul class="navbar-nav">

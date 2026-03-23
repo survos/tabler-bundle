@@ -1,4 +1,4 @@
-{# @SurvosTabler/menu/navbar.html.twig - Horizontal navbar menu #}
+{# @SurvosTabler/menu/navbar.html.twig #}
 {% extends '@KnpMenu/menu.html.twig' %}
 
 {% block list %}
@@ -6,89 +6,131 @@
 
     {% set ra = options.rootAttributes|default({}) %}
     {% set merged = listAttributes|merge(ra) %}
-
-    {# Tabler reference: ul.navbar-nav (do NOT force flex-row here) #}
     {% set merged = merged|merge({ class: html_classes(merged.class|default(null), 'navbar-nav') }) %}
 
+    {% set maxItems = options.max_items|default(navbar_max_items|default(5)) %}
+    {% set visibleItems = item.children|slice(0, maxItems) %}
+    {% set overflowItems = item.children|slice(maxItems) %}
+
     <ul {{ html_attr(merged) }}>
-        {{ block('children') }}
+        {% for child in visibleItems %}
+            {% with { item: child } %}
+                {{ block('item') }}
+            {% endwith %}
+        {% endfor %}
+
+        {% if overflowItems|length > 0 %}
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#navbarMoreModal">
+                    {{ ux_icon('tabler:dots', {class: 'icon'}) }}
+                    <span class="nav-link-title ms-1">More</span>
+                </a>
+            </li>
+        {% endif %}
     </ul>
+
+    {# MODAL MENU #}
+    {% if overflowItems|length > 0 %}
+        <div class="modal fade" id="navbarMoreModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body p-0">
+                        <div class="list-group list-group-flush">
+
+                            {% for child in overflowItems %}
+                                {% with { item: child, level: 0 } %}
+                                    {{ block('menu_item') }}
+                                {% endwith %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 
+
+{# NAVBAR ITEM #}
 {% block item %}
     {% if item.displayed %}
-        {%- set is_dropdown = item.hasChildren and options.depth is not same as(0) -%}
-        {%- set icon = item.getExtra('icon') -%}
-        {%- set badge = item.getExtra('badge') -%}
-        {%- set badgeValue = badge.value|default(badge) -%}
+        {% set icon = item.getExtra('icon') %}
+        {% set badge = item.getExtra('badge') %}
+        {% set badgeValue = badge.value|default(badge) %}
 
-        <li class="nav-item{% if is_dropdown %} dropdown{% endif %}{% if item.isCurrent %} active{% endif %}">
-            {% if is_dropdown %}
-                <a class="nav-link dropdown-toggle"
-                   href="#navbar-{{ item.name|slug }}"
-                   data-bs-toggle="dropdown"
-                   data-bs-auto-close="outside"
-                   role="button"
-                   aria-expanded="false">
-                    {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
-                    <span class="nav-link-title">{{ block('label') }}</span>
-                </a>
-
-                <div class="dropdown-menu">
-                    {% for child in item.children %}
-                        {% with { item: child } %}
-                            {{ block('dropdown_item') }}
-                        {% endwith %}
-                    {% endfor %}
-                </div>
-            {% else %}
-                <a class="nav-link" href="{{ item.uri }}">
-                    {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
-                    <span class="nav-link-title">{{ block('label') }}</span>
-                    {% if badgeValue %}
-                        <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>
-                    {% endif %}
-                </a>
-            {% endif %}
+        <li class="nav-item{% if item.isCurrent %} active{% endif %}">
+            <a class="nav-link" href="{{ item.uri }}">
+                {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
+                <span class="nav-link-title">{{ block('label') }}</span>
+                {% if badgeValue %}
+                    <span class="badge badge-sm bg-green-lt ms-auto">{{ badgeValue }}</span>
+                {% endif %}
+            </a>
         </li>
     {% endif %}
 {% endblock %}
 
-{% block dropdown_item %}
-    {%- set icon = item.getExtra('icon') -%}
-    {%- set badge = item.getExtra('badge') -%}
-    {%- set badgeValue = badge.value|default(badge) -%}
 
-    {% if item.hasChildren %}
-        <div class="dropend">
-            <a class="dropdown-item dropdown-toggle"
-               href="#"
-               data-bs-toggle="dropdown"
-               data-bs-auto-close="outside"
-               role="button"
-               aria-expanded="false">
-                {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
-                {{ block('label') }}
-            </a>
+{# CLEAN NESTED MENU (NO ACCORDION) #}
+{% block menu_item %}
+    {% set icon = item.getExtra('icon') %}
+    {% set badge = item.getExtra('badge') %}
+    {% set badgeValue = badge.value|default(badge) %}
 
-            <div class="dropdown-menu">
-                {% for child in item.children %}
-                    {% with { item: child } %}
-                        {{ block('dropdown_item') }}
-                    {% endwith %}
-                {% endfor %}
-            </div>
-        </div>
-    {% else %}
-        <a class="dropdown-item" href="{{ item.uri }}">
-            {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
-            {{ block('label') }}
-            {% if badgeValue %}
-                <span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>
+    {# indentation based on level #}
+    {% set padding = 16 + (level * 16) %}
+
+    {% if not item.hasChildren %}
+        <a href="{{ item.uri }}"
+           class="list-group-item list-group-item-action d-flex align-items-center py-2"
+           style="padding-left: {{ padding }}px;">
+
+            {% if icon %}
+                {{ ux_icon(icon, {class: 'icon me-2'}) }}
             {% endif %}
+
+            <span>{{ item.label }}</span>
+
+            {% if badgeValue %}
+                <span class="badge bg-green-lt ms-auto">{{ badgeValue }}</span>
+            {% endif %}
+
+            <span class="ms-auto text-muted opacity-20">{{ ux_icon('mdi:chevron-right') }}</span>
         </a>
+    {% else %}
+
+        {# Parent label (non-clickable or optional link) #}
+        <div class="list-group-item fw-bold text-muted py-2 text-uppercase small"
+             style="padding-left: {{ padding }}px;">
+
+            {% if icon %}
+                {{ ux_icon('icon', {class: 'icon me-2'}) }}
+            {% endif %}
+
+            {{ item.label }}
+        </div>
+
+        {# Children #}
+        {% for child in item.children %}
+            {% with { item: child, level: level + 1 } %}
+                {{ block('menu_item') }}
+            {% endwith %}
+        {% endfor %}
+
     {% endif %}
 {% endblock %}
+
 
 {% block label %}
     {%- set translation_domain = item.extra('translation_domain', 'messages') -%}
@@ -96,5 +138,5 @@
         {{ item.label|trans({}, translation_domain) }}
     {%- else -%}
         {{ item.label }}
-    {%- endif -%}
+    {%- endif %}
 {% endblock %}
