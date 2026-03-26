@@ -21,7 +21,6 @@ class MenuDispatcher
     {
         // Create root menu - name doesn't matter since it won't be displayed
         $menu = $this->factory->createItem($options['name'] ?? $slot);
-        if (!empty($options)) dump($options, $slot);
 
         // IMPORTANT: Don't display the root item itself, only its children
         $menu->setDisplay(false);
