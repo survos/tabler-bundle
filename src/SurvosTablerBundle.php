@@ -52,6 +52,8 @@ class SurvosTablerBundle extends AbstractBundle implements CompilerPassInterface
 {
     use HasAssetMapperTrait;
 
+    public const ASSET_NAMESPACE = '@survos/tabler';
+
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
@@ -302,12 +304,5 @@ class SurvosTablerBundle extends AbstractBundle implements CompilerPassInterface
     public function configure(DefinitionConfigurator $definition): void
     {
         (new Configuration())->configure($definition);
-    }
-
-    public function getPaths(): array
-    {
-        $dir = realpath(__DIR__ . '/../assets/');
-        assert(file_exists($dir), 'asset path must exist for the assets in ' . __DIR__);
-        return [$dir => '@survos/tabler'];
     }
 }

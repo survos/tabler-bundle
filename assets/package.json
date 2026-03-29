@@ -9,9 +9,7 @@
         "main": "src/controllers/search_controller.js",
         "webpackMode": "eager",
         "fetch": "lazy",
-        "enabled": true,
-        "autoimport": {
-        }
+        "enabled": true
       }
     },
     "importmap": {
