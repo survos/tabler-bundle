@@ -33,8 +33,7 @@ use Survos\TablerBundle\Twig\IconExtension;
 use Survos\TablerBundle\Twig\MenuExtension;
 use Survos\TablerBundle\Twig\RouteAliasExtension;
 use Survos\TablerBundle\Twig\TwigExtension;
-use Survos\CoreBundle\HasAssetMapperInterface;
-use Survos\CoreBundle\Traits\HasAssetMapperTrait;
+use Survos\CoreBundle\Bundle\AssetMapperBundle;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -44,15 +43,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class SurvosTablerBundle extends AbstractBundle implements CompilerPassInterface, HasAssetMapperInterface
+class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterface
 {
-    use HasAssetMapperTrait;
-
-    public const ASSET_NAMESPACE = '@survos/tabler';
+    public const ASSET_PACKAGE = 'tabler';
 
     public function build(ContainerBuilder $container): void
     {
@@ -62,14 +58,7 @@ class SurvosTablerBundle extends AbstractBundle implements CompilerPassInterface
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        // Asset mapper registration from HasAssetMapperTrait
-        if ($this->isAssetMapperAvailable($builder)) {
-            $builder->prependExtensionConfig('framework', [
-                'asset_mapper' => [
-                    'paths' => $this->getPaths(),
-                ],
-            ]);
-        }
+        parent::prependExtension($container, $builder);
 
         // ux_icons config
         if (!$builder->hasExtension('ux_icons')) {

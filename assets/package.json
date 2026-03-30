@@ -1,5 +1,5 @@
 {
-  "name": "@survos/tabler-bundle",
+  "name": "@survos/tabler",
   "description": "integrate php and javascript helpers for tabler, including menus",
   "license": "MIT",
   "version": "1.0.1",
@@ -15,8 +15,7 @@
     "importmap": {
       "@hotwired/stimulus": "^3.2.2"
     },
-    "autoimport": {
-    }
+    "autoimport": {}
   },
   "peerDependencies": {
     "@hotwired/stimulus": "^3.2.2"
