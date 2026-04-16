@@ -15,8 +15,11 @@ use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
 use Survos\TablerBundle\Service\MenuDispatcher;
+use Survos\TablerBundle\Service\MenuContext;
+use Survos\TablerBundle\Service\MenuOptionsResolver;
 use Survos\TablerBundle\Service\MenuRenderer;
 use Survos\TablerBundle\Service\MenuService;
+use Survos\TablerBundle\Service\PageContext;
 use Survos\TablerBundle\Service\RouteAliasService;
 use Survos\TablerBundle\Translation\RoutesTranslationLoader;
 use Survos\TablerBundle\Twig\Components\Landing\Benefits;
@@ -182,7 +185,18 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
 
         $builder->register(MenuDispatcher::class)
             ->setArgument('$factory', new Reference('knp_menu.factory'))
-            ->setArgument('$dispatcher', new Reference('event_dispatcher'));
+            ->setArgument('$dispatcher', new Reference('event_dispatcher'))
+            ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class));
+
+        $builder->register(MenuContext::class)
+            ->setArgument('$requestStack', new Reference('request_stack'));
+
+        $builder->register(PageContext::class)
+            ->setArgument('$requestStack', new Reference('request_stack'));
+
+        $builder->register(MenuOptionsResolver::class)
+            ->setArgument('$defaultOptions', $config['menu_options'])
+            ->setArgument('$menuContext', new Reference(MenuContext::class));
 
         $builder->register(MenuRenderer::class)
             ->setArgument('$dispatcher', new Reference(MenuDispatcher::class))
@@ -224,6 +238,7 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
 
         $builder->register(MenuExtension::class)
             ->setArgument('$renderer', new Reference(MenuRenderer::class))
+            ->setArgument('$menuContext', new Reference(MenuContext::class))
             ->addTag('twig.extension');
 
 // In loadExtension(), replace IconExtension registration:
@@ -242,6 +257,7 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
             ->setArgument('$routes', $config['routes'])
             ->setArgument('$options', $config['options'])
             ->setArgument('$contextService', new Reference(ContextService::class))
+            ->setArgument('$pageContext', new Reference(PageContext::class))
             ->addTag('twig.extension');
 
         // === Twig Components we created (not generated from tabler) ===
@@ -282,10 +298,9 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
             $builder->register($componentClass)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
-                ->setArgument('$menuOptions', $config['menu_options'])
+                ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class))
                 ->setArgument('$helper', new Reference('knp_menu.helper'))
-                ->setArgument('$factory', new Reference('knp_menu.factory'))
-                ->setArgument('$eventDispatcher', new Reference('event_dispatcher'));
+                ->setArgument('$menuDispatcher', new Reference(MenuDispatcher::class));
         }
 
     }

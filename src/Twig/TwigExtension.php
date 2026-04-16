@@ -4,6 +4,7 @@ namespace Survos\TablerBundle\Twig;
 
 use Survos\TablerBundle\Model\Tab;
 use Survos\TablerBundle\Service\ContextService;
+use Survos\TablerBundle\Service\PageContext;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\UX\TwigComponent\ComponentRenderer;
 use Twig\Extension\AbstractExtension;
@@ -19,6 +20,7 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
         private array $options,
         private array $config,
         private ContextService $contextService,
+        private PageContext $pageContext,
     ) {
     }
 
@@ -64,8 +66,26 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
             new TwigFunction('badge', [$this, 'badge']),
             new TwigFunction('attributes', [$this, 'attributes'], ['is_safe' => ['html']]),
             new TwigFunction('img', fn (string $src) => sprintf('img src="%s"', $src)),
+            new TwigFunction('meta', [$this, 'setMeta'], ['is_safe' => ['html']]),
+            new TwigFunction('page_context', [$this, 'getPageContext']),
 //            new TwigFunction('config', fn (string $el) => $this->config[$el]),
         ];
+    }
+
+    public function setMeta(array $options = [], mixed $caller = null): string
+    {
+        if ($caller !== null) {
+            $options['caller'] = is_scalar($caller) ? (string) $caller : get_debug_type($caller);
+        }
+
+        $this->pageContext->addOptions($this->normalizeMetaOptions($options));
+
+        return '';
+    }
+
+    public function getPageContext(): array
+    {
+        return $this->pageContext->getOptions();
     }
 
     public function containerClass(string $class = ''): string
@@ -110,6 +130,24 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
         }
         $string = join("\n", $attrs);
         return $string;
+    }
+
+    private function normalizeMetaOptions(array $options): array
+    {
+        $normalized = $options;
+
+        foreach ([
+            'preTitle' => 'pretitle',
+            'subTitle' => 'subtitle',
+            'showHeader' => 'show_page_header',
+            'showPageHeader' => 'show_page_header',
+        ] as $from => $to) {
+            if (array_key_exists($from, $normalized) && !array_key_exists($to, $normalized)) {
+                $normalized[$to] = $normalized[$from];
+            }
+        }
+
+        return $normalized;
     }
 
 

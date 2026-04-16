@@ -15,10 +15,13 @@ class MenuDispatcher
     public function __construct(
         private readonly FactoryInterface $factory,
         private readonly EventDispatcherInterface $dispatcher,
+        private readonly MenuOptionsResolver $menuOptionsResolver,
     ) {}
 
     public function dispatch(string $slot, array $options = []): ItemInterface
     {
+        $options = $this->menuOptionsResolver->resolve($options);
+
         // Create root menu - name doesn't matter since it won't be displayed
         $menu = $this->factory->createItem($options['name'] ?? $slot);
 

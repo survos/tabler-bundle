@@ -8,11 +8,17 @@
 {% block item %}
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
-    {% set btnClass = item.getExtra('btn_class', 'btn btn-primary') %}
-    <a href="{{ item.uri }}" class="{{ btnClass }}">
-        {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon'}) }}{% endif %}
-        {{ block('label') }}
-    </a>
+    <li class="nav-item">
+        <a href="{{ item.uri }}"
+           class="nav-link rounded {% if matcher.isCurrent(item) %} active{% endif %}">
+
+            {% if icon %}
+                {{ ux_icon('tabler:' ~ icon, {class: 'icon me-1'}) }}
+            {% endif %}
+
+            {{ block('label') }}
+        </a>
+    </li>
 {% endif %}
 {% endblock %}
 

@@ -14,6 +14,9 @@
 {% set showSidebar = layout in ['sidebar', 'combo'] %}
 {% set showNavbarMenu = layout in ['horizontal', 'combo', 'navbar-overlap'] %}
 {% set showFooter = showFooter|default(true) %}
+{% set _blockPagePretitle %}{% block page_pretitle %}{% endblock %}{% endset %}
+{% set _blockPageTitle %}{% block page_title %}{% endblock %}{% endset %}
+{% set _blockPageSubtitle %}{% block page_subtitle %}{% endblock %}{% endset %}
 
 <!doctype html>
 <html lang="{{ app.request.locale|default('en') }}"{% if layout == 'rtl' %} dir="rtl"{% endif %}>
@@ -21,7 +24,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>{% block title %}{{ pageTitle|default('Tabler') }}{% endblock %}</title>
+    <title>{% block title %}{{ (_blockPageTitle|trim ?: page_context().title|default(pageTitle|default(app.request.attributes.get('_route')|default('Tabler')))) ?: 'Tabler' }}{% endblock %}</title>
 
     {% block meta %}
         <meta name="description" content="{% block meta_description %}{% endblock %}">
@@ -138,7 +141,7 @@
                     <div class="{{ containerClass }}">
                         <ul class="navbar-nav">
                             {% block navbar_menu_items %}
-                                {# Override this block or use menu events #}
+                                {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
                             {% endblock %}
                         </ul>
                     </div>
@@ -176,7 +179,7 @@
                     <div class="collapse navbar-collapse" id="sidebar-menu">
                         <ul class="navbar-nav pt-lg-3">
                             {% block sidebar_menu_items %}
-                                {# Override this block or use menu events #}
+                                {{ component('tabler:menu', {type: SIDEBAR, caller: _self}) }}
                             {% endblock %}
                         </ul>
                     </div>
@@ -189,19 +192,38 @@
             <div class="page-body">
                 <div class="{{ containerClass }}">
                     {# Page Header #}
-                    {% if showPageHeader is defined and showPageHeader %}
+                    {% set _page = page_context() %}
+                    {% set _pageTitle = _blockPageTitle|trim ?: _page.title|default(pageTitle|default(app.request.attributes.get('_route')|default(''))) %}
+                    {% set _pagePretitle = _blockPagePretitle|trim ?: _page.pretitle|default('') %}
+                    {% set _pageSubtitle = _blockPageSubtitle|trim ?: _page.subtitle|default('') %}
+                    {% set _showPageHeader = _page.show_page_header ?? showPageHeader ?? true %}
+                    {% if _showPageHeader %}
                         {% block page_header %}
-                            <div class="page-header mb-4 mt-0">
+                            <div class="page-header mb-4 mt-0 border-bottom pb-3">
                                 <div class="container-fluid">
-                                    {% block page_pretitle %}{% endblock %}
-                                    <h2 class="page-title fw-bolder">
-                                        {% block page_title %}{% endblock %}
+                                    {% if _pagePretitle %}
+                                        <div class="page-pretitle text-primary fw-semibold text-uppercase">{{ _pagePretitle|raw }}</div>
+                                    {% endif %}
+                                    <h2 class="page-title fw-bolder text-dark mb-1">
+                                        {{ _pageTitle|raw }}
                                     </h2>
-                                    {% block page_subtitle %}{% endblock %}
+                                    {% if _pageSubtitle %}
+                                        <div class="text-secondary mt-1 small">{{ _pageSubtitle|raw }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endblock %}
                     {% endif %}
+
+                    {% block page_actions %}
+                        {% if tabler_menu_has_items(PAGE_ACTIONS) %}
+                            <div id="page-actions" class="mb-3">
+                                <ul class="nav nav-tabs nav-pill border p-2 rounded-2 gap-1">
+                                    {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self}) }}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
 
                     {# Breadcrumb #}
                     {% block breadcrumb %}{% endblock %}

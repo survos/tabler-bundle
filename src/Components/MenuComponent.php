@@ -5,11 +5,10 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Components;
 
-use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Twig\Helper;
-use Survos\TablerBundle\Event\MenuEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Survos\TablerBundle\Service\MenuDispatcher;
+use Survos\TablerBundle\Service\MenuOptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
@@ -25,10 +24,9 @@ class MenuComponent
     public ItemInterface $menuItem;
 
     public function __construct(
-        private readonly array $menuOptions,
+        private readonly MenuOptionsResolver $menuOptionsResolver,
         private readonly Helper $helper,
-        private readonly FactoryInterface $factory,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly MenuDispatcher $menuDispatcher,
     ) {}
 
     public bool $kids { get => $this->menuItem->hasChildren();}
@@ -43,22 +41,12 @@ class MenuComponent
         $this->caller = $caller;
         $this->path = $path;
 
-        // Merge default menuOptions with passed options
-        $this->options = array_merge($this->menuOptions, $options);
+        $this->options = $this->menuOptionsResolver->resolve($options);
         $this->options['caller'] = $caller;
         $this->options['type'] = $type;
 
-        // Convert type to event name: 'NAVBAR_MENU' → 'tabler.menu.navbar_menu'
-        $eventName = $type;
-
-        // Create root menu
-        $menu = $this->factory->createItem('menu');
-
-        // Dispatch event to let listeners add items
-        $event = new MenuEvent($menu, $this->factory, $this->options);
-        $this->eventDispatcher->dispatch($event, $eventName);
-
         // Use helper to navigate path (for breadcrumbs, submenus)
+        $menu = $this->menuDispatcher->dispatch($type, $this->options);
         $this->menuItem = $this->helper->get($menu, $path, $this->options);
     }
 
