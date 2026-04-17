@@ -13,9 +13,11 @@
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
-    <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm">
-        {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
-        {% if item.label %}<span class="ms-1">{{ item.label }}</span>{% endif %}
-    </a>
+    {% if not item.getExtra('debug_menu_slot') %}
+        <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm">
+            {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
+            {% if item.label %}<span class="ms-1">{{ item.label }}</span>{% endif %}
+        </a>
+    {% endif %}
 {% endif %}
 {% endblock %}

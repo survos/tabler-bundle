@@ -249,6 +249,8 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
         $builder->register(MenuExtension::class)
             ->setArgument('$renderer', new Reference(MenuRenderer::class))
             ->setArgument('$menuContext', new Reference(MenuContext::class))
+            ->setArgument('$requestStack', new Reference('request_stack'))
+            ->setArgument('$debugMenuSlotsEnabled', '%survos_tabler.debug.menu_slots%')
             ->addTag('twig.extension');
 
 // In loadExtension(), replace IconExtension registration:

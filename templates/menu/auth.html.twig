@@ -3,16 +3,7 @@
 
 {% block root %}
 {% set debugChild = item.children|filter(child => child.extra('debug_menu_slot'))|first %}
-{% if debugChild %}
-    {% set icon = debugChild.getExtra('icon') %}
-    {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
-    <div class="nav-item d-none d-md-flex me-3">
-        <a href="{{ debugChild.uri }}" class="nav-link px-0">
-            {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
-            <span class="ms-1">{{ debugChild.label }}</span>
-        </a>
-    </div>
-{% else %}
+{% if not debugChild %}
     <div class="nav-item dropdown">
         <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
             <span class="avatar avatar-sm">{{ ux_icon('tabler:user') }}</span>
@@ -33,10 +24,12 @@
         <div class="dropdown-divider"></div>
     {% else %}
         {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
-        <a class="dropdown-item" href="{{ item.uri }}">
-            {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
-            {{ block('label') }}
-        </a>
+        {% if not item.getExtra('debug_menu_slot') %}
+            <a class="dropdown-item" href="{{ item.uri }}">
+                {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
+                {{ block('label') }}
+            </a>
+        {% endif %}
     {% endif %}
 {% endif %}
 {% endblock %}

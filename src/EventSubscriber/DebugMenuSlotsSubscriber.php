@@ -30,21 +30,6 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
         if (!$this->isEnabled()) {
             return;
         }
-
-        $menu = $event->getMenu();
-        $id = strtolower($slot) . '_debug_slot';
-        if ($menu->getChild($id) !== null) {
-            return;
-        }
-
-        $child = $menu->addChild($id, [
-            'uri' => '#debug-menu-slot-' . strtolower($slot),
-            'label' => 'This is ' . $slot,
-        ]);
-        $child->setExtra('translation_domain', false);
-        $child->setExtra('tooltip', 'Debug slot placeholder');
-        $child->setExtra('icon', $this->iconForSlot($slot));
-        $child->setExtra('debug_menu_slot', true);
     }
 
     private function isEnabled(): bool
@@ -57,13 +42,4 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
         return $this->enabledByConfig || $request->query->getBoolean('debugMenuSlots');
     }
 
-    private function iconForSlot(string $slot): string
-    {
-        return match ($slot) {
-            MenuEvent::NAVBAR_MENU,
-            MenuEvent::NAVBAR_MENU_END => 'tabler:menu-2',
-            MenuEvent::PAGE_NAV => 'tabler:menu-2',
-            default => 'menu-2',
-        };
-    }
 }

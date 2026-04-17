@@ -6,8 +6,10 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Twig;
 
 use Knp\Menu\ItemInterface;
+use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\MenuContext;
 use Survos\TablerBundle\Service\MenuRenderer;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -16,6 +18,8 @@ final class MenuExtension extends AbstractExtension
     public function __construct(
         private readonly MenuRenderer $renderer,
         private readonly MenuContext $menuContext,
+        private readonly RequestStack $requestStack,
+        private readonly bool $debugMenuSlotsEnabled = false,
     ) {}
 
     public function getFunctions(): array
@@ -25,6 +29,8 @@ final class MenuExtension extends AbstractExtension
             new TwigFunction('tabler_menu_has_items', [$this, 'hasItems']),
             new TwigFunction('tabler_menu_options', [$this, 'setMenuOptions'], ['is_safe' => ['html']]),
             new TwigFunction('tabler_menu_context_summary', [$this, 'getMenuContextSummary']),
+            new TwigFunction('tabler_menu_debug_enabled', [$this, 'isDebugEnabled']),
+            new TwigFunction('tabler_menu_slot_states', [$this, 'getSlotStates']),
         ];
     }
 
@@ -71,6 +77,54 @@ final class MenuExtension extends AbstractExtension
 
         return $summary;
     }
+
+    public function isDebugEnabled(): bool
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            return $this->debugMenuSlotsEnabled;
+        }
+
+        return $this->debugMenuSlotsEnabled || $request->query->getBoolean('debugMenuSlots');
+    }
+
+    /**
+     * @return list<array{slot:string, area:string, hasItems:bool}>
+     */
+    public function getSlotStates(): array
+    {
+        $states = [];
+
+        foreach (MenuEvent::getConstants() as $slot) {
+            $states[] = [
+                'slot' => $slot,
+                'area' => self::BASE_LAYOUT_AREAS[$slot] ?? 'custom',
+                'hasItems' => $this->hasItems($slot),
+            ];
+        }
+
+        return $states;
+    }
+
+    private const BASE_LAYOUT_AREAS = [
+        MenuEvent::BANNER => 'banner',
+        MenuEvent::NAVBAR_START => 'top nav / left',
+        MenuEvent::NAVBAR_THEME => 'top nav / right',
+        MenuEvent::NAVBAR_NOTIFICATIONS => 'top nav / right',
+        MenuEvent::NAVBAR_APPS => 'top nav / right',
+        MenuEvent::NAVBAR_LANGUAGE => 'top nav / right',
+        MenuEvent::NAVBAR_END => 'top nav / right',
+        MenuEvent::SEARCH => 'top nav / right',
+        MenuEvent::AUTH => 'top nav / right',
+        MenuEvent::NAVBAR_MENU => 'secondary nav / main',
+        MenuEvent::NAVBAR_MENU_END => 'secondary nav / right',
+        MenuEvent::BREADCRUMB => 'page header / breadcrumb',
+        MenuEvent::PAGE_ACTIONS => 'page header / actions',
+        MenuEvent::PAGE_NAV => 'page header / tabs',
+        MenuEvent::SIDEBAR => 'page body / sidebar',
+        MenuEvent::FOOTER => 'footer / left',
+        MenuEvent::FOOTER_END => 'footer / right',
+    ];
 
     private function formatMenuOptionValue(mixed $value): ?string
     {

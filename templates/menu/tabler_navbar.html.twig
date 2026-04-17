@@ -10,6 +10,7 @@
 
 {% block item %}
     {% import _self as knp %}
+    {% if not item.extras.debug_menu_slot|default(false) %}
     {% set isSubmenu = item.extras.submenu|default(false) or item.hasChildren %}
     {% set iconName = item.extras.icon|default(null) %}
     
@@ -35,6 +36,7 @@
             </a>
         {% endif %}
     </li>
+    {% endif %}
 {% endblock %}
 
 {% block label %}

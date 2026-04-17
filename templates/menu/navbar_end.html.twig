@@ -10,12 +10,14 @@
     {% set icon = item.getExtra('icon') %}
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     {% set tooltip = item.getExtra('tooltip') %}
+    {% if not item.getExtra('debug_menu_slot') %}
     <div class="nav-item d-none d-md-flex me-3">
         <a href="{{ item.uri }}" class="nav-link px-0"{% if tooltip %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip }}"{% endif %}{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
             {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {% if item.label %}<span class="ms-1">{{ block('label') }}</span>{% endif %}
         </a>
     </div>
+    {% endif %}
 {% endif %}
 {% endblock %}
 

@@ -25,12 +25,14 @@
 {% endblock %}
 {% block after_body_start %}{% endblock %}
 {% block logo_path %}{% endblock %}
+{% block page_pretitle %}{% endblock %}
 {% block page_subtitle %}{% endblock %}
 
 {% block container_class %}container-xl{% endblock %}
 {% set containerClass = block('container_class')|trim ?: 'container-xl' %}
 {% set id = tabler_identity ?? {} %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
+{% set debugMenuSlots = tabler_menu_debug_enabled() %}
 
 {% set brandHref %}
     {% if block('logo_path')|trim %}
@@ -53,7 +55,49 @@
     {% endif %}
 {% endblock %}
 
+{% block debug_menu_slots %}
+    {% if debugMenuSlots %}
+        <style>
+            .tabler-debug-slot {
+                border: 2px solid rgba(220, 53, 69, .75);
+                border-radius: .5rem;
+                padding: .35rem;
+            }
+            .tabler-debug-slot-label {
+                display: inline-block;
+                margin-bottom: .35rem;
+                color: #b42318;
+                font-size: .7rem;
+                font-weight: 700;
+                letter-spacing: .04em;
+                text-transform: uppercase;
+            }
+            .tabler-debug-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: .35rem;
+                border-radius: 999px;
+                background: rgba(220, 53, 69, .12);
+                border: 1px solid rgba(220, 53, 69, .35);
+                color: #b42318;
+                font-size: .72rem;
+                font-weight: 700;
+                letter-spacing: .04em;
+                line-height: 1;
+                padding: .35rem .6rem;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+            .tabler-debug-badge .icon {
+                width: .9rem;
+                height: .9rem;
+            }
+        </style>
+    {% endif %}
+{% endblock %}
+
 <div class="page">
+    {{ block('debug_menu_slots') }}
     {% block navbar %}
         <header class="navbar navbar-expand-md d-print-none">
             <div class="{{ containerClass }}">
@@ -79,27 +123,16 @@
                 </div>
 
                 <div class="navbar-nav flex-row order-md-last ms-auto">
-                    {% if tabler_menu_has_items(NAVBAR_THEME) %}
-                        {{ component('tabler:menu', {type: NAVBAR_THEME, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(NAVBAR_NOTIFICATIONS) %}
-                        {{ component('tabler:menu', {type: NAVBAR_NOTIFICATIONS, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(NAVBAR_APPS) %}
-                        {{ component('tabler:menu', {type: NAVBAR_APPS, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(NAVBAR_LANGUAGE) %}
-                        {{ component('tabler:menu', {type: NAVBAR_LANGUAGE, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(NAVBAR_END) %}
-                        {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(SEARCH) %}
-                        {{ component('tabler:menu', {type: SEARCH, caller: _self}) }}
-                    {% endif %}
-                    {% if tabler_menu_has_items(AUTH) %}
-                        {{ component('tabler:menu', {type: AUTH, caller: _self}) }}
-                    {% endif %}
+                    {% for slot in [NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE, NAVBAR_END, SEARCH, AUTH] %}
+                        {% if debugMenuSlots or tabler_menu_has_items(slot) %}
+                            <div class="{% if debugMenuSlots %}tabler-debug-slot ms-2{% endif %}">
+                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">{{ slot }}</div>{% endif %}
+                                {% if tabler_menu_has_items(slot) %}
+                                    {{ component('tabler:menu', {type: slot, caller: _self}) }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </header>
@@ -113,16 +146,31 @@
                         <div class="{{ containerClass }}">
                             <div class="row flex-column flex-md-row flex-fill align-items-center">
                                 <div class="col">
-                                    {% if tabler_menu_has_items(NAVBAR_START) %}
-                                        {{ component('tabler:menu', {type: NAVBAR_START, caller: _self}) }}
+                                    {% if debugMenuSlots or tabler_menu_has_items(NAVBAR_START) %}
+                                        <div class="{% if debugMenuSlots %}tabler-debug-slot mb-2{% endif %}">
+                                            {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_START</div>{% endif %}
+                                            {% if tabler_menu_has_items(NAVBAR_START) %}
+                                                {{ component('tabler:menu', {type: NAVBAR_START, caller: _self}) }}
+                                            {% endif %}
+                                        </div>
                                     {% endif %}
-                                    {% if tabler_menu_has_items(NAVBAR_MENU) %}
-                                        {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
+                                    {% if debugMenuSlots or tabler_menu_has_items(NAVBAR_MENU) %}
+                                        <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                            {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_MENU</div>{% endif %}
+                                            {% if tabler_menu_has_items(NAVBAR_MENU) %}
+                                                {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
+                                            {% endif %}
+                                        </div>
                                     {% endif %}
                                 </div>
                                 <div class="col col-md-auto">
-                                    {% if tabler_menu_has_items(NAVBAR_MENU_END) %}
-                                        {{ component('tabler:menu', {type: NAVBAR_MENU_END, caller: _self}) }}
+                                    {% if debugMenuSlots or tabler_menu_has_items(NAVBAR_MENU_END) %}
+                                        <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                            {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_MENU_END</div>{% endif %}
+                                            {% if tabler_menu_has_items(NAVBAR_MENU_END) %}
+                                                {{ component('tabler:menu', {type: NAVBAR_MENU_END, caller: _self}) }}
+                                            {% endif %}
+                                        </div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -140,8 +188,12 @@
                     <div class="{{ containerClass }}">
                         <div class="row g-2 align-items-center">
                             <div class="col">
+                                {% if block('page_pretitle')|trim %}
+                                    <div class="page-pretitle">{{ block('page_pretitle')|raw }}</div>
+                                {% endif %}
                                 {% if tabler_menu_has_items(BREADCRUMB) %}
-                                    <div class="page-pretitle">
+                                    <div class="page-pretitle {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
                                         {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
                                     </div>
                                 {% endif %}
@@ -153,18 +205,24 @@
                                     <div class="text-secondary mt-1">{{ block('page_subtitle') }}</div>
                                 {% endif %}
                             </div>
-                            {% if tabler_menu_has_items(PAGE_ACTIONS) %}
-                                <div class="col-auto ms-auto d-print-none">
+                            {% if debugMenuSlots or tabler_menu_has_items(PAGE_ACTIONS) %}
+                                <div class="col-auto ms-auto d-print-none {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_ACTIONS</div>{% endif %}
                                     <div class="btn-list">
-                                        {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: block('page_title')}}) }}
+                                        {% if tabler_menu_has_items(PAGE_ACTIONS) %}
+                                            {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: block('page_title')}}) }}
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% endif %}
                         </div>
-                        {% if tabler_menu_has_items(PAGE_NAV) %}
-                            <div class="mt-3">
+                        {% if debugMenuSlots or tabler_menu_has_items(PAGE_NAV) %}
+                            <div class="mt-3 {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_NAV</div>{% endif %}
                                 <ul class="nav nav-tabs nav-pills border rounded-3 p-2 gap-1">
-                                    {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {title: block('page_title')}}) }}
+                                    {% if tabler_menu_has_items(PAGE_NAV) %}
+                                        {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {title: block('page_title')}}) }}
+                                    {% endif %}
                                 </ul>
                             </div>
                         {% endif %}
@@ -187,7 +245,8 @@
                     {% if showSidebar %}
                         <aside class="col-12 col-lg-3 col-xl-2 mb-4 d-print-none">
                             {% block sidebar %}
-                                <div class="card">
+                                <div class="card {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">SIDEBAR</div>{% endif %}
                                     <div class="card-body p-0">
                                         {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: SIDEBAR} %}
                                     </div>
@@ -212,19 +271,25 @@
         {% block page_content_after %}{% endblock %}
 
         {% block footer %}
-            {% if tabler_menu_has_items(FOOTER) or tabler_menu_has_items(FOOTER_END) %}
+            {% if debugMenuSlots or tabler_menu_has_items(FOOTER) or tabler_menu_has_items(FOOTER_END) %}
                 <footer class="footer footer-transparent d-print-none">
                     <div class="{{ containerClass }}">
                         <div class="row text-center align-items-center flex-row-reverse">
                             <div class="col-lg-auto ms-lg-auto">
-                                {% if tabler_menu_has_items(FOOTER_END) %}
-                                    {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
-                                {% endif %}
+                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER_END</div>{% endif %}
+                                    {% if tabler_menu_has_items(FOOTER_END) %}
+                                        {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                                {% if tabler_menu_has_items(FOOTER) %}
-                                    {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
-                                {% endif %}
+                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER</div>{% endif %}
+                                    {% if tabler_menu_has_items(FOOTER) %}
+                                        {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>

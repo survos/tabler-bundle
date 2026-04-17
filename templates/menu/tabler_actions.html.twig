@@ -16,8 +16,10 @@
     {% set btnClass = item.extras.btn_class|default('btn-primary') %}
     
     {# rendered in {{ _self }} #}
-    <a href="{{ item.uri }}" class="btn {{ btnClass }}"{% if item.linkAttributes.target|default(false) %} target="{{ item.linkAttributes.target }}"{% endif %}>
-        {% if iconName %}{{ icon(iconName, {class: 'icon'}) }}{% endif %}
-        {{ item.label|trans({}, item.extras.translation_domain|default('messages')) }}
-    </a>
+    {% if not item.extras.debug_menu_slot|default(false) %}
+        <a href="{{ item.uri }}" class="btn {{ btnClass }}"{% if item.linkAttributes.target|default(false) %} target="{{ item.linkAttributes.target }}"{% endif %}>
+            {% if iconName %}{{ icon(iconName, {class: 'icon'}) }}{% endif %}
+            {{ item.label|trans({}, item.extras.translation_domain|default('messages')) }}
+        </a>
+    {% endif %}
 {% endblock %}
