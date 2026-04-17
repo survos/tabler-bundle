@@ -18,6 +18,7 @@ final class Configuration
                 ->append($this->getIconsConfig())
                 ->append($this->getAppConfig())
                 ->append($this->getRoutesConfig())
+                ->append($this->getDebugConfig())
                 ->append($this->getOptionsConfig())
                 ->arrayNode('menu_options')
                     ->useAttributeAsKey('name')
@@ -164,6 +165,20 @@ final class Configuration
                 ->end()
                 ->booleanNode('dark_mode')->defaultFalse()->end()
                 ->booleanNode('show_locale_dropdown')->defaultTrue()->end()
+            ->end();
+
+        return $rootNode;
+    }
+
+    private function getDebugConfig(): ArrayNodeDefinition
+    {
+        $treeBuilder = new TreeBuilder('debug');
+        $rootNode = $treeBuilder->getRootNode();
+
+        $rootNode
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('menu_slots')->defaultFalse()->end()
             ->end();
 
         return $rootNode;

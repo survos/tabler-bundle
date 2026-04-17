@@ -14,6 +14,7 @@ class MenuEvent extends Event
     // Global / page-level slots
     public const BANNER = 'BANNER';
     public const BREADCRUMB = 'BREADCRUMB';
+    public const PAGE_NAV = 'PAGE_NAV';
     public const PAGE_ACTIONS = 'PAGE_ACTIONS';
 
     // Top navbar (first header) - split so apps can hook in cleanly

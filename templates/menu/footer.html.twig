@@ -10,9 +10,10 @@
 {% block item %}
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
+    {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     <li class="list-inline-item">
         <a class="link-secondary" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
-            {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon'}) }}{% endif %}
+            {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {{ block('label') }}
         </a>
     </li>

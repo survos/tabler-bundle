@@ -1,5 +1,5 @@
-{% set requestedCode = menuCode|default(PAGE_ACTIONS) %}
-{% set resolvedType = requestedCode in ['survos_page_menu', 'PAGE_MENU'] ? PAGE_ACTIONS : requestedCode %}
+{% set requestedCode = menuCode|default(PAGE_NAV) %}
+{% set resolvedType = requestedCode in ['survos_page_menu', 'PAGE_MENU'] ? PAGE_NAV : requestedCode %}
 
 {{ component('tabler:menu', {
     type: resolvedType,

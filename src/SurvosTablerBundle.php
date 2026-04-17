@@ -180,6 +180,7 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
         $builder->setParameter('survos_tabler.config', $config);
         $builder->setParameter('survos_tabler.routes', $config['routes']);
         $builder->setParameter('survos_tabler.theme', $config['options']['theme']);
+        $builder->setParameter('survos_tabler.debug.menu_slots', $config['debug']['menu_slots'] ?? false);
         $builder->setParameter('survos_tabler.route_requirements', []); // Populated in compiler pass
 
         // === Core Services ===
@@ -207,7 +208,8 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
 
         $builder->register(DebugMenuSlotsSubscriber::class)
             ->setAutowired(true)
-            ->setAutoconfigured(true);
+            ->setAutoconfigured(true)
+            ->setArgument('$enabledByConfig', '%survos_tabler.debug.menu_slots%');
 
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([

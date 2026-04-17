@@ -18,6 +18,7 @@ class MenuRenderer
         MenuEvent::NAVBAR_MENU => 'tabler_navbar.html.twig',
         MenuEvent::NAVBAR_MENU_END => 'tabler_navbar.html.twig',
         MenuEvent::SIDEBAR => 'tabler_sidebar.html.twig',
+        MenuEvent::PAGE_NAV => 'tabler_actions.html.twig',
         MenuEvent::PAGE_ACTIONS => 'tabler_actions.html.twig',
         MenuEvent::BREADCRUMB => 'tabler_breadcrumb.html.twig',
         MenuEvent::FOOTER => 'tabler_footer.html.twig',

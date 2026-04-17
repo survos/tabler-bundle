@@ -12,8 +12,9 @@
 {% block item %}
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
+    {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm">
-        {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon'}) }}{% endif %}
+        {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
         {% if item.label %}<span class="ms-1">{{ item.label }}</span>{% endif %}
     </a>
 {% endif %}

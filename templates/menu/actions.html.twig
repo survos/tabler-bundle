@@ -8,12 +8,13 @@
 {% block item %}
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
+    {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     <li class="nav-item">
         <a href="{{ item.uri }}"
            class="nav-link rounded {% if matcher.isCurrent(item) %} active{% endif %}">
 
-            {% if icon %}
-                {{ ux_icon('tabler:' ~ icon, {class: 'icon me-1'}) }}
+            {% if resolvedIcon %}
+                {{ ux_icon(resolvedIcon, {class: 'icon me-1'}) }}
             {% endif %}
 
             {{ block('label') }}

@@ -216,6 +216,13 @@
                     {% endif %}
 
                     {% block page_actions %}
+                        {% if tabler_menu_has_items(PAGE_NAV) %}
+                            <div id="page-nav" class="mb-3">
+                                <ul class="nav nav-tabs nav-pill border p-2 rounded-2 gap-1">
+                                    {{ component('tabler:menu', {type: PAGE_NAV, caller: _self}) }}
+                                </ul>
+                            </div>
+                        {% endif %}
                         {% if tabler_menu_has_items(PAGE_ACTIONS) %}
                             <div id="page-actions" class="mb-3">
                                 <ul class="nav nav-tabs nav-pill border p-2 rounded-2 gap-1">

@@ -46,7 +46,7 @@
         }) }}
 
     {# Page actions #}
-    {% elseif type == PAGE_ACTIONS %}
+    {% elseif type in [PAGE_NAV, PAGE_ACTIONS] %}
         {{ knp_menu_render(menuItem, {
             template: '@SurvosTabler/menu/actions.html.twig',
             allow_safe_labels: true

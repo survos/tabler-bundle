@@ -37,7 +37,7 @@
 
     <div class="page-wrapper">
         {% block page_header %}
-            {% if this.resolvedTitle or tabler_menu_has_items(PAGE_ACTIONS) %}
+            {% if this.resolvedTitle or tabler_menu_has_items(PAGE_NAV) or tabler_menu_has_items(PAGE_ACTIONS) %}
                 <div class="page-header d-print-none">
                     <div class="{{ containerClass }}">
                         <div class="row g-2 align-items-center">
@@ -53,6 +53,13 @@
                                 </div>
                             {% endif %}
                         </div>
+                        {% if tabler_menu_has_items(PAGE_NAV) %}
+                            <div class="mt-3">
+                                <ul class="nav nav-tabs nav-pills border rounded-3 p-2 gap-1">
+                                    {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {layout: this.layout}}) }}
+                                </ul>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}

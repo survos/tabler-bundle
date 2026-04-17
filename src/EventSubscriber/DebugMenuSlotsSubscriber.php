@@ -12,6 +12,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
+        private readonly bool $enabledByConfig = false,
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -50,10 +51,10 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
     {
         $request = $this->requestStack->getCurrentRequest();
         if ($request === null) {
-            return false;
+            return $this->enabledByConfig;
         }
 
-        return $request->query->getBoolean('debugMenuSlots');
+        return $this->enabledByConfig || $request->query->getBoolean('debugMenuSlots');
     }
 
     private function iconForSlot(string $slot): string
@@ -61,6 +62,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
         return match ($slot) {
             MenuEvent::NAVBAR_MENU,
             MenuEvent::NAVBAR_MENU_END => 'tabler:menu-2',
+            MenuEvent::PAGE_NAV => 'tabler:menu-2',
             default => 'menu-2',
         };
     }
