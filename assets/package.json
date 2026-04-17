@@ -3,13 +3,19 @@
   "description": "integrate php and javascript helpers for tabler, including menus",
   "license": "MIT",
   "version": "1.0.1",
-  "symfony": {
-    "controllers": {
-      "search": {
-        "main": "src/controllers/search_controller.js",
-        "webpackMode": "eager",
-        "fetch": "lazy",
-        "enabled": true
+    "symfony": {
+        "controllers": {
+            "accordion": {
+                "main": "src/controllers/accordion_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
+            },
+            "search": {
+                "main": "src/controllers/search_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
       }
     },
     "importmap": {

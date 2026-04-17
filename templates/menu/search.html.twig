@@ -10,5 +10,11 @@
 {% endblock %}
 
 {% block item %}
-{# Search is typically handled separately, this is a placeholder #}
+{% if item.displayed %}
+    {% set icon = item.getExtra('icon') %}
+    <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm">
+        {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon'}) }}{% endif %}
+        {% if item.label %}<span class="ms-1">{{ item.label }}</span>{% endif %}
+    </a>
+{% endif %}
 {% endblock %}

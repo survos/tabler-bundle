@@ -1,216 +1,232 @@
 
 <!DOCTYPE html{% block html_start %}{% endblock %}>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale|default('en') }}">
 <head>
     {% block head %}
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     {% endblock %}
-    <title>{% block title %}{{ block('page_title') }}{% endblock %}</title>
+    <title>{% block title %}{{ block('page_title')|trim }}{% endblock %}</title>
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
-
-        {#        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">#}
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-16x16.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     {% endblock %}
 
     {% block javascripts %}
-
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
-
-
 </head>
-{#
-Apply one of the following classes for the skin:
-skin-blue, skin-black, skin-purple, skin-yellow, skin-red, skin-green
-
-Apply one or more of the following classes for the layout options:
-fixed, layout-boxed, layout-top-nav, sidebar-collapse, sidebar-mini
-
-#}
 {% block body_start_tag %}
-<body {% block body_start %}{% endblock %} class="{{ admin_lte_context.skin|default("") }} ">
+<body {% block body_start %}{% endblock %} class="{% block body_class %}{% endblock %}">
 {% endblock %}
 {% block after_body_start %}{% endblock %}
-<div class="wrapper">
+{% block logo_path %}{% endblock %}
+{% block page_subtitle %}{% endblock %}
 
+{% block container_class %}container-xl{% endblock %}
+{% set containerClass = block('container_class')|trim ?: 'container-xl' %}
+{% set id = tabler_identity ?? {} %}
+{% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 
+{% set brandHref %}
+    {% if block('logo_path')|trim %}
+        {{ block('logo_path') }}
+    {% elseif id.homepage_route is defined and id.homepage_route %}
+        {{ path(id.homepage_route) }}
+    {% elseif id.homepage_url is defined and id.homepage_url %}
+        {{ id.homepage_url }}
+    {% else %}
+        {{ path('app_homepage') }}
+    {% endif %}
+{% endset %}
+
+{% block banner %}
+    {% if tabler_menu_has_items(BANNER) %}
+        <div class="tblr-banner">
+            {{ component('tabler:menu', {type: BANNER, caller: _self}) }}
+            <div class="tblr-banner-close" data-bs-dismiss="alert">{{ ux_icon('tabler:x') }}</div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+<div class="page">
     {% block navbar %}
-        {{ _self }}
-        <nav class="main-header navbar navbar-expand fixed-top navbar-dark">
+        <header class="navbar navbar-expand-md d-print-none">
+            <div class="{{ containerClass }}">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
-            {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
-            {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
-            {{ component('tabler:menu', {type: AUTH, caller: _self}) }}
-            {{ component('tabler:menu', {type: SEARCH, caller: _self}) }}
-
-            <ul class="navbar-nav">
-                {% block navbar_toggle %}
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#">
-                            <i class="fas fa-bars"></i>
-                            <span class="sr-only">{{ 'Toggle navigation'|trans({}, 'AdminLTEBundle')  }}</span>
-                        </a>
-                    </li>
-                {% endblock %}
-
-                {% block navbar_links %}
-                    {# TODO document me #}
-                    {#
-                    <li class="nav-item d-none d-sm-inline-block">
-                        <a href="../../index3.html" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item d-none d-sm-inline-block">
-                        <a href="#" class="nav-link">Contact</a>
-                    </li>
-                    #}
-                {% endblock %}
-            </ul>
-
-            {% block navbar_search %}
-                {{ _self }}
-                {% block sidebar_search %}
-                    {{ 0 and render(controller('KevinPapst\\AdminLTEBundle\\Controller\\SidebarController::searchFormAction')) }}
-                {% endblock %}
-            {% endblock %}
-
-
-            <ul class="navbar-nav ml-auto">
-
-                {% block navbar_start %}{% endblock %}
-
-
-
-                @todo: refactor navbar {{ _self }}
-
-                {% block navbar_user %}
-                    {% if not is_granted('ROLE_USER') %}
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a href="{{ path('app_login') }}">Login</a>
-                            </li>
-                        </ul>
-                    {% endif %}
-                    {#                    {{ render(controller('KevinPapst\\AdminLTEBundle\\Controller\\NavbarController::userAction')) }}#}
-                {% endblock %}
-
-                {% block navbar_end %}{% endblock %}
-
-                {% block navbar_control_sidebar_toggle %}
-                    {% if admin_lte_context.control_sidebar is defined and admin_lte_context.control_sidebar is not empty %}
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-widget="control-sidebar" data-slide="true"><i class="fas fa-th-large"></i></a>
-                        </li>
-                    {% endif %}
-                {% endblock %}
-            </ul>
-        </nav>
-    {% endblock %}
-
-    {% block sidebar %}
-        <aside class="main-sidebar sidebar-dark-primary elevation-4 d-print-none">
-            {{ _self }}
-            <a href="{% block logo_path %}{{ path('app_homepage') }}{% endblock %}" class="brand-link ">
-                {% block logo_mini %}
-                    <img src="{{ asset('favicon-32x32.png')  }}" alt="Logo" class="brand-image elevation-3" >
-                    <span class="brand-text font-weight-light">{{ logo_mini|default('home.title'|trans)}}</span>
-                {% endblock %}
-                {% block logo_large %} {{ logo_large|default('home.title'|trans)}} {% endblock %}
-            </a>
-
-            <div class="sidebar">
-                {% block sidebar_user %}
-                    {% if app.user is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
-                        {#                         render(controller('KevinPapst\\AdminLTEBundle\\Controller\\SidebarController::userPanelAction'))#}
-                    {% endif %}
-                {% endblock %}
-
-                {#                {% block sidebar_user '@todo: user info' %}#}
-
-
-                {% block sidebar_nav %}
-                    BASE
-
-                    {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: SIDEBAR} %}
-                {% endblock %}
-            </div>
-        </aside>
-    {% endblock %}
-
-    <div class="content-wrapper">
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-9">
-                        <h1 class="m-0 text-dark">
-                            {% block back_link %}{% endblock %}
-                            {% block page_title 'home.title'|trans %}
-                        </h1>
-                        {% if block('page_subtitle') is defined %}<small>{{ block('page_subtitle') }}</small>{% endif %}
-                    </div>
-                    <div class="col-sm-3">
-                        {% block breadcrumb %}
-                            breadcrumbs here
-                            include '@SurvosBaseBundle/Breadcrumb/knp-breadcrumb.html.twig'
+                <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                    <a href="{{ brandHref|trim }}">
+                        {% block logo_mini %}
+                            {% if id.logo_small is defined and id.logo_small %}
+                                <img src="{{ id.logo_small }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                            {% elseif id.logo is defined and id.logo %}
+                                <img src="{{ id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                            {% else %}
+                                <img src="{{ asset('favicon-32x32.png') }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                            {% endif %}
+                            {% block logo_large %}
+                                <span class="ms-2">{{ id.abbr|default(id.title|default('Tabler'))|raw }}</span>
+                            {% endblock %}
                         {% endblock %}
-                    </div>
+                    </a>
+                </div>
+
+                <div class="navbar-nav flex-row order-md-last ms-auto">
+                    {% if tabler_menu_has_items(NAVBAR_THEME) %}
+                        {{ component('tabler:menu', {type: NAVBAR_THEME, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(NAVBAR_NOTIFICATIONS) %}
+                        {{ component('tabler:menu', {type: NAVBAR_NOTIFICATIONS, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(NAVBAR_APPS) %}
+                        {{ component('tabler:menu', {type: NAVBAR_APPS, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(NAVBAR_LANGUAGE) %}
+                        {{ component('tabler:menu', {type: NAVBAR_LANGUAGE, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(NAVBAR_END) %}
+                        {{ component('tabler:menu', {type: NAVBAR_END, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(SEARCH) %}
+                        {{ component('tabler:menu', {type: SEARCH, caller: _self}) }}
+                    {% endif %}
+                    {% if tabler_menu_has_items(AUTH) %}
+                        {{ component('tabler:menu', {type: AUTH, caller: _self}) }}
+                    {% endif %}
                 </div>
             </div>
-        </div>
+        </header>
+    {% endblock %}
 
-        {% block page_content_before %}
-            {% block page_navigation %}
-                Page menu..
-                {# emit page events populated by the top menu subscriber #}
-                {% include '@SurvosTabler/render_page_menu.html.twig' with {menuCode: PAGE_ACTIONS, page_title: block('page_title')} %}
-            {% endblock %}
+    {% block navbar_secondary %}
+        {% if tabler_menu_has_items(NAVBAR_START) or tabler_menu_has_items(NAVBAR_MENU) or tabler_menu_has_items(NAVBAR_MENU_END) %}
+            <header class="navbar-expand-md">
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <div class="navbar">
+                        <div class="{{ containerClass }}">
+                            <div class="row flex-column flex-md-row flex-fill align-items-center">
+                                <div class="col">
+                                    {% if tabler_menu_has_items(NAVBAR_START) %}
+                                        {{ component('tabler:menu', {type: NAVBAR_START, caller: _self}) }}
+                                    {% endif %}
+                                    {% if tabler_menu_has_items(NAVBAR_MENU) %}
+                                        {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
+                                    {% endif %}
+                                </div>
+                                <div class="col col-md-auto">
+                                    {% if tabler_menu_has_items(NAVBAR_MENU_END) %}
+                                        {{ component('tabler:menu', {type: NAVBAR_MENU_END, caller: _self}) }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        {% endif %}
+    {% endblock %}
+
+    <div class="page-wrapper">
+        {% block page_header %}
+            {% if block('page_title')|trim or tabler_menu_has_items(BREADCRUMB) or tabler_menu_has_items(PAGE_ACTIONS) %}
+                <div class="page-header d-print-none">
+                    <div class="{{ containerClass }}">
+                        <div class="row g-2 align-items-center">
+                            <div class="col">
+                                {% if tabler_menu_has_items(BREADCRUMB) %}
+                                    <div class="page-pretitle">
+                                        {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
+                                    </div>
+                                {% endif %}
+                                <h2 class="page-title">
+                                    {% block back_link %}{% endblock %}
+                                    {% block page_title 'home.title'|trans %}
+                                </h2>
+                                {% if block('page_subtitle')|trim %}
+                                    <div class="text-secondary mt-1">{{ block('page_subtitle') }}</div>
+                                {% endif %}
+                            </div>
+                            {% if tabler_menu_has_items(PAGE_ACTIONS) %}
+                                <div class="col-auto ms-auto d-print-none">
+                                    <div class="btn-list">
+                                        {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: block('page_title')}}) }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         {% endblock %}
 
-        <section class="{% block page_content_class %}content{% endblock %}">
-            <div class="container-fluid">
+        {% block page_content_before %}
+            {% block page_navigation %}{% endblock %}
+        {% endblock %}
+
+        <div class="page-body">
+            <div class="{{ containerClass }}">
                 {% block page_content_start %}
                     {{ include('@SurvosTabler/Partials/_flash_messages.html.twig') }}
                 {% endblock %}
 
-                {% block page_content %}
-                    {{ block('body') }}
-                {% endblock %}
+                <div class="row">
+                    {% if showSidebar %}
+                        <aside class="col-12 col-lg-3 col-xl-2 mb-4 d-print-none">
+                            {% block sidebar %}
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: SIDEBAR} %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </aside>
+                    {% endif %}
+
+                    <div class="{% if showSidebar %}col-12 col-lg-9 col-xl-10{% else %}col-12{% endif %}">
+                        <section class="{% block page_content_class %}content{% endblock %}">
+                            {% block page_content %}
+                                {{ block('body') }}
+                            {% endblock %}
+                        </section>
+                    </div>
+                </div>
 
                 {% block page_content_end %}{% endblock %}
             </div>
-        </section>
+        </div>
 
         {% block page_content_after %}{% endblock %}
+
+        {% block footer %}
+            {% if tabler_menu_has_items(FOOTER) or tabler_menu_has_items(FOOTER_END) %}
+                <footer class="footer footer-transparent d-print-none">
+                    <div class="{{ containerClass }}">
+                        <div class="row text-center align-items-center flex-row-reverse">
+                            <div class="col-lg-auto ms-lg-auto">
+                                {% if tabler_menu_has_items(FOOTER_END) %}
+                                    {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                                {% if tabler_menu_has_items(FOOTER) %}
+                                    {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            {% endif %}
+        {% endblock %}
     </div>
 
-    {% block footer %}
-        include '@SurvosBase/Partials/_footer.html.twig'
-    {% endblock %}
-
-    {% block control_sidebar %}
-        <h1>Control_sidebar {{ _self }}</h1>
-        {#        {% if admin_lte_context.control_sidebar %}#}
-        include '@SurvosBase/Partials/_control-sidebar.html.twig'
-        {#        {% endif %}#}
-
-        hinclude '@SurvosBaseBundle/Partials/_footer.html.twig'
-    {% endblock %}
-    {# @todo: get this working!  It's pretty cool
-    {% block control_sidebar %}
-        {% if admin_lte_context.control_sidebar %}
-            {% include '@SurvosBaseBundle/Partials/_control-sidebar.html.twig' %}
-        {% endif %}
-    {% endblock %}
-    #}
-
+    {% block control_sidebar %}{% endblock %}
 </div>
-
-
 </body>
 </html>

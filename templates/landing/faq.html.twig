@@ -41,19 +41,19 @@
                     
                     {# Questions using ui:accordion #}
                     <div class="col-12 {{ layout == 'side-by-side' ? 'col-md-8' : '' }}">
-                        {% set accordionQuestions = [] %}
+                        {% set accordionEntries = [] %}
                         {% for question in section.questions|default([]) %}
                             {% set questionCode = question.code %}
-                            {% set accordionQuestions = accordionQuestions|merge([{
-                                question: (prefix ~ '.components.' ~ sectionCode ~ '.questions.' ~ questionCode ~ '.q')|trans({}, domain),
-                                answer: (prefix ~ '.components.' ~ sectionCode ~ '.questions.' ~ questionCode ~ '.a')|trans({}, domain)|markdown_to_html
+                            {% set accordionEntries = accordionEntries|merge([{
+                                title: (prefix ~ '.components.' ~ sectionCode ~ '.questions.' ~ questionCode ~ '.q')|trans({}, domain),
+                                content: (prefix ~ '.components.' ~ sectionCode ~ '.questions.' ~ questionCode ~ '.a')|trans({}, domain)|markdown_to_html
                             }]) %}
                         {% endfor %}
                         
                         <twig:ui:accordion 
                             :id="sectionId" 
-                            :questions="accordionQuestions"
-                            :count="accordionQuestions|length"
+                            :entries="accordionEntries"
+                            :count="accordionEntries|length"
                         />
                     </div>
                 </div>

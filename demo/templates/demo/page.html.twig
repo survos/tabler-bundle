@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}{{ summary }}{% endblock %}
+
+{% block body %}
+    <div class="demo-grid">
+        <article class="demo-card">
+            <h3>{{ pretitle|default('Demo') }}</h3>
+            <p>{{ summary }}</p>
+        </article>
+        <article class="demo-card">
+            <h3>Why this page exists</h3>
+            <p>It exercises the shared `@SurvosTabler/base.html.twig` layout with no `embed` or chrome overrides.</p>
+        </article>
+        <article class="demo-card">
+            <h3>Current entity</h3>
+            <p>{{ entity|default('n/a') }}</p>
+        </article>
+    </div>
+{% endblock %}

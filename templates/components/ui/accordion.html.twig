@@ -1,30 +1,43 @@
 {# templates/components/ui/accordion.html.twig v5.0 - Using ux_icon #}
 {%- set accordionCount = count | default(4) %}
 {%- set accordionId = id | default('default') %}
-{%- set accordionToggleIcon = toggleIcon | default('tabler:chevron-down') %}
 {%- set accordionTypes = type ? type | split(',') : [] %}
 
-<div class="accordion{% for type in accordionTypes %} accordion-{{ type }}{% endfor %}" id="accordion-{{ accordionId }}">
-	{% for question in questions|default([])|slice(0, accordionCount) %}
+<div
+    class="accordion{% for type in accordionTypes %} accordion-{{ type }}{% endfor %}"
+    id="accordion-{{ accordionId }}"
+    {{ stimulus_controller('accordion', { accordionId: accordionId }) }}
+>
+	{% for entry in entries|default([])|slice(0, accordionCount) %}
+	{% set heading = entry.title ?? null %}
+	{% set body = entry.content ?? null %}
+    {% set panelId = 'collapse-' ~ loop.index ~ '-' ~ accordionId %}
 	<div class="accordion-item">
 		<div class="accordion-header">
-			<button class="accordion-button{%- if not (loop.index == 1) -%} collapsed{%- endif -%}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ loop.index }}-{{ accordionId }}" aria-expanded="{% if loop.index == 1 %}true{% else %}false{% endif %}">
-				{% if showIcon %}
+			<button class="accordion-button{% if loop.index != 1 %} collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ panelId }}" aria-expanded="{% if loop.index == 1 %}true{% else %}false{% endif %}">
+				{% if resolvedShowIcon %}
 				<div class="accordion-button-icon">
-					{{ ux_icon('tabler:link', {class: 'icon'}) }}
+					{{ ux_icon(resolvedShowIcon, {class: 'icon'}) }}
 				</div>
 				{% endif %}
 
-				{{ question.question }}
+				{{ heading }}
 
-				<div class="accordion-button-toggle{% if toggleIcon %} accordion-button-toggle-plus{% endif %}">
-					{{ ux_icon(accordionToggleIcon, {class: 'icon'}) }}
+				<div class="accordion-button-toggle{% if resolvedToggleIcon %} accordion-button-toggle-plus{% endif %}">
+					{% if resolvedToggleIcon %}{{ ux_icon(resolvedToggleIcon, {class: 'icon'}) }}{% endif %}
 				</div>
 			</button>
 		</div>
-		<div id="collapse-{{ loop.index }}-{{ accordionId }}" class="accordion-collapse collapse{% if loop.index == 1 %} show{% endif %}" data-bs-parent="#accordion-{{ accordionId }}">
+		<div
+            id="{{ panelId }}"
+            class="accordion-collapse collapse{% if loop.index == 1 %} show{% endif %}"
+            data-bs-parent="#accordion-{{ accordionId }}"
+            data-accordion-panel-id="{{ panelId }}"
+            data-accordion-panel-index="{{ loop.index }}"
+            data-accordion-panel-title="{{ heading|striptags|trim }}"
+        >
 			<div class="accordion-body">
-				{{ question.answer|raw }}
+				{{ body|raw }}
 			</div>
 		</div>
 	</div>

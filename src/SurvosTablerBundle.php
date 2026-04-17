@@ -11,6 +11,7 @@ use Survos\TablerBundle\Components\MenuComponent;
 use Survos\TablerBundle\Components\PageComponent;
 use Survos\TablerBundle\Components\Ui\DropdownComponent;
 use Survos\TablerBundle\Event\MenuEvent;
+use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
 use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
@@ -204,9 +205,16 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
             ->setArgument('$requestStack', new Reference('request_stack'))
             ->setArgument('$templatePrefix', '@SurvosTabler/menu/');
 
+        $builder->register(DebugMenuSlotsSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true);
+
         $iconConfig = $config['icons'] ?? [];
+        $iconAliases = array_merge([
+            'layout-navbar' => 'menu-2',
+        ], $iconConfig['aliases'] ?? []);
         $builder->register(IconService::class)
-            ->setArgument('$configuredAliases', $iconConfig['aliases'] ?? [])
+            ->setArgument('$configuredAliases', $iconAliases)
             ->setArgument('$configuredPresets', $iconConfig['presets'] ?? [])
             ->setArgument('$defaultPrefix', $iconConfig['prefix'] ?? 'tabler');
 
