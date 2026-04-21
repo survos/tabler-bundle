@@ -1,13 +1,15 @@
 {% extends '@SurvosTabler/base.html.twig' %}
 
+{% do page({
+    defaults: {
+        container: layout|default('horizontal') == 'fluid' ? 'fluid' : 'xl'
+    }
+}, _self) %}
+
 {% block stylesheets %}{% endblock %}
 
 {% block javascripts %}
     {{ importmap('app') }}
-{% endblock %}
-
-{% block container_class %}
-    {{ layout|default('horizontal') == 'fluid' ? 'container-fluid' : 'container-xl' }}
 {% endblock %}
 
 {% block body_class %}

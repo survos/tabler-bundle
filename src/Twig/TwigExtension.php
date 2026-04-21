@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survos\TablerBundle\Twig;
 
 use Survos\TablerBundle\Model\Tab;
@@ -11,7 +13,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
-class TwigExtension extends AbstractExtension // implements ServiceSubscriberInterface
+class TwigExtension extends AbstractExtension
 {
     public function __construct(
         #[Autowire(service: 'ux.twig_component.component_renderer')]
@@ -26,40 +28,28 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
 
     public function render(string $name, array $props = []): string
     {
-        $renderedContent = $this->componentRenderer->createAndRender($name, $props);
-        return $renderedContent;
+        return $this->componentRenderer->createAndRender($name, $props);
     }
 
     public function getFilters(): array
     {
-        // consider something like https://github.com/a-r-m-i-n/font-awesome-bundle
         return [
             new TwigFilter('attributes', [$this, 'attributes'], ['is_safe' => ['html']]),
             new TwigFilter('tabler_container', [$this, 'containerClass'], ['is_safe' => ['html']]),
-            // hmm, do we want these?
-//            new TwigFilter('icon', [$this, 'icon'], ['is_safe' => ['html']]),
-//            new TwigFilter('fas_icon',
-//                // candidate for component
-//                fn(string $value, string $extra=''): string => sprintf('<span class="fas fa-%s %s"></span>', $value, $extra),
-//                ['is_safe' => ['html']]),
-//            // if you're calling route_alias and it doesn't exist, maybe it should be '#'?
             new TwigFilter('route_alias', fn (string $routeName): ?string =>
-//            dd($this->routes[$routeName]) &&
-            ($this->routes[$routeName] === false)
-                ? null
-                : $this->routes[$routeName] ?? $routeName),
+                ($this->routes[$routeName] === false)
+                    ? null
+                    : $this->routes[$routeName] ?? $routeName),
         ];
     }
 
     public function getFunctions(): array
     {
         return [
-            //            new TwigFunction('component', [$this, 'render'], ['is_safe' => ['all']]),
-
             new TwigFunction('bootstrap_theme_colors', fn () => ContextService::THEME_COLORS),
             new TwigFunction('theme_option', fn (string $option) => $this->contextService->getOption($option)),
             new TwigFunction('config', fn () => $this->config),
-            new TwigFunction('tab', fn (string $label, ?string $content=null, ?string $translationDomain=null) => new Tab($label, $content, $translationDomain)),
+            new TwigFunction('tab', fn (string $label, ?string $content = null, ?string $translationDomain = null) => new Tab($label, $content, $translationDomain)),
             new TwigFunction('theme_options', fn () => $this->contextService->getOptions()),
             new TwigFunction('hasOffcanvas', fn () => $this->contextService->getOption('offcanvas')),
             new TwigFunction('admin_context_is_enabled', [$this, 'isEnabled']),
@@ -67,18 +57,33 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
             new TwigFunction('attributes', [$this, 'attributes'], ['is_safe' => ['html']]),
             new TwigFunction('img', fn (string $src) => sprintf('img src="%s"', $src)),
             new TwigFunction('meta', [$this, 'setMeta'], ['is_safe' => ['html']]),
+            new TwigFunction('page', [$this, 'setPage'], ['is_safe' => ['html']]),
             new TwigFunction('page_context', [$this, 'getPageContext']),
-//            new TwigFunction('config', fn (string $el) => $this->config[$el]),
         ];
     }
 
     public function setMeta(array $options = [], mixed $caller = null): string
     {
+        return $this->setPage($options, $caller);
+    }
+
+    public function setPage(array $options = [], mixed $caller = null): string
+    {
         if ($caller !== null) {
             $options['caller'] = is_scalar($caller) ? (string) $caller : get_debug_type($caller);
         }
 
-        $this->pageContext->addOptions($this->normalizeMetaOptions($options));
+        $normalized = $this->normalizePageOptions($options);
+        $defaults = $normalized['defaults'] ?? null;
+        unset($normalized['defaults']);
+
+        if (is_array($defaults) && $defaults !== []) {
+            $this->pageContext->addDefaults($defaults);
+        }
+
+        if ($normalized !== []) {
+            $this->pageContext->addOptions($normalized);
+        }
 
         return '';
     }
@@ -91,18 +96,10 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
     public function containerClass(string $class = ''): string
     {
         $classList = explode(' ', $class);
-
-//        if ($this->helper?->isBoxedLayout()) {
-//            $classList[] = 'container-xl';
-//        } else {
-//            $classList[] = 'container-fluid';
-//        }
         $classList[] = 'container-fluid';
 
         return trim(implode(' ', array_values($classList)));
     }
-
-
 
     public function badge(array $props = []): string
     {
@@ -114,8 +111,7 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
         return $this->options[$value] ?? false;
     }
 
-    // @todo: replace with component
-    public function icon(string $value, string $extra='', string $title=''): string
+    public function icon(string $value, string $extra = '', string $title = ''): string
     {
         return sprintf('<span class="%s %s" title="%s" ></span>', $value, $extra, $title);
     }
@@ -125,14 +121,14 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
         $attrs = [];
         foreach ($value as $k => $v) {
             if (is_string($v) && $v) {
-                $attrs[] = sprintf(' %s="%s"', $k, $v); // @todo: escape quotes
+                $attrs[] = sprintf(' %s="%s"', $k, $v);
             }
         }
-        $string = join("\n", $attrs);
-        return $string;
+
+        return join("\n", $attrs);
     }
 
-    private function normalizeMetaOptions(array $options): array
+    private function normalizePageOptions(array $options): array
     {
         $normalized = $options;
 
@@ -141,14 +137,33 @@ class TwigExtension extends AbstractExtension // implements ServiceSubscriberInt
             'subTitle' => 'subtitle',
             'showHeader' => 'show_page_header',
             'showPageHeader' => 'show_page_header',
+            'containerClass' => 'container_class',
         ] as $from => $to) {
             if (array_key_exists($from, $normalized) && !array_key_exists($to, $normalized)) {
                 $normalized[$to] = $normalized[$from];
             }
         }
 
+        if (isset($normalized['defaults']) && is_array($normalized['defaults'])) {
+            $normalized['defaults'] = $this->normalizePageOptions($normalized['defaults']);
+        }
+
+        if (array_key_exists('container', $normalized) && !array_key_exists('container_class', $normalized)) {
+            $normalized['container_class'] = $this->normalizeContainer((string) $normalized['container']);
+        }
+
         return $normalized;
     }
 
-
+    private function normalizeContainer(string $container): string
+    {
+        return match ($container) {
+            '', 'default', 'xl' => 'container-xl',
+            'fluid' => 'container-fluid',
+            'lg' => 'container-lg',
+            'md' => 'container-md',
+            'sm' => 'container-sm',
+            default => str_starts_with($container, 'container-') ? $container : 'container-xl',
+        };
+    }
 }

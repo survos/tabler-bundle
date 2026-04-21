@@ -1,4 +1,3 @@
-
 <!DOCTYPE html{% block html_start %}{% endblock %}>
 <html lang="{{ app.request.locale|default('en') }}">
 <head>
@@ -7,7 +6,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     {% endblock %}
-    <title>{% block title %}{{ block('page_title')|trim }}{% endblock %}</title>
+
+    {% set _page = page_context() %}
+    {% set _routeName = app.request ? app.request.attributes.get('_route', 'home.title') : 'home.title' %}
+    {% set _routeTitle = _routeName|trans({}, 'routing') %}
+    {% set _blockTitle = block('page_title') is defined ? block('page_title')|trim : '' %}
+    {% set _blockPretitle = block('page_pretitle') is defined ? block('page_pretitle')|trim : '' %}
+    {% set _blockSubtitle = block('page_subtitle') is defined ? block('page_subtitle')|trim : '' %}
+    {% set resolvedPageTitle = _page.title|default(_blockTitle ?: _routeTitle) %}
+    {% set resolvedPagePretitle = _page.pretitle|default(_blockPretitle ?: null) %}
+    {% set resolvedPageSubtitle = _page.subtitle|default(_blockSubtitle ?: null) %}
+    {% set containerClass = _page.container_class|default('container-xl') %}
+    {% set showPageHeader = _page.show_page_header is defined ? _page.show_page_header : (resolvedPageTitle or tabler_menu_has_items(BREADCRUMB) or tabler_menu_has_items(PAGE_NAV) or tabler_menu_has_items(PAGE_ACTIONS)) %}
+
+    <title>{% block title %}{{ resolvedPageTitle|striptags|trim }}{% endblock %}</title>
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
@@ -27,9 +39,6 @@
 {% block logo_path %}{% endblock %}
 {% block page_pretitle %}{% endblock %}
 {% block page_subtitle %}{% endblock %}
-
-{% block container_class %}container-xl{% endblock %}
-{% set containerClass = block('container_class')|trim ?: 'container-xl' %}
 {% set id = tabler_identity ?? {} %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 {% set debugMenuSlots = tabler_menu_debug_enabled() %}
@@ -183,13 +192,13 @@
 
     <div class="page-wrapper">
         {% block page_header %}
-            {% if block('page_title')|trim or tabler_menu_has_items(BREADCRUMB) or tabler_menu_has_items(PAGE_NAV) or tabler_menu_has_items(PAGE_ACTIONS) %}
+            {% if showPageHeader %}
                 <div class="page-header d-print-none">
                     <div class="{{ containerClass }}">
                         <div class="row g-2 align-items-center">
                             <div class="col">
-                                {% if block('page_pretitle')|trim %}
-                                    <div class="page-pretitle">{{ block('page_pretitle')|raw }}</div>
+                                {% if resolvedPagePretitle %}
+                                    <div class="page-pretitle">{{ resolvedPagePretitle|raw }}</div>
                                 {% endif %}
                                 {% if tabler_menu_has_items(BREADCRUMB) %}
                                     <div class="page-pretitle {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
@@ -197,12 +206,14 @@
                                         {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
                                     </div>
                                 {% endif %}
-                                <h2 class="page-title">
-                                    {% block back_link %}{% endblock %}
-                                    {% block page_title 'home.title'|trans %}
-                                </h2>
-                                {% if block('page_subtitle')|trim %}
-                                    <div class="text-secondary mt-1">{{ block('page_subtitle') }}</div>
+                                {% if resolvedPageTitle %}
+                                    <h2 class="page-title">
+                                        {% block back_link %}{% endblock %}
+                                        {{ resolvedPageTitle|raw }}
+                                    </h2>
+                                {% endif %}
+                                {% if resolvedPageSubtitle %}
+                                    <div class="text-secondary mt-1">{{ resolvedPageSubtitle|raw }}</div>
                                 {% endif %}
                             </div>
                             {% if debugMenuSlots or tabler_menu_has_items(PAGE_ACTIONS) %}
@@ -210,7 +221,7 @@
                                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_ACTIONS</div>{% endif %}
                                     <div class="btn-list">
                                         {% if tabler_menu_has_items(PAGE_ACTIONS) %}
-                                            {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: block('page_title')}}) }}
+                                            {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: resolvedPageTitle}}) }}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -221,7 +232,7 @@
                                 {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_NAV</div>{% endif %}
                                 <ul class="nav nav-tabs nav-pills border rounded-3 p-2 gap-1">
                                     {% if tabler_menu_has_items(PAGE_NAV) %}
-                                        {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {title: block('page_title')}}) }}
+                                        {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {title: resolvedPageTitle}}) }}
                                     {% endif %}
                                 </ul>
                             </div>
@@ -258,17 +269,13 @@
                     <div class="{% if showSidebar %}col-12 col-lg-9 col-xl-10{% else %}col-12{% endif %}">
                         <section class="{% block page_content_class %}content{% endblock %}">
                             {% block page_content %}
-                                {{ block('body') }}
+                                {% block body %}{% endblock %}
                             {% endblock %}
                         </section>
                     </div>
                 </div>
-
-                {% block page_content_end %}{% endblock %}
             </div>
         </div>
-
-        {% block page_content_after %}{% endblock %}
 
         {% block footer %}
             {% if debugMenuSlots or tabler_menu_has_items(FOOTER) or tabler_menu_has_items(FOOTER_END) %}
@@ -276,20 +283,24 @@
                     <div class="{{ containerClass }}">
                         <div class="row text-center align-items-center flex-row-reverse">
                             <div class="col-lg-auto ms-lg-auto">
-                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER_END</div>{% endif %}
-                                    {% if tabler_menu_has_items(FOOTER_END) %}
-                                        {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
-                                    {% endif %}
-                                </div>
+                                {% if debugMenuSlots or tabler_menu_has_items(FOOTER_END) %}
+                                    <div class="{% if debugMenuSlots %}tabler-debug-slot d-inline-block{% endif %}">
+                                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER_END</div>{% endif %}
+                                        {% if tabler_menu_has_items(FOOTER_END) %}
+                                            {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER</div>{% endif %}
-                                    {% if tabler_menu_has_items(FOOTER) %}
-                                        {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
-                                    {% endif %}
-                                </div>
+                            <div class="col-lg-auto me-lg-auto">
+                                {% if debugMenuSlots or tabler_menu_has_items(FOOTER) %}
+                                    <div class="{% if debugMenuSlots %}tabler-debug-slot d-inline-block{% endif %}">
+                                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER</div>{% endif %}
+                                        {% if tabler_menu_has_items(FOOTER) %}
+                                            {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -297,8 +308,7 @@
             {% endif %}
         {% endblock %}
     </div>
-
-    {% block control_sidebar %}{% endblock %}
 </div>
+{% block body_end %}{% endblock %}
 </body>
 </html>
