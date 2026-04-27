@@ -31,6 +31,10 @@ class MenuEvent extends Event
     public const NAVBAR_MENU = 'NAVBAR_MENU';
     public const NAVBAR_MENU_END = 'NAVBAR_MENU_END';
 
+    // Admin navbar (third header) — only rendered for ROLE_ADMIN or app.debug
+    public const ADMIN_NAVBAR_MENU = 'ADMIN_NAVBAR_MENU';
+    public const ADMIN_NAVBAR_MENU_END = 'ADMIN_NAVBAR_MENU_END';
+
     // Sidebar
     public const SIDEBAR = 'SIDEBAR';
 

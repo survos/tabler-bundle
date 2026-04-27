@@ -211,6 +211,13 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
             ->setAutoconfigured(true)
             ->setArgument('$enabledByConfig', '%survos_tabler.debug.menu_slots%');
 
+        if (class_exists(\Survos\FieldBundle\Registry\EntityMetaRegistry::class)) {
+            $builder->register(\Survos\TablerBundle\Menu\EntityMetaMenuSubscriber::class)
+                ->setAutowired(true)
+                ->setAutoconfigured(true)
+                ->setPublic(false);
+        }
+
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([
             'layout-navbar' => 'menu-2',

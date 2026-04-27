@@ -117,16 +117,24 @@
                 <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                     <a href="{{ brandHref|trim }}">
                         {% block logo_mini %}
+                            {# Priority: logo_small, logo, title / abbr text, favicon fallback #}
+
                             {% if id.logo_small is defined and id.logo_small %}
                                 <img src="{{ id.logo_small }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+
                             {% elseif id.logo is defined and id.logo %}
                                 <img src="{{ id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+
+                            {% elseif id.abbr is defined or id.title is defined %}
+                                {% block logo_large %}
+                                    <span>
+                                        {{ id.abbr|default(id.title|default('Tabler'))|raw }}
+                                    </span>
+                                {% endblock %}
+
                             {% else %}
-                                <img src="{{ asset('favicon-32x32.png') }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
+                                <img src="{{ asset('favicon-32x32.png') }}" class="navbar-brand-image" height="32" alt="Logo">
                             {% endif %}
-                            {% block logo_large %}
-                                <span class="ms-2">{{ id.abbr|default(id.title|default('Tabler'))|raw }}</span>
-                            {% endblock %}
                         {% endblock %}
                     </a>
                 </div>
@@ -190,6 +198,44 @@
         {% endif %}
     {% endblock %}
 
+    {% block navbar_admin %}
+        {% if is_granted('ROLE_ADMIN') or app.debug %}
+            {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                <header class="navbar-expand-md border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0)">
+                    <div class="collapse navbar-collapse">
+                        <div class="navbar">
+                            <div class="{{ containerClass }}">
+                                <div class="row flex-column flex-md-row flex-fill align-items-center">
+                                    <div class="col d-flex align-items-center gap-2">
+                                        <span class="badge bg-orange text-white text-uppercase me-2" style="font-size:.65rem;letter-spacing:.06em">Admin</span>
+                                        {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                            <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
+                                                {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                                    {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col col-md-auto">
+                                        {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                            <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
+                                                {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                                    {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+
     <div class="page-wrapper">
         {% block page_header %}
             {% if showPageHeader %}
@@ -219,7 +265,7 @@
                             {% if debugMenuSlots or tabler_menu_has_items(PAGE_ACTIONS) %}
                                 <div class="col-auto ms-auto d-print-none {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_ACTIONS</div>{% endif %}
-                                    <div class="btn-list">
+                                    <div class="nav border rounded">
                                         {% if tabler_menu_has_items(PAGE_ACTIONS) %}
                                             {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: resolvedPageTitle}}) }}
                                         {% endif %}

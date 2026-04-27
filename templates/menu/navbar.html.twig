@@ -8,7 +8,7 @@
     {% set merged = listAttributes|merge(ra) %}
 
     {# Tabler reference: ul.navbar-nav (do NOT force flex-row here) #}
-    {% set merged = merged|merge({ class: html_classes(merged.class|default(null), 'navbar-nav') }) %}
+    {% set merged = merged|merge({ class: html_classes(merged.class|default(''), 'navbar-nav') }) %}
 
     <ul {{ html_attr(merged) }}>
         {{ block('children') }}
