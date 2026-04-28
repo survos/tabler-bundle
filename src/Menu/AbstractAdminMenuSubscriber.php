@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Menu;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Survos\CoreBundle\Service\SurvosUtils;
 use Survos\FieldBundle\Registry\EntityMetaRegistry;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
@@ -79,7 +80,7 @@ abstract class AbstractAdminMenuSubscriber
             $this->add(
                 $submenu,
                 'survos_admin_browse',
-                ['class' => $class],
+                ['code' => SurvosUtils::entityCode($class)],
                 $label,
                 icon:  $this->resolveEntityIcon($class),
                 badge: $this->resolveCount($class),
