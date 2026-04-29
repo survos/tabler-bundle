@@ -1,0 +1,21 @@
+<div id="settingsModal" class="modal fade" data-bs-backdrop="false" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div data-controller="resize">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Text Size</span>
+                        <strong data-resize-target="label">100%</strong>
+                    </label>
+                    <input type="range" class="form-range" min="0.5" max="2" step="0.05" value="1" data-resize-target="slider" data-action="input->resize#resize">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

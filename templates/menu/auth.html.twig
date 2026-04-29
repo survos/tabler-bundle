@@ -4,12 +4,19 @@
 {% block root %}
 {% set debugChild = item.children|filter(child => child.extra('debug_menu_slot'))|first %}
 {% if not debugChild %}
-    <div class="nav-item dropdown">
-        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-            <span class="avatar avatar-sm">{{ ux_icon('tabler:user') }}</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-            {{ block('children') }}
+    <div class="d-flex">
+        <div class="nav-item">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                <span class="avatar avatar-sm">{{ ux_icon('tabler:settings') }}</span>
+            </a>
+        </div>
+        <div class="nav-item dropdown">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <span class="avatar avatar-sm">{{ ux_icon('tabler:user') }}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                {{ block('children') }}
+            </div>
         </div>
     </div>
 {% endif %}
@@ -19,13 +26,19 @@
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
     {% set divider = item.getExtra('divider') %}
-    
+
     {% if divider %}
         <div class="dropdown-divider"></div>
     {% else %}
         {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
         {% if not item.getExtra('debug_menu_slot') %}
-            <a class="dropdown-item" href="{{ item.uri }}">
+            <a
+                class="dropdown-item"
+                href="{{ item.uri }}"
+                {% for attr, value in item.linkAttributes %}
+                    {{ attr }}="{{ value }}"
+                {% endfor %}
+            >
                 {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
                 {{ block('label') }}
             </a>
