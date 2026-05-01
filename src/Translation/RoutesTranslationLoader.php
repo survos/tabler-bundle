@@ -39,6 +39,9 @@ class RoutesTranslationLoader implements LoaderInterface
                     foreach ($method->getAttributes(Route::class) as $attribute) {
                         $instance = $attribute->newInstance();
                         $name = $instance->name;
+                        if ($name === null) {
+                            continue;
+                        }
                         $name = str_replace('app_', '', $name);
                         $candidate = u($name)->snake()->replace('_', ' ')->title()->toString();
                         $translations[$instance->name] = $candidate;
