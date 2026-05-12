@@ -2,60 +2,39 @@
 
 namespace Survos\BaseBundle\Command;
 
+use Symfony\Component\Console\Attribute\Argument;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Twig\Environment;
 
-class SurvosBuildDocsCommand extends Command
+#[AsCommand('survos:build-docs', 'Compile .rst.twig files')]
+final class SurvosBuildDocsCommand
 {
-    protected static $defaultName = 'survos:build-docs';
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    public function __construct(Environment $twig, string $name = null)
+    public function __construct(private readonly Environment $twig)
     {
-        parent::__construct($name);
-        $this->twig = $twig;
     }
 
-    protected function configure()
-    {
-        $this
-            ->setDescription('Compile .rst.twig files')
-            ->addArgument('template-dir', InputArgument::OPTIONAL, 'Template Directory',  './templates/')
-            ->addArgument('template-subdir', InputArgument::OPTIONAL, 'Template Subdirectory', 'docs/')
-            ->addOption('output-dir', 'o', InputOption::VALUE_OPTIONAL, 'Output Directory (the .rst file)',  './docs')
-        ;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new SymfonyStyle($input, $output);
-        $dir = $input->getArgument('template-dir');
-        $subdir = $input->getArgument('template-subdir');
-
+    public function __invoke(
+        SymfonyStyle $io,
+        #[Argument('Template Directory')] string $templateDir = './templates/',
+        #[Argument('Template Subdirectory')] string $templateSubdir = 'docs/',
+        #[Option('Output Directory (the .rst file)')] string $outputDir = './docs',
+    ): int {
         $finder = new Finder();
-        $finder->files()->in($dir . $subdir);
+        $finder->files()->in($templateDir . $templateSubdir);
 
         foreach ($finder as $file) {
-            $rst = $this->twig->render($subdir . $file->getBasename(), [
-
-            ]);
-            $outputFilename = $input->getOption('output-dir') . $file->getBasename('.twig');
+            $rst = $this->twig->render($templateSubdir . $file->getBasename(), []);
+            $outputFilename = $outputDir . $file->getBasename('.twig');
             file_put_contents($outputFilename, $rst);
-            $output->write("$outputFilename written.", true);
+            $io->writeln("$outputFilename written.");
         }
-
 
         $io->success('Templates compiled, now run make html');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

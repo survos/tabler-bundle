@@ -64,6 +64,10 @@ abstract class AbstractAdminMenuSubscriber
 
     protected function buildAdminMenu(MenuEvent $event): void
     {
+        if (!$this->routeExists('survos_admin_browse', ['code' => '_'])) {
+            return;
+        }
+
         $classes = $this->getResourceClasses();
         if (empty($classes)) {
             return;

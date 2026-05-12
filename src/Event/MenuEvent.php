@@ -18,6 +18,7 @@ class MenuEvent extends Event
     public const PAGE_ACTIONS = 'PAGE_ACTIONS';
 
     // Top navbar (first header) - split so apps can hook in cleanly
+    public const NAVBAR_PRIMARY = 'NAVBAR_PRIMARY';       // horizontal nav links right of the logo, same row
     public const NAVBAR_START = 'NAVBAR_START';           // between brand and right side (rare)
     public const NAVBAR_END = 'NAVBAR_END';               // right side "tools" (links/buttons/etc.)
     public const NAVBAR_THEME = 'NAVBAR_THEME';           // theme toggle(s)

@@ -51,7 +51,7 @@ trait MenuBuilderTrait
     /**
      * Check if a route exists.
      */
-    protected function routeExists(?string $route): bool
+    protected function routeExists(?string $route, array $parameters = []): bool
     {
         if (!$route) {
             return false;
@@ -59,11 +59,11 @@ trait MenuBuilderTrait
 
         $router = $this->router ?? null;
         if (!$router) {
-            return true; // No router, assume it exists
+            return false;
         }
 
         try {
-            $router->generate($route);
+            $router->generate($route, $parameters);
             return true;
         } catch (RouteNotFoundException) {
             return false;
@@ -99,11 +99,8 @@ trait MenuBuilderTrait
             return $menu;
         }
 
-        if ($route) {
-            assert($this->routeExists($route), "Missing route $route");
-        }
         // Skip if route doesn't exist (safe by default)
-        if ($route && $checkRouteExists && !$this->routeExists($route)) {
+        if ($route && $checkRouteExists && !$this->routeExists($route, $rp)) {
             return $menu;
         }
 

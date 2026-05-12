@@ -22,6 +22,15 @@
             rootAttributes: { class: 'navbar-nav pt-lg-3' }
         }) }}
 
+    {# Primary inline nav — horizontal links right of the logo in the top navbar #}
+    {% elseif type == NAVBAR_PRIMARY %}
+        {{ knp_menu_render(menuItem, {
+            template: '@SurvosTabler/menu/navbar.html.twig',
+            allow_safe_labels: true,
+            currentClass: 'active',
+            rootAttributes: { class: 'navbar-nav flex-row' }
+        }) }}
+
     {# Top navbar right-side tools (and related topbar slots) #}
     {% elseif type in [NAVBAR_END, NAVBAR_START, NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE] %}
         {{ knp_menu_render(menuItem, {

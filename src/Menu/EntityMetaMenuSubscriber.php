@@ -35,6 +35,10 @@ final class EntityMetaMenuSubscriber
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU, priority: -10)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
+        if (!$this->routeExists('survos_admin_browse', ['code' => '_'])) {
+            return;
+        }
+
         $browsable = $this->registry->getBrowsable();
         if (empty($browsable)) {
             return;

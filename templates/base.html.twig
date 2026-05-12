@@ -37,8 +37,6 @@
 {% endblock %}
 {% block after_body_start %}{% endblock %}
 {% block logo_path %}{% endblock %}
-{% block page_pretitle %}{% endblock %}
-{% block page_subtitle %}{% endblock %}
 {% set id = tabler_identity ?? {} %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 {% set debugMenuSlots = tabler_menu_debug_enabled() %}
@@ -139,6 +137,13 @@
                     </a>
                 </div>
 
+                {% if tabler_menu_has_items(NAVBAR_PRIMARY) %}
+                    <div class="collapse navbar-collapse {% if debugMenuSlots %}tabler-debug-slot{% endif %}" id="navbar-primary">
+                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_PRIMARY</div>{% endif %}
+                        {{ component('tabler:menu', {type: NAVBAR_PRIMARY, caller: _self}) }}
+                    </div>
+                {% endif %}
+
                 <div class="navbar-nav flex-row order-md-last ms-auto">
                     {% for slot in [NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE, NAVBAR_END, SEARCH, AUTH] %}
                         {% if debugMenuSlots or tabler_menu_has_items(slot) %}
@@ -201,37 +206,29 @@
     {% block navbar_admin %}
         {% if is_granted('ROLE_ADMIN') or app.debug %}
             {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                <header class="navbar-expand-md border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0)">
-                    <div class="collapse navbar-collapse">
-                        <div class="navbar">
-                            <div class="{{ containerClass }}">
-                                <div class="row flex-column flex-md-row flex-fill align-items-center">
-                                    <div class="col d-flex align-items-center gap-2">
-                                        <span class="badge bg-orange text-white text-uppercase me-2" style="font-size:.65rem;letter-spacing:.06em">Admin</span>
-                                        {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
-                                            <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
-                                                {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
-                                                    {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col col-md-auto">
-                                        {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                                            <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
-                                                {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                                                    {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
+                <div class="border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0);font-size:.7rem;line-height:1.4;">
+                    <div class="{{ containerClass }}">
+                        <div class="d-flex align-items-center gap-2 py-1">
+                            <span class="badge bg-orange text-white" style="font-size:.6rem;letter-spacing:.05em;">admin</span>
+                            {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
+                                    {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                        {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
+                                    {% endif %}
                                 </div>
-                            </div>
+                            {% endif %}
+                            {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                <div class="ms-auto {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
+                                    {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                        {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-                </header>
+                </div>
             {% endif %}
         {% endif %}
     {% endblock %}
