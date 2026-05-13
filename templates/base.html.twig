@@ -206,29 +206,31 @@
     {% block navbar_admin %}
         {% if is_granted('ROLE_ADMIN') or app.debug %}
             {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                <div class="border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0);font-size:.7rem;line-height:1.4;">
+                <header class="navbar-expand-md border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0);font-size:.6875rem;line-height:1.1;">
                     <div class="{{ containerClass }}">
-                        <div class="d-flex align-items-center gap-2 py-1">
-                            <span class="badge bg-orange text-white" style="font-size:.6rem;letter-spacing:.05em;">admin</span>
-                            {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
-                                <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
-                                    {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
-                                        {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                            {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                                <div class="ms-auto {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
-                                    {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                                        {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
-                                    {% endif %}
-                                </div>
-                            {% endif %}
+                        <div class="d-flex flex-row align-items-center gap-2 w-100" style="min-height:22px;">
+                            <span class="badge bg-orange text-white" style="font-size:.55rem;line-height:1;padding:.1rem .25rem;letter-spacing:.04em;">admin</span>
+                            <div class="d-flex flex-fill align-items-center">
+                                {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                    <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
+                                        {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
+                                            {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                    <div class="ms-auto {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                        {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
+                                        {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
+                                            {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
+                </header>
             {% endif %}
         {% endif %}
     {% endblock %}

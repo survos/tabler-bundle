@@ -4,12 +4,13 @@
 {% if menuItem.children|length > 0 %}
 
     {# Secondary navbar menus #}
-    {% if type in [NAVBAR_MENU, NAVBAR_MENU_END] %}
+    {% if type in [NAVBAR_MENU, NAVBAR_MENU_END, ADMIN_NAVBAR_MENU, ADMIN_NAVBAR_MENU_END] %}
         {{ knp_menu_render(menuItem, {
             template: '@SurvosTabler/menu/navbar.html.twig',
             allow_safe_labels: true,
             currentClass: 'active',
-            rootAttributes: { class: 'navbar-nav' }
+            compact: type in [ADMIN_NAVBAR_MENU, ADMIN_NAVBAR_MENU_END],
+            rootAttributes: { class: type in [ADMIN_NAVBAR_MENU, ADMIN_NAVBAR_MENU_END] ? 'navbar-nav flex-row' : 'navbar-nav' }
         }) }}
 
     {# Sidebar #}
