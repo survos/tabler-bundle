@@ -19,13 +19,14 @@
     {% if item.displayed %}
         {%- set is_dropdown = item.hasChildren and options.depth is not same as(0) -%}
         {%- set compact = options.compact|default(false) -%}
+        {%- set dense = options.dense|default(false) -%}
         {%- set icon = item.getExtra('icon') -%}
         {%- set badge = item.getExtra('badge') -%}
         {%- set badgeValue = badge.value|default(badge) -%}
 
         <li class="nav-item {% if is_dropdown %} dropdown{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}">
             {% if is_dropdown %}
-                <a class="nav-link dropdown-toggle{% if compact %} py-0 px-1{% endif %}"
+                <a class="nav-link dropdown-toggle{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %}"
                    href="#navbar-{{ item.name|slug }}"
                    data-bs-toggle="dropdown"
                    data-bs-auto-close="outside"
@@ -43,7 +44,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <a class="nav-link{% if compact %} py-0 px-1{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}">
+                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}">
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                     {% if badgeValue %}
