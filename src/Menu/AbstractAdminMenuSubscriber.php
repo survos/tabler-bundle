@@ -62,19 +62,34 @@ abstract class AbstractAdminMenuSubscriber
         return null;
     }
 
+    /**
+     * Override to use a different browse route than survos_admin_browse.
+     * Return null to skip per-entity links (show submenu header only).
+     */
+    protected function getBrowseRoute(): ?string
+    {
+        return 'survos_admin_browse';
+    }
+
     protected function buildAdminMenu(MenuEvent $event): void
     {
-        if (!$this->routeExists('survos_admin_browse', ['code' => '_'])) {
-            return;
-        }
-
         $classes = $this->getResourceClasses();
         if (empty($classes)) {
             return;
         }
 
+        $browseRoute = $this->getBrowseRoute();
+
+        if ($browseRoute !== null && !$this->routeExists($browseRoute, ['code' => '_'])) {
+            return;
+        }
+
         $menu    = $event->getMenu();
         $submenu = $this->addSubmenu($menu, $this->getLabel(), $this->getGroupIcon());
+
+        if ($browseRoute === null) {
+            return;
+        }
 
         foreach ($classes as $labelOrIndex => $class) {
             $label = is_string($labelOrIndex)
@@ -83,7 +98,7 @@ abstract class AbstractAdminMenuSubscriber
 
             $this->add(
                 $submenu,
-                'survos_admin_browse',
+                $browseRoute,
                 ['code' => SurvosUtils::entityCode($class)],
                 $label,
                 icon:  $this->resolveEntityIcon($class),
