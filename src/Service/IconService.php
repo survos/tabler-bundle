@@ -12,116 +12,116 @@ final class IconService
 {
     private const ICON_ALIASES = [
         // Navigation
-        'home' => 'home',
-        'dashboard' => 'dashboard',
-        'menu' => 'menu-2',
-        'back' => 'arrow-left',
-        'forward' => 'arrow-right',
+        'home' => 'tabler:home',
+        'dashboard' => 'tabler:dashboard',
+        'menu' => 'tabler:menu-2',
+        'back' => 'tabler:arrow-left',
+        'forward' => 'tabler:arrow-right',
 
         // Auth
-        'login' => 'login',
-        'logout' => 'logout',
-        'register' => 'user-plus',
-        'profile' => 'user-circle',
-        'user' => 'user',
-        'users' => 'users',
-        'password' => 'lock',
+        'login' => 'tabler:login',
+        'logout' => 'tabler:logout',
+        'register' => 'tabler:user-plus',
+        'profile' => 'tabler:user-circle',
+        'user' => 'tabler:user',
+        'users' => 'tabler:users',
+        'password' => 'tabler:lock',
 
         // CRUD
-        'create' => 'plus',
-        'new' => 'plus',
-        'add' => 'plus',
-        'edit' => 'edit',
-        'delete' => 'trash',
-        'remove' => 'x',
-        'save' => 'device-floppy',
-        'cancel' => 'x',
-        'view' => 'eye',
-        'show' => 'eye',
-        'hide' => 'eye-off',
-        'list' => 'list',
-        'index' => 'list',
-        'browse' => 'list-search',
-        'grid' => 'grid-dots',
+        'create' => 'tabler:plus',
+        'new' => 'tabler:plus',
+        'add' => 'tabler:plus',
+        'edit' => 'tabler:edit',
+        'delete' => 'tabler:trash',
+        'remove' => 'tabler:x',
+        'save' => 'tabler:device-floppy',
+        'cancel' => 'tabler:x',
+        'view' => 'tabler:eye',
+        'show' => 'tabler:eye',
+        'hide' => 'tabler:eye-off',
+        'list' => 'tabler:list',
+        'index' => 'tabler:list',
+        'browse' => 'tabler:list-search',
+        'grid' => 'tabler:grid-dots',
 
         // Actions
-        'search' => 'search',
-        'filter' => 'filter',
-        'sort' => 'arrows-sort',
-        'refresh' => 'refresh',
-        'sync' => 'refresh',
-        'download' => 'download',
-        'upload' => 'upload',
-        'export' => 'file-export',
-        'import' => 'file-import',
-        'print' => 'printer',
-        'copy' => 'copy',
-        'share' => 'share',
-        'link' => 'link',
-        'external' => 'external-link',
+        'search' => 'tabler:search',
+        'filter' => 'tabler:filter',
+        'sort' => 'tabler:arrows-sort',
+        'refresh' => 'tabler:refresh',
+        'sync' => 'tabler:refresh',
+        'download' => 'tabler:download',
+        'upload' => 'tabler:upload',
+        'export' => 'tabler:file-export',
+        'import' => 'tabler:file-import',
+        'print' => 'tabler:printer',
+        'copy' => 'tabler:copy',
+        'share' => 'tabler:share',
+        'link' => 'tabler:link',
+        'external' => 'tabler:external-link',
 
         // Status
-        'success' => 'check',
-        'error' => 'x',
-        'warning' => 'alert-triangle',
-        'info' => 'info-circle',
-        'help' => 'help',
+        'success' => 'tabler:check',
+        'error' => 'tabler:x',
+        'warning' => 'tabler:alert-triangle',
+        'info' => 'tabler:info-circle',
+        'help' => 'tabler:help',
 
         // Settings
-        'settings' => 'settings',
-        'config' => 'adjustments',
-        'admin' => 'shield',
-        'tools' => 'tools',
-        'commands' => 'terminal-2',
+        'settings' => 'tabler:settings',
+        'config' => 'tabler:adjustments',
+        'admin' => 'tabler:shield',
+        'tools' => 'tabler:tools',
+        'commands' => 'tabler:terminal-2',
 
         // Content
-        'file' => 'file',
-        'folder' => 'folder',
-        'image' => 'photo',
-        'document' => 'file-text',
-        'database' => 'database',
-        'api' => 'api',
-        'code' => 'code',
+        'file' => 'tabler:file',
+        'folder' => 'tabler:folder',
+        'image' => 'tabler:photo',
+        'document' => 'tabler:file-text',
+        'database' => 'tabler:database',
+        'api' => 'tabler:api',
+        'code' => 'tabler:code',
 
         // Social
-        'github' => 'brand-github',
-        'twitter' => 'brand-twitter',
-        'facebook' => 'brand-facebook',
-        'linkedin' => 'brand-linkedin',
-        'youtube' => 'brand-youtube',
+        'github' => 'tabler:brand-github',
+        'twitter' => 'tabler:brand-twitter',
+        'facebook' => 'tabler:brand-facebook',
+        'linkedin' => 'tabler:brand-linkedin',
+        'youtube' => 'tabler:brand-youtube',
 
         // Misc
-        'calendar' => 'calendar',
-        'clock' => 'clock',
-        'location' => 'map-pin',
-        'globe' => 'world',
-        'language' => 'language',
-        'locale' => 'world',
-        'star' => 'star',
-        'heart' => 'heart',
-        'bookmark' => 'bookmark',
-        'notification' => 'bell',
-        'email' => 'mail',
-        'message' => 'message',
+        'calendar' => 'tabler:calendar',
+        'clock' => 'tabler:clock',
+        'location' => 'tabler:map-pin',
+        'globe' => 'tabler:world',
+        'language' => 'tabler:language',
+        'locale' => 'tabler:world',
+        'star' => 'tabler:star',
+        'heart' => 'tabler:heart',
+        'bookmark' => 'tabler:bookmark',
+        'notification' => 'tabler:bell',
+        'email' => 'tabler:mail',
+        'message' => 'tabler:message',
 
         // Arrows
-        'up' => 'arrow-up',
-        'down' => 'arrow-down',
-        'left' => 'arrow-left',
-        'right' => 'arrow-right',
-        'dropdown' => 'chevron-down',
-        'expand' => 'chevron-down',
-        'collapse' => 'chevron-up',
+        'up' => 'tabler:arrow-up',
+        'down' => 'tabler:arrow-down',
+        'left' => 'tabler:arrow-left',
+        'right' => 'tabler:arrow-right',
+        'dropdown' => 'tabler:chevron-down',
+        'expand' => 'tabler:chevron-down',
+        'collapse' => 'tabler:chevron-up',
 
         // Toggle
-        'check' => 'check',
-        'close' => 'x',
-        'plus' => 'plus',
-        'minus' => 'minus',
-        'more' => 'dots',
+        'check' => 'tabler:check',
+        'close' => 'tabler:x',
+        'plus' => 'tabler:plus',
+        'minus' => 'tabler:minus',
+        'more' => 'tabler:dots',
 
         // Layout
-        'point' => 'point',
+        'point' => 'tabler:point',
     ];
 
     private const STYLE_PRESETS = [
@@ -184,7 +184,6 @@ final class IconService
     public function __construct(
         private readonly array $configuredAliases = [],
         private readonly array $configuredPresets = [],
-        private readonly string $defaultPrefix = 'tabler',
     ) {
         $this->resolvedAliases = array_merge(self::ICON_ALIASES, $this->configuredAliases);
         $this->resolvedPresets = array_merge(self::STYLE_PRESETS, $this->configuredPresets);
@@ -204,8 +203,8 @@ final class IconService
         // Check alias
         $resolved = $this->resolvedAliases[$icon] ?? $icon;
 
-        // Add default prefix
-        return $this->defaultPrefix . ':' . $resolved;
+        // If still no prefix, return as-is — icons must carry explicit prefix
+        return $resolved;
     }
 
     /**
@@ -294,11 +293,4 @@ final class IconService
         return $this->resolvedPresets;
     }
 
-    /**
-     * Get the default icon prefix.
-     */
-    public function getDefaultPrefix(): string
-    {
-        return $this->defaultPrefix;
-    }
 }

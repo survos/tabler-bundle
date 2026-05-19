@@ -224,8 +224,7 @@ class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterf
         ], $iconConfig['aliases'] ?? []);
         $builder->register(IconService::class)
             ->setArgument('$configuredAliases', $iconAliases)
-            ->setArgument('$configuredPresets', $iconConfig['presets'] ?? [])
-            ->setArgument('$defaultPrefix', $iconConfig['prefix'] ?? 'tabler');
+            ->setArgument('$configuredPresets', $iconConfig['presets'] ?? []);
 
         $builder->register(LandingService::class)
             ->setAutowired(true)
