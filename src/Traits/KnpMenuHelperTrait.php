@@ -7,7 +7,7 @@ use Google\Auth\Cache\Item;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuItem;
 use Survos\TablerBundle\Event\KnpMenuEvent;
-use Survos\CoreBundle\Entity\RouteParametersInterface;
+use Survos\FieldBundle\Entity\RouteParametersInterface;
 use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Event\MenuEvent;
 use Symfony\Bundle\SecurityBundle\Security;

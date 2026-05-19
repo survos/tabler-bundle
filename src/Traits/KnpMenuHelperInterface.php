@@ -4,7 +4,7 @@ namespace Survos\TablerBundle\Traits;
 
 use Knp\Menu\ItemInterface;
 use Survos\TablerBundle\Event\KnpMenuEvent;
-use Survos\CoreBundle\Entity\RouteParametersInterface;
+use Survos\FieldBundle\Entity\RouteParametersInterface;
 use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Event\MenuEvent;
 use Symfony\Bundle\SecurityBundle\Security;

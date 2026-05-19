@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Menu;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Survos\CoreBundle\Service\SurvosUtils;
+use Survos\FieldBundle\Compiler\EntityMetaPass;
 use Survos\FieldBundle\Registry\EntityMetaRegistry;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
@@ -62,7 +62,7 @@ final class EntityMetaMenuSubscriber
                 $this->add(
                     $submenu,
                     'survos_admin_browse',
-                    ['code' => SurvosUtils::entityCode($descriptor->class)],
+                    ['code' => EntityMetaPass::entityCode($descriptor->class)],
                     $descriptor->label,
                     icon:  $descriptor->icon,
                     badge: $badge,

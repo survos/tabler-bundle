@@ -37,12 +37,11 @@ use Survos\TablerBundle\Twig\IconExtension;
 use Survos\TablerBundle\Twig\MenuExtension;
 use Survos\TablerBundle\Twig\RouteAliasExtension;
 use Survos\TablerBundle\Twig\TwigExtension;
-use Survos\CoreBundle\Bundle\AssetMapperBundle;
+use Survos\Kit\AbstractUxBundle;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -50,7 +49,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class SurvosTablerBundle extends AssetMapperBundle implements CompilerPassInterface
+class SurvosTablerBundle extends AbstractUxBundle
 {
     public const ASSET_PACKAGE = 'tabler';
 

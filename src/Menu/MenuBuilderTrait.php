@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Menu;
 
 use Knp\Menu\ItemInterface;
+use Survos\FieldBundle\Entity\RouteParametersInterface;
 use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -80,7 +81,7 @@ trait MenuBuilderTrait
     protected function add(
         ItemInterface $menu,
         ?string $route = null,
-        array $rp = [],
+        array|RouteParametersInterface $rp = [],
         ?string $label = null,
         ?string $uri = null,
         ?string $icon = null,
@@ -90,13 +91,17 @@ trait MenuBuilderTrait
         bool $external = false,
         bool $dividerBefore = false,
         bool $dividerAfter = false,
-        ?string $translationDomain = 'messages',
+        string|false|null $translationDomain = 'messages',
         bool $if = true,
         bool $inferIcon = true,
         bool $checkRouteExists = true,
     ): ItemInterface {
         if (!$if) {
             return $menu;
+        }
+
+        if ($rp instanceof RouteParametersInterface) {
+            $rp = $rp->getRp();
         }
 
         // Skip if route doesn't exist (safe by default)
@@ -180,7 +185,7 @@ trait MenuBuilderTrait
         ItemInterface $menu,
         string $label,
         ?string $icon = null,
-        ?string $translationDomain = 'messages',
+        string|false|null $translationDomain = 'messages',
     ): ItemInterface {
         $id = self::slugger()->slug($label)->toString() . '_' . bin2hex(random_bytes(4));
 
