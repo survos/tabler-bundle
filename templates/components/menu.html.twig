@@ -33,8 +33,17 @@
             rootAttributes: { class: 'navbar-nav flex-row' }
         }) }}
 
+    {# Language selector: dropdown-capable topbar menu #}
+    {% elseif type == NAVBAR_LANGUAGE %}
+        {{ knp_menu_render(menuItem, {
+            template: '@SurvosTabler/menu/navbar.html.twig',
+            allow_safe_labels: true,
+            currentClass: 'active',
+            rootAttributes: { class: 'navbar-nav flex-row' }
+        }) }}
+
     {# Top navbar right-side tools (and related topbar slots) #}
-    {% elseif type in [NAVBAR_END, NAVBAR_START, NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE] %}
+    {% elseif type in [NAVBAR_END, NAVBAR_START, NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS] %}
         {{ knp_menu_render(menuItem, {
             template: '@SurvosTabler/menu/navbar_end.html.twig',
             allow_safe_labels: true,
