@@ -19,7 +19,7 @@ class RouteAliasService
     ) {
         // Pre-validate routes at construction
         foreach ($configuredAliases as $alias => $routeName) {
-            if ($routeName !== null && $this->routeExists($routeName)) {
+            if ($this->routeExists($routeName)) {
                 $this->resolvedRoutes[$alias] = $routeName;
             }
         }
@@ -74,10 +74,14 @@ class RouteAliasService
         return $this->resolvedRoutes;
     }
 
-    private function routeExists(string $routeName): bool
+    public function routeExists(?string $routeName, array $parameters = []): bool
     {
+        if (!$routeName) {
+            return false;
+        }
+
         try {
-            $this->router->generate($routeName);
+            $this->router->generate($routeName, $parameters);
             return true;
         } catch (RouteNotFoundException) {
             return false;

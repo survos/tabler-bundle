@@ -101,6 +101,10 @@ trait MenuBuilderTrait
         }
 
         if ($rp instanceof RouteParametersInterface) {
+            // Derive label from __toString() before flattening to array
+            if ($label === null && $rp instanceof \Stringable) {
+                $label = (string) $rp;
+            }
             $rp = $rp->getRp();
         }
 

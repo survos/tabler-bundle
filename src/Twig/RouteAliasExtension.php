@@ -18,6 +18,7 @@ final class RouteAliasExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
+            new TwigFunction('route_exists', [$this->routeAliasService, 'routeExists']),
             new TwigFunction('tabler_route_exists', [$this->routeAliasService, 'has']),
             new TwigFunction('tabler_url', [$this->routeAliasService, 'generateUrl']),
             new TwigFunction('tabler_path', [$this->routeAliasService, 'generatePath']),
