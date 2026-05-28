@@ -238,6 +238,7 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         $builder->register(ContextService::class)
             ->setAutowired(true)
+            ->setAutoconfigured(true)
             ->setArgument('$config', $config)
             ->setArgument('$options', $config['options']);
 
@@ -270,6 +271,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->addTag('twig.extension');
 
         $builder->autowire('survos.tabler_twig', TwigExtension::class)
+            ->setAutoconfigured(true)
             ->setArgument('$config', $config)
             ->setArgument('$routes', $config['routes'])
             ->setArgument('$options', $config['options'])
