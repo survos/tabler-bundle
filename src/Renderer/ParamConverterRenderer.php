@@ -30,7 +30,7 @@ class ParamConverterRenderer
     }
 
     public function render(ClassNameDetails $formClassDetails, array $formFields,
-                           ClassNameDetails $boundClassDetails = null, array $constraintClasses = [], array $extraUseClasses = [])
+                           ?ClassNameDetails $boundClassDetails = null, array $constraintClasses = [], array $extraUseClasses = [])
     {
 
         $inflector = new EnglishInflector();

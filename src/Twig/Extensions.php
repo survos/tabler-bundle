@@ -95,7 +95,7 @@ class Extensions extends AbstractExtension
 //
 //    }
 //
-    public function renderBreadcrumb(string $text, string $url = null)
+    public function renderBreadcrumb(string $text, ?string $url = null)
     {
 
 //        <li class="breadcrumb-item"><a href="#">Home</a></li>
