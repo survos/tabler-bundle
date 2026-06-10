@@ -12,6 +12,7 @@ use Survos\TablerBundle\Components\PageComponent;
 use Survos\TablerBundle\Components\Ui\DropdownComponent;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
+use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
 use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
@@ -216,6 +217,13 @@ class SurvosTablerBundle extends AbstractUxBundle
                 ->setAutoconfigured(true)
                 ->setPublic(false);
         }
+
+        // Links to zenstruck/messenger-monitor when that (third-party) bundle is
+        // installed; self-skips at render time when its route is absent.
+        $builder->register(MessengerMonitorMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(false);
 
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([

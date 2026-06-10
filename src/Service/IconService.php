@@ -66,6 +66,7 @@ final class IconService
         'warning' => 'tabler:alert-triangle',
         'info' => 'tabler:info-circle',
         'help' => 'tabler:help',
+        'activity' => 'tabler:activity',
 
         // Settings
         'settings' => 'tabler:settings',
