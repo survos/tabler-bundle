@@ -35,7 +35,6 @@
         "nette/php-generator": "^4.2",
         "phpstan/phpstan": "^2.0",
         "rector/rector": "^2.0",
-        "roave/security-advisories": "dev-latest",
         "slevomat/coding-standard": "^8",
         "survos/auth-bundle": "^2.5",
         "symfony/console": "^8.1",
