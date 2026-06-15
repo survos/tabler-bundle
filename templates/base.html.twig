@@ -36,7 +36,7 @@
 <body {% block body_start %}{% endblock %} class="{% block body_class %}{% endblock %}">
 {% endblock %}
 {% block after_body_start %}{% endblock %}
-{% block logo_path %}{% endblock %}
+{# {% block logo_path %}{% endblock %} #}
 {% set id = tabler_identity ?? {} %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 {% set debugMenuSlots = tabler_menu_debug_enabled() %}
