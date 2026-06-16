@@ -36,14 +36,16 @@
 <body {% block body_start %}{% endblock %} class="{% block body_class %}{% endblock %}">
 {% endblock %}
 {% block after_body_start %}{% endblock %}
-{# {% block logo_path %}{% endblock %} #}
+{% set _logoPathBlock %}
+    {% block logo_path %}{% endblock %}
+{% endset %}
 {% set id = tabler_identity ?? {} %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 {% set debugMenuSlots = tabler_menu_debug_enabled() %}
 
 {% set brandHref %}
-    {% if block('logo_path')|trim %}
-        {{ block('logo_path') }}
+    {% if _logoPathBlock|trim %}
+        {{ _logoPathBlock|trim }}
     {% elseif id.homepage_route is defined and id.homepage_route %}
         {{ path(id.homepage_route) }}
     {% elseif id.homepage_url is defined and id.homepage_url %}
@@ -242,14 +244,14 @@
                     <div class="{{ containerClass }}">
                         <div class="row g-2 align-items-center">
                             <div class="col">
-                                {% if resolvedPagePretitle %}
-                                    <div class="page-pretitle">{{ resolvedPagePretitle|raw }}</div>
-                                {% endif %}
                                 {% if tabler_menu_has_items(BREADCRUMB) %}
-                                    <div class="page-pretitle {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                    <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
                                         {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
                                     </div>
+                                {% endif %}
+                                {% if resolvedPagePretitle %}
+                                    <div class="page-pretitle">{{ resolvedPagePretitle|raw }}</div>
                                 {% endif %}
                                 {% if resolvedPageTitle %}
                                     <h2 class="page-title">

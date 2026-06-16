@@ -13,7 +13,12 @@
 {% if item.displayed %}
     <li class="breadcrumb-item{% if item.isCurrent %} active{% endif %}"{% if item.isCurrent %} aria-current="page"{% endif %}>
         {% if item.uri and not item.isCurrent %}
-            <a href="{{ item.uri }}">{{ block('label') }}</a>
+            <a href="{{ item.uri }}">
+                {% if item.extra('icon') %}
+                    {{ ux_icon(item.extra('icon'), {class: 'icon me-1'}) }}
+                {% endif %}
+                {{ block('label') }}
+            </a>
         {% else %}
             {{ block('label') }}
         {% endif %}
