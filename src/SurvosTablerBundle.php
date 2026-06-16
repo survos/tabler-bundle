@@ -39,6 +39,7 @@ use Survos\TablerBundle\Twig\MenuExtension;
 use Survos\TablerBundle\Twig\RouteAliasExtension;
 use Survos\TablerBundle\Twig\TwigExtension;
 use Survos\Kit\AbstractUxBundle;
+use Survos\Kit\Traits\HasConfigurableRoutes;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -52,12 +53,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SurvosTablerBundle extends AbstractUxBundle
 {
+    use HasConfigurableRoutes;
+
     public const ASSET_PACKAGE = 'tabler';
 
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
         $container->addCompilerPass($this);
+        $this->addRouteLoaderCompilerPass($container);
     }
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -155,6 +159,10 @@ class SurvosTablerBundle extends AbstractUxBundle
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
+        $this->captureRouteConfig($config);
+
+        // kit-bundle: autoscans src/Controller (and src/Command) as services.
+        parent::loadExtension($config, $container, $builder);
 
         $builder->setParameter('survos_tabler.app', $config['app'] ?? []);
 
@@ -210,6 +218,13 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setArgument('$enabledByConfig', '%survos_tabler.debug.menu_slots%');
+
+        // Fills every slot with dummy items when the `dummy_menu` option is set
+        // (see DebugController / the /debug-menu route).
+        $container->services()
+            ->set(\Survos\TablerBundle\Menu\DebugMenu::class)
+            ->autowire()
+            ->autoconfigure();
 
         if (class_exists(\Survos\FieldBundle\Registry\EntityMetaRegistry::class)) {
             $builder->register(\Survos\TablerBundle\Menu\EntityMetaMenuSubscriber::class)
@@ -330,10 +345,12 @@ class SurvosTablerBundle extends AbstractUxBundle
                 ->setArgument('$menuDispatcher', new Reference(MenuDispatcher::class));
         }
 
+        $this->registerRouteLoader($builder);
     }
 
     public function configure(DefinitionConfigurator $definition): void
     {
         (new Configuration())->configure($definition);
+        $this->addRouteOptions($definition->rootNode()->children(), '');
     }
 }

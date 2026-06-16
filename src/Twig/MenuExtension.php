@@ -80,6 +80,11 @@ final class MenuExtension extends AbstractExtension
 
     public function isDebugEnabled(): bool
     {
+        // The /debug-menu page sets the dummy_menu option; show the outline there too.
+        if (!empty($this->menuContext->getOptions()['dummy_menu'])) {
+            return true;
+        }
+
         $request = $this->requestStack->getCurrentRequest();
         if ($request === null) {
             return $this->debugMenuSlotsEnabled;

@@ -1,0 +1,26 @@
+{% extends '@SurvosTabler/layout/base.html.twig' %}
+
+{% block title %}Debug Menu Slots · {{ parent() }}{% endblock %}
+
+{% block header %}
+  <twig:tabler:header
+    pretitle="Debug"
+    title="Menu Slots"
+    subtitle="Every slot is outlined and populated with dummy data"
+    :showActions="true"
+  />
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">Menu slot debug page</h3>
+      <p class="text-secondary mb-0">
+        This page sets the <code>dummy_menu</code> menu option, which turns on the
+        slot outline (the same overlay as <code>?debugMenuSlots</code>) and asks
+        <code>{{ 'Survos\\TablerBundle\\Menu\\DebugMenu' }}</code> to fill every slot
+        with sample items. Use it to see where each slot renders in the layout.
+      </p>
+    </div>
+  </div>
+{% endblock %}
