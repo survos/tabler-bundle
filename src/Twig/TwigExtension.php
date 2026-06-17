@@ -23,7 +23,15 @@ class TwigExtension extends AbstractExtension
         private array $config,
         private ContextService $contextService,
         private PageContext $pageContext,
+        private bool $adminToolbar = true,
     ) {
+    }
+
+    public function getGlobals(): array
+    {
+        return [
+            'tabler_admin_toolbar' => $this->adminToolbar,
+        ];
     }
 
     public function render(string $name, array $props = []): string

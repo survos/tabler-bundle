@@ -179,6 +179,10 @@ final class Configuration
             ->addDefaultsIfNotSet()
             ->children()
                 ->booleanNode('menu_slots')->defaultFalse()->end()
+                ->booleanNode('admin_toolbar')
+                    ->defaultValue('%env(bool:TABLER_ADMIN_TOOLBAR)%')
+                    ->info('Render the orange admin menu toolbar (navbar_admin) for admins/debug. Defaults to the TABLER_ADMIN_TOOLBAR env var (1); developers can set TABLER_ADMIN_TOOLBAR=0 in .env.local to hide it.')
+                ->end()
             ->end();
 
         return $rootNode;

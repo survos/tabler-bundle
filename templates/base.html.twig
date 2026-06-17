@@ -207,7 +207,7 @@
     {% endblock %}
 
     {% block navbar_admin %}
-        {% if is_granted('ROLE_ADMIN') or app.debug %}
+        {% if (tabler_admin_toolbar ?? true) and (is_granted('ROLE_ADMIN') or app.debug) %}
             {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) or tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
                 <header class="navbar-expand-md border-bottom d-print-none" style="background:var(--tblr-orange-lt,#fff3e0);font-size:.6875rem;line-height:1.1;">
                     <div class="{{ containerClass }}">

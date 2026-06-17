@@ -190,6 +190,9 @@ class SurvosTablerBundle extends AbstractUxBundle
         $builder->setParameter('survos_tabler.routes', $config['routes']);
         $builder->setParameter('survos_tabler.theme', $config['options']['theme']);
         $builder->setParameter('survos_tabler.debug.menu_slots', $config['debug']['menu_slots'] ?? false);
+        // Default the env var so .env.local alone can toggle it; explicit config still overrides.
+        $builder->setParameter('env(TABLER_ADMIN_TOOLBAR)', '1');
+        $builder->setParameter('survos_tabler.debug.admin_toolbar', $config['debug']['admin_toolbar'] ?? '%env(bool:TABLER_ADMIN_TOOLBAR)%');
         $builder->setParameter('survos_tabler.route_requirements', []); // Populated in compiler pass
 
         // === Core Services ===
@@ -301,6 +304,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$options', $config['options'])
             ->setArgument('$contextService', new Reference(ContextService::class))
             ->setArgument('$pageContext', new Reference(PageContext::class))
+            ->setArgument('$adminToolbar', '%survos_tabler.debug.admin_toolbar%')
             ->addTag('twig.extension');
 
         // === Twig Components we created (not generated from tabler) ===
