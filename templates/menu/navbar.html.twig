@@ -16,7 +16,12 @@
 {% endblock %}
 
 {% block item %}
-    {% if item.displayed %}
+    {# A submenu (set via MenuBuilderTrait::addSubmenu) whose children were all
+       filtered out — missing route, or failed #[IsGranted] permission check —
+       carries the 'submenu' flag but has no children. Drop it entirely rather
+       than render an empty dropdown or a broken link. #}
+    {% set is_empty_submenu = item.getExtra('submenu', false) and not item.hasChildren %}
+    {% if item.displayed and not is_empty_submenu %}
         {%- set is_dropdown = item.hasChildren and options.depth is not same as(0) -%}
         {%- set compact = options.compact|default(false) -%}
         {%- set dense = options.dense|default(false) -%}
@@ -61,7 +66,9 @@
     {%- set badge = item.getExtra('badge') -%}
     {%- set badgeValue = badge.value|default(badge) -%}
 
-    {% if item.hasChildren %}
+    {# An empty submenu (children filtered by route/permission) is dropped. #}
+    {% if item.getExtra('submenu', false) and not item.hasChildren %}
+    {% elseif item.hasChildren %}
         <div class="dropend">
             <a class="dropdown-item dropdown-toggle"
                href="#"

@@ -185,6 +185,17 @@ trait MenuBuilderTrait
         return $this->add($menu, $route, $rp, $label, icon: $icon, checkRouteExists: false);
     }
 
+    /**
+     * Declare a dropdown/submenu. The returned item is the parent you add
+     * children to.
+     *
+     * The 'submenu' extra marks this item as "intended to be a dropdown" so the
+     * navbar renderer can tell it apart from a leaf link. Children added via
+     * add() can be filtered out (missing route, and — in builders that apply it
+     * — a failed #[IsGranted] permission check), so a submenu can legitimately
+     * end up with zero children. When that happens the renderer drops the whole
+     * dropdown rather than show an empty menu or a label that links nowhere.
+     */
     protected function addSubmenu(
         ItemInterface $menu,
         string $label,

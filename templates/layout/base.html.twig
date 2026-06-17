@@ -6,7 +6,9 @@
     }
 }, _self) %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
 
 {% block javascripts %}
     {{ importmap('app') }}

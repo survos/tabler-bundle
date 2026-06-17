@@ -1,0 +1,32 @@
+.page-header .breadcrumb {
+    margin-bottom: 1rem;
+    font-size: .8rem;
+    text-transform: none;
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius-md);
+    padding: 8px;
+}
+
+.page-header .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+}
+
+.page-header .breadcrumb a {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    color: var(--tblr-secondary-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.page-header .breadcrumb-item.active,
+.page-header .breadcrumb a:hover {
+    color: var(--tblr-primary);
+}
+
+.page-header .nav.nav-tabs.nav-pills {
+    background: var(--tblr-bg-surface);
+}
