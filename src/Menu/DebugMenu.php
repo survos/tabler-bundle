@@ -54,16 +54,34 @@ final class DebugMenu implements EventSubscriberInterface
         $menu = $event->getMenu();
         $label = $this->slotLabel($slot);
 
-        // A heading, two plain items and a small submenu give a representative
-        // sample of what a real slot can render.
+        // Heading + a couple of plain links: the simplest slot content.
         $this->addHeading($menu, $label);
-
         $this->add($menu, uri: '#', label: $label . ' One', icon: 'tabler:point', checkRouteExists: false);
-        $this->add($menu, uri: '#', label: $label . ' Two', icon: 'tabler:point', checkRouteExists: false);
+        $this->add($menu, uri: '#', label: $label . ' Two', icon: 'tabler:point', checkRouteExists: false, badge: '3');
 
-        $submenu = $this->addSubmenu($menu, $label . ' More', icon: 'tabler:dots');
-        $this->add($submenu, uri: '#', label: 'Nested A', icon: 'tabler:chevron-right', checkRouteExists: false);
-        $this->add($submenu, uri: '#', label: 'Nested B', icon: 'tabler:chevron-right', checkRouteExists: false);
+        // A dropdown group built the way real app menus build them (addSubmenu +
+        // add() children), with a divider, a badge and a nested sub-dropdown so
+        // the debug page exercises the full dropdown render path — not just flat
+        // links.
+        $group = $this->addSubmenu($menu, $label . ' Group', icon: 'tabler:layout-grid');
+        $this->add($group, uri: '#', label: 'Action', icon: 'tabler:bolt', checkRouteExists: false);
+        $this->add($group, uri: '#', label: 'Another action', icon: 'tabler:bolt', checkRouteExists: false, badge: 'new');
+        $this->add($group, uri: '#', label: 'Separated', icon: 'tabler:flag', checkRouteExists: false, dividerBefore: true);
+
+        $nested = $this->addSubmenu($group, 'Nested group', icon: 'tabler:folder');
+        $this->add($nested, uri: '#', label: 'Nested A', icon: 'tabler:chevron-right', checkRouteExists: false);
+        $this->add($nested, uri: '#', label: 'Nested B', icon: 'tabler:chevron-right', checkRouteExists: false);
+
+        // A second, smaller dropdown.
+        $actions = $this->addSubmenu($menu, $label . ' Actions', icon: 'tabler:dots');
+        $this->add($actions, uri: '#', label: 'Do thing', icon: 'tabler:check', checkRouteExists: false);
+
+        // Empty-submenu demo: every child targets a missing route, so add()
+        // filters them all out and this submenu ends up with zero children. The
+        // navbar renderer must drop it entirely — nothing should render here.
+        // (Same shape an admin menu takes when IsGranted hides every child.)
+        $gated = $this->addSubmenu($menu, $label . ' Gated', icon: 'tabler:lock');
+        $this->add($gated, route: 'debug_menu_missing_route_' . strtolower($slot), label: 'Hidden item');
     }
 
     private function slotLabel(string $slot): string
