@@ -147,29 +147,36 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    <a href="{{ brandHref|trim }}">
+                <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3 d-flex align-items-center min-w-0">
+                    <a href="{{ brandHref|trim }}" class="d-inline-flex align-items-center flex-shrink-0 text-decoration-none">
                         {% block logo_mini %}
-                            {# Priority: logo_small, logo, title / abbr text, favicon fallback #}
-
                             {% if id.logo_small is defined and id.logo_small %}
                                 <img src="{{ id.logo_small }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
-
                             {% elseif id.logo is defined and id.logo %}
                                 <img src="{{ id.logo }}" class="navbar-brand-image" height="32" alt="{{ id.title|default('') }}">
-
                             {% elseif id.abbr is defined or id.title is defined %}
                                 {% block logo_large %}
-                                    <span>
-                                        {{ id.abbr|default(id.title|default('Tabler'))|raw }}
-                                    </span>
+                                    <span>{{ id.abbr|default(id.title|default('Museado'))|raw }}</span>
                                 {% endblock %}
-
                             {% else %}
-                                <img src="{{ asset('favicon-32x32.png') }}" class="navbar-brand-image" height="32" alt="Logo">
+                                <span>Museado</span>
                             {% endif %}
                         {% endblock %}
                     </a>
+
+                    {% set currentFolioTitle = app.request.attributes.get('current_folio_title') %}
+                    {% set route = app.request.attributes.get('_route') %}
+
+                    {% if route in ['app_folio_search', 'survos_folio_search'] %}
+                        {% set currentFolioTitle = resolvedPageTitle|striptags|trim %}
+                    {% endif %}
+
+                    {% if currentFolioTitle %}
+                        <span class="text-muted fw-normal mx-2 flex-shrink-0">/</span>
+                        <span class="fw-semibold text-body text-truncate d-inline-block" style="max-width: 360px;">
+                            {{ currentFolioTitle }}
+                        </span>
+                    {% endif %}
                 </div>
 
                 {% if tabler_menu_has_items(NAVBAR_PRIMARY) %}
