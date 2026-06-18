@@ -1,19 +1,14 @@
-.page-header .breadcrumb {
-    margin-bottom: 1rem;
+.page-breadcrumb .breadcrumb {
     font-size: .8rem;
     text-transform: none;
-    background: var(--tblr-bg-surface);
-    border: 1px solid var(--tblr-border-color);
-    border-radius: var(--tblr-border-radius-md);
-    padding: 8px;
 }
 
-.page-header .breadcrumb-item {
+.page-breadcrumb .breadcrumb-item {
     display: inline-flex;
     align-items: center;
 }
 
-.page-header .breadcrumb a {
+.page-breadcrumb .breadcrumb a {
     display: inline-flex;
     align-items: center;
     gap: .25rem;
@@ -22,11 +17,26 @@
     cursor: pointer;
 }
 
-.page-header .breadcrumb-item.active,
-.page-header .breadcrumb a:hover {
+.page-breadcrumb .breadcrumb-item.active,
+.page-breadcrumb .breadcrumb a:hover {
     color: var(--tblr-primary);
+    text-decoration: none;
 }
 
-.page-header .nav.nav-tabs.nav-pills {
-    background: var(--tblr-bg-surface);
+.page-nav .nav-underline {
+    flex-wrap: nowrap;
+    gap: 1rem;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.page-nav .nav-underline .nav-link {
+    --tblr-nav-link-hover-bg: transparent;
+    border-radius: 0 !important;
+    padding-inline: 0.25rem;
+}
+
+.page-nav .nav-underline .nav-link.active {
+    color: var(--tblr-primary);
+    border-bottom-color: var(--tblr-primary);
 }
