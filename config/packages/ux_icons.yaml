@@ -5,8 +5,117 @@ ux_icons:
     width: 1.25em
     height: 1.25em
 
+  # Menu subscribers resolve icons through IconService to concrete tabler:* names,
+  # which `ux:icons:lock` cannot discover from PHP. Declaring the menu vocabulary
+  # here as alias targets lets lock import the SVGs for apps that pin icons
+  # locally (on_demand: false). Keep in sync with IconService::ICON_ALIASES.
   aliases:
+    # brand / auth (login/logout/user intentionally use hugeicons for the chrome)
     brand: tabler:brand-tabler-filled
     login: hugeicons:login-circle-01
     logout: hugeicons:logout-circle-01
     user: hugeicons:user-circle
+    profile: tabler:user-circle
+    register: tabler:user-plus
+    users: tabler:users
+    password: tabler:lock
+
+    # navigation
+    home: tabler:home
+    dashboard: tabler:dashboard
+    menu: tabler:menu-2
+    back: tabler:arrow-left
+    forward: tabler:arrow-right
+
+    # crud
+    create: tabler:plus
+    new: tabler:plus
+    add: tabler:plus
+    edit: tabler:edit
+    delete: tabler:trash
+    remove: tabler:x
+    save: tabler:device-floppy
+    cancel: tabler:x
+    view: tabler:eye
+    show: tabler:eye
+    hide: tabler:eye-off
+    list: tabler:list
+    index: tabler:list
+    browse: tabler:list-search
+    grid: tabler:grid-dots
+
+    # actions
+    search: tabler:search
+    filter: tabler:filter
+    sort: tabler:arrows-sort
+    refresh: tabler:refresh
+    sync: tabler:refresh
+    download: tabler:download
+    upload: tabler:upload
+    export: tabler:file-export
+    import: tabler:file-import
+    print: tabler:printer
+    copy: tabler:copy
+    share: tabler:share
+    link: tabler:link
+    external: tabler:external-link
+
+    # status
+    success: tabler:check
+    error: tabler:x
+    warning: tabler:alert-triangle
+    info: tabler:info-circle
+    help: tabler:help
+    activity: tabler:activity
+
+    # settings
+    settings: tabler:settings
+    config: tabler:adjustments
+    admin: tabler:shield
+    tools: tabler:tools
+    commands: tabler:terminal-2
+
+    # content
+    file: tabler:file
+    folder: tabler:folder
+    image: tabler:photo
+    document: tabler:file-text
+    database: tabler:database
+    api: tabler:api
+    code: tabler:code
+
+    # social
+    github: tabler:brand-github
+    twitter: tabler:brand-twitter
+    facebook: tabler:brand-facebook
+    linkedin: tabler:brand-linkedin
+    youtube: tabler:brand-youtube
+
+    # misc
+    calendar: tabler:calendar
+    clock: tabler:clock
+    location: tabler:map-pin
+    globe: tabler:world
+    language: tabler:language
+    locale: tabler:world
+    star: tabler:star
+    heart: tabler:heart
+    bookmark: tabler:bookmark
+    notification: tabler:bell
+    email: tabler:mail
+    message: tabler:message
+
+    # arrows / toggle
+    up: tabler:arrow-up
+    down: tabler:arrow-down
+    left: tabler:arrow-left
+    right: tabler:arrow-right
+    dropdown: tabler:chevron-down
+    expand: tabler:chevron-down
+    collapse: tabler:chevron-up
+    check: tabler:check
+    close: tabler:x
+    plus: tabler:plus
+    minus: tabler:minus
+    more: tabler:dots
+    point: tabler:point
