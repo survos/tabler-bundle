@@ -12,6 +12,7 @@ use Survos\TablerBundle\Components\PageComponent;
 use Survos\TablerBundle\Components\Ui\DropdownComponent;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
+use Survos\TablerBundle\Menu\GitHubMenuSubscriber;
 use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
 use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\IconService;
@@ -242,6 +243,19 @@ class SurvosTablerBundle extends AbstractUxBundle
         $builder->register(MessengerMonitorMenuSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
+            ->setPublic(false);
+
+        // Fills the navbar AUTH slot with login/logout based on the configured routes;
+        // self-skips when no login/logout route exists.
+        $builder->register(\Survos\TablerBundle\Menu\AuthSlotMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(false);
+
+        $builder->register(GitHubMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$projectDir', '%kernel.project_dir%')
             ->setPublic(false);
 
         $iconConfig = $config['icons'] ?? [];
