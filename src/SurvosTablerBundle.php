@@ -258,6 +258,14 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$projectDir', '%kernel.project_dir%')
             ->setPublic(false);
 
+        // Docs dropdown: mirrors the project's docs/*.md (DocsMenuSubscriber + DocsController).
+        // $projectDir is injected via #[Autowire] on the constructor.
+        $builder->register(\Survos\TablerBundle\Menu\DocsMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(false);
+
+
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([
             'layout-navbar' => 'menu-2',

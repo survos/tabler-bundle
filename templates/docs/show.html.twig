@@ -1,0 +1,21 @@
+{% extends '@SurvosTabler/layout/base.html.twig' %}
+
+{% block title %}{{ title }} · Docs · {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="container-xl py-4">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title mb-0">
+                    {{ ux_icon('tabler:file-text', {class: 'icon me-2 text-muted'}) }}{{ title }}
+                </h1>
+                <div class="card-actions">
+                    <code class="small text-muted">docs/{{ path }}.md</code>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="markdown">{{ markdown|markdown_to_html }}</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
