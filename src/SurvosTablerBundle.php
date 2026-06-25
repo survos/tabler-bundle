@@ -62,7 +62,6 @@ class SurvosTablerBundle extends AbstractUxBundle
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-        $container->addCompilerPass($this);
         $this->addRouteLoaderCompilerPass($container);
     }
 
