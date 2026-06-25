@@ -42,6 +42,7 @@ final class IconService
         'list' => 'tabler:list',
         'index' => 'tabler:list',
         'browse' => 'tabler:list-search',
+        'issues' => 'tabler:list-check',
         'grid' => 'tabler:grid-dots',
 
         // Actions

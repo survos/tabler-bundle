@@ -29,7 +29,7 @@ final class GitHubMenuSubscriber
 
         $submenu = $this->addSubmenu($event->getMenu(), 'GitHub', 'github');
         $this->add($submenu, uri: $repoUrl, label: 'Repo', icon: 'github', external: true);
-        $this->add($submenu, uri: $repoUrl . '/issues', label: 'Issues', icon: 'list-check', external: true);
+        $this->add($submenu, uri: $repoUrl . '/issues', label: 'Issues', icon: 'issues', external: true);
         $this->add($submenu, uri: $this->newIssueUrl($repoUrl), label: 'New issue', icon: 'plus', external: true);
     }
 

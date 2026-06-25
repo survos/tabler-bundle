@@ -37,7 +37,7 @@ final class DocsMenuSubscriber
             return;
         }
 
-        $submenu = $this->addSubmenu($event->getMenu(), 'Docs', 'file-text');
+        $submenu = $this->addSubmenu($event->getMenu(), 'Docs', 'document');
         $this->buildMenu($submenu, $tree);
     }
 
@@ -88,7 +88,7 @@ final class DocsMenuSubscriber
     private function buildMenu(ItemInterface $menu, array $tree): void
     {
         foreach ($tree['files'] as $file) {
-            $this->add($menu, route: 'survos_tabler_doc', rp: ['path' => $file['path']], label: $file['label'], icon: 'file-text');
+            $this->add($menu, route: 'survos_tabler_doc', rp: ['path' => $file['path']], label: $file['label'], icon: 'document');
         }
         foreach ($tree['dirs'] as $name => $sub) {
             $child = $this->addSubmenu($menu, $this->label($name), 'folder');
