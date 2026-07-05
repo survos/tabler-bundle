@@ -2,8 +2,7 @@
 
 namespace Survos\TablerBundle\Translation;
 
-use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
@@ -14,12 +13,16 @@ use function Symfony\Component\String\u;
 class RoutesTranslationLoader implements LoaderInterface
 {
     public function __construct(
-        #[AutowireIterator(tag: 'controller.service_arguments')] private $taggedServices,
+        private readonly RouterInterface $router,
     ) {
     }
 
     /**
-     * Loads a locale by going through the methods and looking for #[Route].  If found, it uses the humanized method name for the default translation
+     * Loads a locale by going through the route collection and humanizing each route name.
+     *
+     * Reads route names straight from the router (no controller reflection/instantiation --
+     * the route name is already resolved there, whether it came from a #[Route] attribute or
+     * YAML/XML config), so this never touches controller services or their dependencies.
      *
      * @param mixed  $resource A resource
      * @param string $domain   The domain
@@ -32,22 +35,9 @@ class RoutesTranslationLoader implements LoaderInterface
     public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $translations = [];
-        $taggedServices = $this->taggedServices; // autowired 'container.service_subscriber'
-        foreach ($taggedServices as $controllerClass) {
-            $reflectionClass = new \ReflectionClass($controllerClass);
-            foreach ($reflectionClass->getMethods() as $method) {
-                    foreach ($method->getAttributes(Route::class) as $attribute) {
-                        $instance = $attribute->newInstance();
-                        $name = $instance->name;
-                        if ($name === null) {
-                            continue;
-                        }
-                        $name = str_replace('app_', '', $name);
-                        $candidate = u($name)->snake()->replace('_', ' ')->title()->toString();
-                        $translations[$instance->name] = $candidate;
-
-                    }
-                }
+        foreach ($this->router->getRouteCollection()->all() as $name => $route) {
+            $label = str_replace('app_', '', $name);
+            $translations[$name] = u($label)->snake()->replace('_', ' ')->title()->toString();
         }
 
         $catalogue = new MessageCatalogue(

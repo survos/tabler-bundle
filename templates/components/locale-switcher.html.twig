@@ -12,7 +12,7 @@
         {% endif %}
 
         {% if showFullName %}
-            <span class="nav-link-title ms-1">{{ this.currentLocale|language_name(this.currentLocale)|u.title }}</span>
+            <span class="nav-link-title ms-1">{{ this.currentLocale|language_name(this.currentLocale) }}</span>
         {% else %}
             <span class="nav-link-title ms-1">{{ this.currentLocale|upper }}</span>
         {% endif %}
@@ -28,7 +28,7 @@
                 {% endif %}
 
                 <span class="{{ locale.current ? 'fw-bold' : '' }}">
-                    {{ locale.code|language_name(locale.code)|u.title }}
+                    {{ locale.code|language_name(locale.code) }}
                 </span>
 
                 {% if not locale.current and this.currentLocale != locale.code %}

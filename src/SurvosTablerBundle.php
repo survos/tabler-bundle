@@ -264,6 +264,17 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setAutoconfigured(true)
             ->setPublic(false);
 
+        // Resolves + persists the request locale (query > session > user preference > Accept-Language).
+        // Persisting to the user self-skips if the app's User class doesn't implement
+        // HasPreferredLocaleInterface, or Doctrine ORM isn't installed.
+        $builder->register(\Survos\TablerBundle\EventSubscriber\LocaleSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$enabledLocales', '%kernel.enabled_locales%')
+            ->setArgument('$security', new Reference('security.helper', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->setArgument('$em', new Reference('doctrine.orm.entity_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->setPublic(false);
+
 
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([
