@@ -38,7 +38,12 @@ final class AuthSlotMenuSubscriber
     {
         $menu = $event->getMenu();
 
-        if ($this->security?->getUser()) {
+        if ($user = $this->security?->getUser()) {
+            // Shows the logged-in identity (email/username) in the navbar — otherwise
+            // "logged in" and "logged out" look identical except for which of
+            // Login/Register vs Logout appears, which is easy to miss.
+            $this->addHeading($menu, $user->getUserIdentifier());
+
             if ($logout = $this->route('logout', ['app_logout', 'auth_logout', 'logout'])) {
                 $this->add($menu, $logout, label: 'Logout', icon: 'logout');
             }
