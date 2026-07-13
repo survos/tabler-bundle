@@ -6,7 +6,7 @@
        data-bs-toggle="dropdown"
        aria-expanded="false">
         {% if showFlag %}
-            <span class="flag flag-{{ this.locales|filter(l => l.current)|first.flag ?? this.currentLocale }}"></span>
+            <span class="fi fi-{{ this.locales|filter(l => l.current)|first.flag ?? this.currentLocale }}"></span>
         {% else %}
             {{ ux_icon('tabler:language', {class: 'icon'}) }}
         {% endif %}
@@ -24,7 +24,7 @@
                class="dropdown-item{{ locale.current ? ' active' : '' }}"
                {% if locale.current %}aria-current="true"{% endif %}>
                 {% if showFlag %}
-                    <span class="flag flag-{{ locale.flag }} me-2"></span>
+                    <span class="fi fi-{{ locale.flag }} me-2"></span>
                 {% endif %}
 
                 <span class="{{ locale.current ? 'fw-bold' : '' }}">

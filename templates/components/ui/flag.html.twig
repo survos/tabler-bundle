@@ -1,5 +1,8 @@
-{# templates/components/ui/flag.html.twig v4.8 #}
-<span class="flag{% if size %} flag-{{ size }}{% endif %} flag-country-{{ flag | default('pl') | lower }}{% if class %} {{ class }}{% endif %}"></span>
+{# templates/components/ui/flag.html.twig v4.8 -- uses flag-icons (fi fi-{code}), not a
+   Tabler-shipped sprite: @tabler/core (the free npm package this bundle vendors) doesn't
+   actually include flag CSS, unlike Tabler's full commercial/demo theme. flag-icons sizes
+   via width (4:3 aspect ratio built in), not a discrete size class. #}
+<span class="fi fi-{{ flag | default('pl') | lower }}{% if class %} {{ class }}{% endif %}"{% if size %} style="width: {{ size }}px"{% endif %}></span>
 
 {#
 === Original Liquid (flag.html) ===
