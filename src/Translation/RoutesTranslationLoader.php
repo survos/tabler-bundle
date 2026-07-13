@@ -24,6 +24,11 @@ class RoutesTranslationLoader implements LoaderInterface
      * the route name is already resolved there, whether it came from a #[Route] attribute or
      * YAML/XML config), so this never touches controller services or their dependencies.
      *
+     * Before humanizing, checks common_route_words.php for the route name's last
+     * underscore-separated segment (e.g. "tenant_about" -> "about") — a shared dictionary of
+     * concepts (about, contact, settings, ...) that recur across apps under different
+     * app-specific prefixes, so real non-English wording doesn't have to be re-authored per app.
+     *
      * @param mixed  $resource A resource
      * @param string $domain   The domain
      *
@@ -34,10 +39,15 @@ class RoutesTranslationLoader implements LoaderInterface
      */
     public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
+        $commonWords = self::commonWords($locale);
+
         $translations = [];
         foreach ($this->router->getRouteCollection()->all() as $name => $route) {
             $label = str_replace('app_', '', $name);
-            $translations[$name] = u($label)->snake()->replace('_', ' ')->title()->toString();
+            $lastSegment = str_contains($label, '_') ? substr($label, strrpos($label, '_') + 1) : $label;
+
+            $translations[$name] = $commonWords[$lastSegment]
+                ?? u($label)->snake()->replace('_', ' ')->title()->toString();
         }
 
         $catalogue = new MessageCatalogue(
@@ -47,6 +57,15 @@ class RoutesTranslationLoader implements LoaderInterface
             ]
         );
         return $catalogue;
+    }
+
+    /** @return array<string, string> word => translation, for the given locale ([] if none defined) */
+    private static function commonWords(string $locale): array
+    {
+        static $dictionary = null;
+        $dictionary ??= require __DIR__ . '/common_route_words.php';
+
+        return $dictionary[$locale] ?? [];
     }
 
 }
