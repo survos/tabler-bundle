@@ -244,6 +244,22 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setAutoconfigured(true)
             ->setPublic(false);
 
+        // Inspector (inspector-apm/inspector-symfony) integration: a navbar link
+        // to the app's dashboard, plus a filter that drops 404 "noise" transactions
+        // so bot/crawler probes don't burn ingestion credits. Both are soft
+        // dependencies, only registered when the library is actually installed.
+        if (class_exists(\Inspector\Inspector::class)) {
+            $builder->register(\Survos\TablerBundle\Menu\InspectorMenuSubscriber::class)
+                ->setAutowired(true)
+                ->setAutoconfigured(true)
+                ->setPublic(false);
+
+            $builder->register(\Survos\TablerBundle\EventSubscriber\InspectorNoiseFilterSubscriber::class)
+                ->setAutowired(true)
+                ->setAutoconfigured(true)
+                ->setPublic(false);
+        }
+
         // Fills the navbar AUTH slot with login/logout based on the configured routes;
         // self-skips when no login/logout route exists.
         $builder->register(\Survos\TablerBundle\Menu\AuthSlotMenuSubscriber::class)
