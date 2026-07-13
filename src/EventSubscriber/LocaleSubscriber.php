@@ -46,6 +46,14 @@ final class LocaleSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+
+        // API Platform marks stateless operations with the `_stateless` request attribute; touching
+        // the session here (even a read) would trip AbstractSessionListener's "session used while
+        // declared stateless" guard, so skip locale/session resolution entirely for those requests.
+        if ($request->attributes->get('_stateless', false)) {
+            return;
+        }
+
         $user = $this->security?->getUser();
 
         $switchedLocale = $this->resolveValid($request->query->get('_locale'));
