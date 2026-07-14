@@ -36,18 +36,20 @@
                 {% if child.extras.divider|default(false) %}
                     <div class="dropdown-divider"></div>
                 {% else %}
+                    {% set childDomain = child.extra('translation_domain', 'messages') %}
                     <a class="dropdown-item" href="{{ child.uri }}">
                         {% if childIcon %}{{ icon(childIcon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
-                        {{ child.label|trans }}
+                        {{ childDomain is same as(false) ? child.label : child.label|trans({}, childDomain) }}
                     </a>
                 {% endif %}
             {% endfor %}
         </div>
     {% else %}
         {# Simple link (login, etc) #}
+        {% set domain = item.extra('translation_domain', 'messages') %}
         <a class="nav-link" href="{{ item.uri }}">
             {% if iconName %}{{ icon(iconName, {class: 'icon'}) }}{% endif %}
-            <span class="nav-link-title">{{ item.label|trans }}</span>
+            <span class="nav-link-title">{{ domain is same as(false) ? item.label : item.label|trans({}, domain) }}</span>
         </a>
     {% endif %}
 {% endblock %}
