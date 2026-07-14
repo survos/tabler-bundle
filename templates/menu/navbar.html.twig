@@ -89,7 +89,7 @@
             </div>
         </div>
     {% else %}
-        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}">
+        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
             {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
             {% if badgeValue %}

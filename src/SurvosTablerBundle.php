@@ -271,6 +271,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setArgument('$projectDir', '%kernel.project_dir%')
+            ->setArgument('$githubRepo', $config['app']['links']['github'] ?? null)
             ->setPublic(false);
 
         // Docs dropdown: mirrors the project's docs/*.md (DocsMenuSubscriber + DocsController).
