@@ -30,6 +30,8 @@ return [
         'terms' => 'Terms',
         'show' => 'Details',
         'gallery' => 'Gallery',
+        'timeline' => 'Timeline',
+        'map' => 'Map',
     ],
     'hu' => [
         'home' => 'Kezdőlap',
@@ -46,6 +48,8 @@ return [
         'terms' => 'Feltételek',
         'show' => 'Részletek',
         'gallery' => 'Galéria',
+        'timeline' => 'Idővonal',
+        'map' => 'Térkép',
     ],
     'fr' => [
         'home' => 'Accueil',
@@ -62,6 +66,8 @@ return [
         'terms' => 'Conditions',
         'show' => 'Détails',
         'gallery' => 'Galerie',
+        'timeline' => 'Chronologie',
+        'map' => 'Carte',
     ],
     'es' => [
         'home' => 'Inicio',
@@ -78,6 +84,8 @@ return [
         'terms' => 'Términos',
         'show' => 'Detalles',
         'gallery' => 'Galería',
+        'timeline' => 'Cronología',
+        'map' => 'Mapa',
     ],
     'hi' => [
         'home' => 'होम',
@@ -94,6 +102,8 @@ return [
         'terms' => 'शर्तें',
         'show' => 'विवरण',
         'gallery' => 'गैलरी',
+        'timeline' => 'समयरेखा',
+        'map' => 'नक्शा',
     ],
     'hr' => [
         'home' => 'Početna',
@@ -110,6 +120,8 @@ return [
         'terms' => 'Uvjeti',
         'show' => 'Detalji',
         'gallery' => 'Galerija',
+        'timeline' => 'Vremenska crta',
+        'map' => 'Karta',
     ],
     // Switzerland's other national languages (fr already covered above) — suisse.fortepan.eu's audience.
     'de' => [
@@ -127,6 +139,8 @@ return [
         'terms' => 'Nutzungsbedingungen',
         'show' => 'Details',
         'gallery' => 'Galerie',
+        'timeline' => 'Zeitleiste',
+        'map' => 'Karte',
     ],
     'it' => [
         'home' => 'Home',
@@ -143,6 +157,8 @@ return [
         'terms' => 'Termini',
         'show' => 'Dettagli',
         'gallery' => 'Galleria',
+        'timeline' => 'Cronologia',
+        'map' => 'Mappa',
     ],
     // Rumantsch Grischun (standardized written form) — a genuinely small, low-resource
     // language for MT/translation confidence; treat these as a reasonable first pass, not
@@ -162,5 +178,7 @@ return [
         'terms' => 'Cundiziuns',
         'show' => 'Detagls',
         'gallery' => 'Galeria',
+        'timeline' => 'Cronologia',
+        'map' => 'Charta',
     ],
 ];
