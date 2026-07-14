@@ -23,8 +23,8 @@
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        <link rel="icon" href="/favicon.ico" sizes="any">
         {# manifest link intentionally omitted — pwa-bundle injects <link rel="manifest"> when installed #}
         <link rel="stylesheet" type="text/css" href="{{ asset('bundles/survostabler/tabler/styles.css') }}">
     {% endblock %}
