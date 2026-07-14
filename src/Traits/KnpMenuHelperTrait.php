@@ -109,6 +109,7 @@ trait KnpMenuHelperTrait
         array $translationParams = [], // e.g. count
         ?string $style = null,
         ?string $baseUrl = null, // if set, prepend to route, to switch between subdomains and main domain
+        array $dataAttributes = [], // e.g. ['tour' => 'tenant-search'] -> data-tour="tenant-search" on the rendered <a>
     ): self|ItemInterface { // for nesting.  Leaves only, requires route or uri.
 
         assert(! ($route && $uri));
@@ -234,6 +235,9 @@ trait KnpMenuHelperTrait
         $options = $this->menuOptions($options);
         $this->setChildOptions($child, $options);
         $child->setExtra('safe_label', true);
+        if ($dataAttributes) {
+            $child->setExtra('data_attributes', $dataAttributes);
+        }
         $child->setExtra('is_submenu', $options['is_submenu']);
         $child->setExtra('is_heading', $options['style'] == self::HEADING);
         if ($options['style'] === self::HEADING) {

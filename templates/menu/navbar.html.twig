@@ -49,7 +49,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}">
+                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}"{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                     {% if badgeValue %}
@@ -89,7 +89,7 @@
             </div>
         </div>
     {% else %}
-        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
+        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
             {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
             {% if badgeValue %}
