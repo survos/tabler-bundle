@@ -6,6 +6,8 @@ namespace Survos\TablerBundle\Menu;
 
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -16,9 +18,12 @@ final class GitHubMenuSubscriber
     public function __construct(
         private readonly string $projectDir,
         private readonly RequestStack $requestStack,
+        #[Autowire('%kernel.environment%')]
+        private readonly string $environment,
         protected readonly ?IconService $iconService = null,
         /** survos_tabler.yaml's app.links.github — takes priority over .git/config auto-detection (which silently finds nothing once a deploy strips .git, e.g. most buildpack/Dokku slugs). */
         private readonly ?string $githubRepo = null,
+        private readonly ?Security $security = null,
     ) {}
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
@@ -42,6 +47,13 @@ final class GitHubMenuSubscriber
     #[AsEventListener(event: MenuEvent::NAVBAR_MENU)]
     public function onNavbarMenu(MenuEvent $event): void
     {
+        // Filing an issue with the page URL pre-filled is handy while everyone hitting the app
+        // is effectively a tester, but a raw "file a bug against our repo" link has no place in
+        // front of production end users -- gate it to admins, or any environment that isn't prod.
+        if ('dev' !== $this->environment && !($this->security?->isGranted('ROLE_ADMIN') ?? false)) {
+            return;
+        }
+
         // Not "Help" -- host apps commonly already have their own Help item (e.g. openfoto's
         // AppMenu links to a docs site under that exact label) in this same slot; reusing it here
         // would just render two confusingly-identical "Help" entries side by side.
