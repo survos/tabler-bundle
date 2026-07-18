@@ -40,3 +40,11 @@
     color: var(--tblr-primary);
     border-bottom-color: var(--tblr-primary);
 }
+
+/* PAGE_ACTIONS/PAGE_NAV rendered as a bordered pill bar (templates/menu/actions.html.twig) —
+   plain .nav has no Bootstrap active styling of its own (that's scoped to .nav-pills/.nav-tabs),
+   so matcher.isCurrent(item)'s "active" class on .nav-link was a no-op without this. */
+.nav.border.rounded .nav-link.active {
+    background-color: var(--tblr-primary);
+    color: #fff;
+}
