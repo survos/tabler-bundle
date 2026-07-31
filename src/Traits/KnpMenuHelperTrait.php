@@ -175,6 +175,15 @@ trait KnpMenuHelperTrait
             return $this;
         }
 
+        // Dev-only (assert() is a no-op in prod) -- a menu item with neither a route nor a uri
+        // renders as a dead href="" link in every template that assumes item.uri is always
+        // meaningful (see menu/navbar.html.twig's item blocks). addHeading() (style ===
+        // self::HEADING) is the one legitimate non-interactive case.
+        assert(
+            $style === self::HEADING || $route !== null || $uri !== null,
+            sprintf('Menu item "%s" has neither a route nor a uri -- it would render as a dead href="" link. Pass route/uri, or use addHeading() for a non-interactive label.', $label ?: '(unlabeled)'),
+        );
+
         $options['label'] = $label;
         if (! $id) {
             $id = $this->createId($menu);

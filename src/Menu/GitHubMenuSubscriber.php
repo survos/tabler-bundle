@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 final class GitHubMenuSubscriber
 {
     use MenuBuilderTrait;
+    use SettingsAwareMenuTrait;
 
     public function __construct(
         private readonly string $projectDir,
@@ -51,6 +52,14 @@ final class GitHubMenuSubscriber
         // is effectively a tester, but a raw "file a bug against our repo" link has no place in
         // front of production end users -- gate it to admins, or any environment that isn't prod.
         if ('dev' !== $this->environment && !($this->security?->isGranted('ROLE_ADMIN') ?? false)) {
+            return;
+        }
+
+        // Per-user opt-out (default on, matching the always-on behavior before this setting
+        // existed) via survos_settings.yaml's show_github -- see SettingsAwareMenuTrait. Only
+        // the user-facing item; the admin-bar copy (onAdminNavbarMenu) is a dev tool and stays
+        // unconditional.
+        if (!$this->settingEnabled('show_github', true)) {
             return;
         }
 

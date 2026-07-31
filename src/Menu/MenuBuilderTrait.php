@@ -95,6 +95,11 @@ trait MenuBuilderTrait
         bool $if = true,
         bool $inferIcon = true,
         bool $checkRouteExists = true,
+        // addHeading() is the one legitimate non-interactive item; everything else must
+        // resolve to a real href, or every template that renders `href="{{ item.uri }}"`
+        // (menu/auth.html.twig, menu/navbar.html.twig, ...) silently degrades to a dead
+        // href="" link -- see the assert() below.
+        bool $allowNoLink = false,
     ): ItemInterface {
         if (!$if) {
             return $menu;
@@ -112,6 +117,15 @@ trait MenuBuilderTrait
         if ($route && $checkRouteExists && !$this->routeExists($route, $rp)) {
             return $menu;
         }
+
+        // Dev-only (assert() is a no-op in prod, same idiom KnpMenuHelperTrait::add() already
+        // uses for the opposite caller mistake, both route AND uri set) -- catches "forgot to
+        // pass uri/route" at the call site instead of a silently-broken href="" link discovered
+        // by clicking around, or never discovered at all.
+        assert(
+            $allowNoLink || $route !== null || $uri !== null,
+            sprintf('Menu item "%s" has neither a route nor a uri -- it would render as a dead href="" link. Pass route/uri, or use addHeading() for a non-interactive label.', $label ?? '(unlabeled)'),
+        );
 
         $label ??= $this->routeToLabel($route ?? $uri ?? '');
         $id = self::slugger()->slug($label ?: 'item')->toString() . '_' . bin2hex(random_bytes(4));
@@ -225,7 +239,7 @@ trait MenuBuilderTrait
         string $label,
         ?string $icon = null,
     ): ItemInterface {
-        $child = $this->add($menu, label: $label, icon: $icon, inferIcon: false, checkRouteExists: false);
+        $child = $this->add($menu, label: $label, icon: $icon, inferIcon: false, checkRouteExists: false, allowNoLink: true);
         $child->setExtra('heading', true);
         $child->setAttribute('class', 'menu-heading');
         return $child;

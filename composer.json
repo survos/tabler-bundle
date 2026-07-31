@@ -37,6 +37,7 @@
         "rector/rector": "^2.0",
         "slevomat/coding-standard": "^8",
         "survos/auth-bundle": "^2.5",
+        "survos/settings-bundle": "^2.5",
         "symfony/console": "^8.1",
         "symfony/translation": "^8.1"
     },
@@ -48,6 +49,7 @@
         "test-phpstan": "vendor/bin/phpstan analyse"
     },
     "suggest": {
+        "survos/settings-bundle": "Lets menu subscribers gate an item behind a setting via SettingsAwareMenuTrait::settingEnabled().",
         "psr/log-implementation": "If you wish to enable logging features, provide an PSR-3 logger.",
         "monolog/monolog": "Great logger to use, but you can pick any PSR-3 logger you wish.",
         "psr/cache-implementation": "If you wish to enable caching features, provide an PSR-6 cache implementation.",

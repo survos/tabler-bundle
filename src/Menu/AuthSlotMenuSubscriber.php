@@ -38,12 +38,11 @@ final class AuthSlotMenuSubscriber
     {
         $menu = $event->getMenu();
 
-        if ($user = $this->security?->getUser()) {
-            // Shows the logged-in identity (email/username) in the navbar — otherwise
-            // "logged in" and "logged out" look identical except for which of
-            // Login/Register vs Logout appears, which is easy to miss.
-            $this->addHeading($menu, $user->getUserIdentifier());
-
+        if ($this->security?->getUser()) {
+            // The logged-in identity (email/username) renders next to the avatar itself
+            // (menu/auth.html.twig's root block, via app.user) rather than as a dropdown item —
+            // addHeading() has no route/uri, so the generic item block here rendered it as a
+            // dead href="" link, indistinguishable from a real action.
             if ($logout = $this->route('logout', ['app_logout', 'auth_logout', 'logout'])) {
                 // Label = route name, domain 'routing': lets RoutesTranslationLoader resolve it
                 // via common_route_words.php (already has login/register/logout in all locales),
