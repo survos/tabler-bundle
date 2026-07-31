@@ -14,6 +14,7 @@ use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
 use Survos\TablerBundle\Menu\GitHubMenuSubscriber;
 use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
+use Survos\TablerBundle\Menu\RabbitMqMenuSubscriber;
 use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
@@ -95,6 +96,15 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // Set up Twig globals
         $this->configureTwigGlobals($container);
+
+        // Soft-wire RabbitMqMenuSubscriber from state-bundle's parameters, if present
+        // (state-bundle's prependExtension() has already run for all bundles by now).
+        if ($container->hasParameter('survos_state.queue_driver')
+            && $container->hasDefinition(RabbitMqMenuSubscriber::class)) {
+            $container->getDefinition(RabbitMqMenuSubscriber::class)
+                ->setArgument('$queueDriver', $container->getParameter('survos_state.queue_driver'))
+                ->setArgument('$asyncTransportDsn', $container->getParameter('survos_state.async_transport_dsn'));
+        }
     }
 
     private function collectRouteRequirements(ContainerBuilder $container): array
@@ -240,6 +250,14 @@ class SurvosTablerBundle extends AbstractUxBundle
         // Links to zenstruck/messenger-monitor when that (third-party) bundle is
         // installed; self-skips at render time when its route is absent.
         $builder->register(MessengerMonitorMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(false);
+
+        // Links to the RabbitMQ management console when state-bundle is configured
+        // with queue_driver: rabbitmq. $queueDriver/$asyncTransportDsn are bound in
+        // process() once survos_state's container parameters are known to exist.
+        $builder->register(RabbitMqMenuSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setPublic(false);

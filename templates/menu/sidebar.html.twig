@@ -18,7 +18,7 @@
     <li class="nav-item{% if is_dropdown %} dropdown{% endif %}{% if item.isCurrent %} active{% endif %}">
         {% if is_dropdown %}
             <a class="nav-link dropdown-toggle" href="#navbar-{{ item.name|slug }}" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                {% if icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ ux_icon('tabler:' ~ icon) }}</span>{% endif %}
+                {% if icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ ux_icon(icon) }}</span>{% endif %}
                 <span class="nav-link-title">{{ block('label') }}</span>
             </a>
             <div class="dropdown-menu">
@@ -28,7 +28,7 @@
             </div>
         {% else %}
             <a class="nav-link" href="{{ item.uri }}">
-                {% if icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ ux_icon('tabler:' ~ icon) }}</span>{% endif %}
+                {% if icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ ux_icon(icon) }}</span>{% endif %}
                 <span class="nav-link-title">{{ block('label') }}</span>
                 {% if badgeValue %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>{% endif %}
             </a>
@@ -44,7 +44,7 @@
 {% if item.hasChildren %}
     <div class="dropend">
         <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-            {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
+            {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
         </a>
         <div class="dropdown-menu">
@@ -55,7 +55,7 @@
     </div>
 {% else %}
     <a class="dropdown-item" href="{{ item.uri }}">
-        {% if icon %}{{ ux_icon('tabler:' ~ icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
+        {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
         {{ block('label') }}
         {% if badgeValue %}<span class="badge badge-sm bg-green-lt text-uppercase ms-auto">{{ badgeValue }}</span>{% endif %}
     </a>
