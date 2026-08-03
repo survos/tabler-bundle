@@ -55,7 +55,16 @@ final class RabbitMqMenuSubscriber
         }
 
         $secure = str_starts_with($dsn, 'phpamqplibs://') || str_starts_with($dsn, 'amqps://');
+        $base = sprintf('%s://%s:%d', $secure ? 'https' : 'http', $host, $secure ? 15671 : 15672);
 
-        return sprintf('%s://%s:%d', $secure ? 'https' : 'http', $host, $secure ? 15671 : 15672);
+        // The management UI's vhost filter on #/queues is a client-side dropdown
+        // (stored in the browser's own localStorage), not part of the URL — there is
+        // no "#/queues/:vhost" list route. #/vhosts/:id is the closest real deep link:
+        // that vhost's own page (its exchanges, permissions, users). Confirmed against
+        // a live rabbitmq:4-management container's dispatcher.js.
+        $vhost = trim((string) parse_url($dsn, PHP_URL_PATH), '/');
+        $vhost = explode('/', $vhost)[0] ?: '/'; // '' (no path segment) means the default vhost
+
+        return $base . '/#/vhosts/' . rawurlencode($vhost);
     }
 }
