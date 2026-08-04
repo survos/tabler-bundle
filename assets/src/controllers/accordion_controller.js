@@ -1,6 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 
 /* stimulusFetch: 'lazy' */
+/**
+ * @value  accordionId  Identifies the accordion in dispatched event details; falls back to the element's id.
+ */
 export default class extends Controller {
     static values = {
         accordionId: String,

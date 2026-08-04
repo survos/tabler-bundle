@@ -16,11 +16,30 @@
                 "webpackMode": "eager",
                 "fetch": "lazy",
                 "enabled": true
+            },
+            "clipboard": {
+                "main": "src/controllers/clipboard_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
+            },
+            "closeable": {
+                "main": "src/controllers/closeable_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
+            },
+            "tooltip": {
+                "main": "src/controllers/tooltip_controller.js",
+                "webpackMode": "eager",
+                "fetch": "lazy",
+                "enabled": true
       }
     },
     "importmap": {
       "@hotwired/stimulus": "^3.2.2",
-      "flag-icons/css/flag-icons.min.css": "^7.5.0"
+      "flag-icons/css/flag-icons.min.css": "^7.5.0",
+      "@floating-ui/dom": "^1.8.0"
     },
     "autoimport": {}
   },
