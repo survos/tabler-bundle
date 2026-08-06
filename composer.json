@@ -28,7 +28,7 @@
         "twig/html-extra": "^3.24",
         "twig/intl-extra": "^3.22",
         "twig/string-extra": "^3.22",
-        "twig/twig": "^3.24"
+        "twig/twig": "^3.24|^4.0"
     },
     "require-dev": {
         "meyfa/php-svg": "^0.16.1",
