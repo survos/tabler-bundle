@@ -54,7 +54,8 @@ trait KnpMenuHelperTrait
             icon: $icon,
             id: $id,
             style: $style,
-            returnItem: true // get the child, not the menu
+            returnItem: true, // get the child, not the menu
+            isSubmenu: true,
         );
         if ($translationDomain) {
             $subMenu->setExtra('translation_domain', $translationDomain);
@@ -110,6 +111,7 @@ trait KnpMenuHelperTrait
         ?string $style = null,
         ?string $baseUrl = null, // if set, prepend to route, to switch between subdomains and main domain
         array $dataAttributes = [], // e.g. ['tour' => 'tenant-search'] -> data-tour="tenant-search" on the rendered <a>
+        bool $isSubmenu = false, // internal: set by addSubmenu() -- a submenu toggle is a legitimate route-less item, see the assert below
     ): self|ItemInterface { // for nesting.  Leaves only, requires route or uri.
 
         assert(! ($route && $uri));
@@ -178,9 +180,10 @@ trait KnpMenuHelperTrait
         // Dev-only (assert() is a no-op in prod) -- a menu item with neither a route nor a uri
         // renders as a dead href="" link in every template that assumes item.uri is always
         // meaningful (see menu/navbar.html.twig's item blocks). addHeading() (style ===
-        // self::HEADING) is the one legitimate non-interactive case.
+        // self::HEADING) and addSubmenu() (a dropdown toggle, not a link -- $isSubmenu) are
+        // the two legitimate non-interactive cases.
         assert(
-            $style === self::HEADING || $route !== null || $uri !== null,
+            $style === self::HEADING || $isSubmenu || $route !== null || $uri !== null,
             sprintf('Menu item "%s" has neither a route nor a uri -- it would render as a dead href="" link. Pass route/uri, or use addHeading() for a non-interactive label.', $label ?: '(unlabeled)'),
         );
 
