@@ -2,7 +2,9 @@
 {% extends '@KnpMenu/menu.html.twig' %}
 
 {% block list %}
-<ul {{ html_attr(listAttributes) }}>
+{% set ra = options.rootAttributes|default({}) %}
+{% set merged = listAttributes|merge(ra) %}
+<ul {{ html_attr(merged) }}>
     {{ block('children') }}
 </ul>
 {% endblock %}
