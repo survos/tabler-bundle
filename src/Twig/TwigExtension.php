@@ -24,6 +24,7 @@ class TwigExtension extends AbstractExtension
         private ContextService $contextService,
         private PageContext $pageContext,
         private bool $adminToolbar = true,
+        private bool $faviconEnabled = true,
     ) {
     }
 
@@ -31,6 +32,7 @@ class TwigExtension extends AbstractExtension
     {
         return [
             'tabler_admin_toolbar' => $this->adminToolbar,
+            'tabler_favicon_enabled' => $this->faviconEnabled,
         ];
     }
 

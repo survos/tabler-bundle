@@ -17,6 +17,7 @@ final class Configuration
             ->children()
                 ->append($this->getIconsConfig())
                 ->append($this->getAppConfig())
+                ->append($this->getFaviconConfig())
                 ->append($this->getRoutesConfig())
                 ->append($this->getDebugConfig())
                 ->append($this->getOptionsConfig())
@@ -124,6 +125,39 @@ final class Configuration
                             ->end()
                         ->end()
                     ->end()
+                ->end()
+            ->end();
+
+        return $rootNode;
+    }
+
+    private function getFaviconConfig(): ArrayNodeDefinition
+    {
+        $treeBuilder = new TreeBuilder('favicon');
+        $rootNode = $treeBuilder->getRootNode();
+
+        $rootNode
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->booleanNode('enabled')
+                    ->defaultTrue()
+                    ->info('Serve a dynamic SVG favicon at /favicon.svg so apps get a useful icon without a favicon-generator workflow.')
+                ->end()
+                ->scalarNode('text')
+                    ->defaultNull()
+                    ->info('1-2 characters shown on the icon. Defaults to initials derived from app.code.')
+                ->end()
+                ->scalarNode('background')
+                    ->defaultValue('#206bc4')
+                    ->info('Background fill, e.g. a distinct color per environment (prod/wip/dev/test).')
+                ->end()
+                ->scalarNode('foreground')
+                    ->defaultValue('#ffffff')
+                    ->info('Text color.')
+                ->end()
+                ->enumNode('shape')
+                    ->values(['square', 'rounded', 'circle'])
+                    ->defaultValue('rounded')
                 ->end()
             ->end();
 

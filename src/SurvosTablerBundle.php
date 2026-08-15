@@ -16,6 +16,7 @@ use Survos\TablerBundle\Menu\GitHubMenuSubscriber;
 use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
 use Survos\TablerBundle\Menu\RabbitMqMenuSubscriber;
 use Survos\TablerBundle\Service\ContextService;
+use Survos\TablerBundle\Service\FaviconService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
 use Survos\TablerBundle\Service\MenuDispatcher;
@@ -197,6 +198,7 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // === Parameters ===
         $builder->setParameter('survos_tabler.config', $config);
+        $builder->setParameter('survos_tabler.favicon.enabled', $config['favicon']['enabled'] ?? true);
         $builder->setParameter('survos_tabler.routes', $config['routes']);
         $builder->setParameter('survos_tabler.theme', $config['options']['theme']);
         $builder->setParameter('survos_tabler.debug.menu_slots', $config['debug']['menu_slots'] ?? false);
@@ -336,6 +338,15 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$config', $config)
             ->setArgument('$options', $config['options']);
 
+        $faviconConfig = $config['favicon'] ?? [];
+        $builder->register(FaviconService::class)
+            ->setArgument('$enabled', $faviconConfig['enabled'] ?? true)
+            ->setArgument('$text', $faviconConfig['text'] ?? null)
+            ->setArgument('$background', $faviconConfig['background'] ?? '#206bc4')
+            ->setArgument('$foreground', $faviconConfig['foreground'] ?? '#ffffff')
+            ->setArgument('$shape', $faviconConfig['shape'] ?? 'rounded')
+            ->setArgument('$appCode', $config['app']['code'] ?? 'my-project');
+
         $builder->register(MenuService::class)
             ->setAutowired(true)
             ->setArgument('$routeRequirements', '%survos_tabler.route_requirements%')
@@ -372,6 +383,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$contextService', new Reference(ContextService::class))
             ->setArgument('$pageContext', new Reference(PageContext::class))
             ->setArgument('$adminToolbar', '%survos_tabler.debug.admin_toolbar%')
+            ->setArgument('$faviconEnabled', '%survos_tabler.favicon.enabled%')
             ->addTag('twig.extension');
 
         // === Twig Components we created (not generated from tabler) ===

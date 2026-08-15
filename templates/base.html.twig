@@ -23,8 +23,9 @@
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-        <link rel="icon" href="/favicon.ico" sizes="any">
+        {% if tabler_favicon_enabled|default(true) %}
+            <link rel="icon" type="image/svg+xml" href="{{ path('survos_tabler_favicon') }}">
+        {% endif %}
         {# manifest link intentionally omitted — pwa-bundle injects <link rel="manifest"> when installed #}
         <link rel="stylesheet" type="text/css" href="{{ asset('bundles/survostabler/tabler/styles.css') }}">
     {% endblock %}
