@@ -102,7 +102,9 @@ abstract class AbstractAdminMenuSubscriber
                 ['code' => EntityMetaPass::entityCode($class)],
                 $label,
                 icon:  $this->resolveEntityIcon($class),
-                badge: $this->resolveCount($class),
+                badge: $this->entityMetaRegistry?->get($class)?->adminShowCount === false
+                    ? null
+                    : $this->resolveCount($class),
             );
         }
     }

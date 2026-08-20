@@ -58,7 +58,9 @@ final class EntityMetaMenuSubscriber
             $submenu = $this->addSubmenu($menu, $group);
 
             foreach ($items as $descriptor) {
-                $badge = $this->resolveCount($descriptor->class);
+                $badge = $descriptor->adminShowCount
+                    ? $this->resolveCount($descriptor->class)
+                    : null;
                 $this->add(
                     $submenu,
                     'survos_admin_browse',
