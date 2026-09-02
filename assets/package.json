@@ -3,37 +3,43 @@
   "description": "integrate php and javascript helpers for tabler, including menus",
   "license": "MIT",
   "version": "1.0.1",
-    "symfony": {
-        "controllers": {
-            "accordion": {
-                "main": "src/controllers/accordion_controller.js",
-                "webpackMode": "eager",
-                "fetch": "lazy",
-                "enabled": true
-            },
-            "search": {
-                "main": "src/controllers/search_controller.js",
-                "webpackMode": "eager",
-                "fetch": "lazy",
-                "enabled": true
-            },
-            "clipboard": {
-                "main": "src/controllers/clipboard_controller.js",
-                "webpackMode": "eager",
-                "fetch": "lazy",
-                "enabled": true
-            },
-            "closeable": {
-                "main": "src/controllers/closeable_controller.js",
-                "webpackMode": "eager",
-                "fetch": "lazy",
-                "enabled": true
-            },
-            "tooltip": {
-                "main": "src/controllers/tooltip_controller.js",
-                "webpackMode": "eager",
-                "fetch": "lazy",
-                "enabled": true
+  "symfony": {
+    "controllers": {
+      "accordion": {
+        "main": "src/controllers/accordion_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "search": {
+        "main": "src/controllers/search_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "clipboard": {
+        "main": "src/controllers/clipboard_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "closeable": {
+        "main": "src/controllers/closeable_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "tooltip": {
+        "main": "src/controllers/tooltip_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "conditional-fields": {
+        "main": "src/controllers/conditional_fields_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
       }
     },
     "importmap": {
