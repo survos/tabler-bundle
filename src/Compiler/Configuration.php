@@ -77,6 +77,14 @@ final class Configuration
                 ->scalarNode('homepage_route')->defaultNull()->end()
                 ->scalarNode('homepage_url')->defaultNull()->end()
 
+                // Public hostname reaching this same app from off the machine -- a cloudflared
+                // ingress in dev. Powers the navbar Tunnel/Local switch (TunnelHostMenuSubscriber),
+                // for pages that have to be opened on a second device. Bare host or full URL.
+                ->scalarNode('tunnel_host')->defaultValue('%env(default::TUNNEL_HOST)%')->end()
+                // Where "back to local" points once you are on the tunnel host. Bare host or
+                // full URL; defaults to the dev domain apps already set for CLI-generated URLs.
+                ->scalarNode('local_host')->defaultValue('%env(default::APP_BASE_URL)%')->end()
+
                 ->arrayNode('links')
                     ->addDefaultsIfNotSet()
                     ->children()

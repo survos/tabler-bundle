@@ -15,6 +15,7 @@ use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
 use Survos\TablerBundle\Menu\GitHubMenuSubscriber;
 use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
 use Survos\TablerBundle\Menu\RabbitMqMenuSubscriber;
+use Survos\TablerBundle\Menu\TunnelHostMenuSubscriber;
 use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\FaviconService;
 use Survos\TablerBundle\Service\IconService;
@@ -292,6 +293,15 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setAutoconfigured(true)
             ->setArgument('$projectDir', '%kernel.project_dir%')
             ->setArgument('$githubRepo', $config['app']['links']['github'] ?? null)
+            ->setPublic(false);
+
+        // Navbar "Tunnel"/"Local" switch. Renders nothing unless a tunnel host is configured,
+        // so apps without one are unaffected by its presence.
+        $builder->register(TunnelHostMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$tunnelHost', $config['app']['tunnel_host'] ?? null)
+            ->setArgument('$localHost', $config['app']['local_host'] ?? null)
             ->setPublic(false);
 
         // Docs dropdown: mirrors the project's docs/*.md (DocsMenuSubscriber + DocsController).
