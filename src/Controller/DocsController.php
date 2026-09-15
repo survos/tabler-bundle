@@ -34,6 +34,14 @@ final class DocsController extends AbstractController
         // Resolve under docs/ and reject traversal / non-.md targets.
         $file = realpath($docsDir . '/' . $path . '.md');
         if ($file === false || !str_starts_with($file, $docsDir . '/') || !is_file($file)) {
+            // /docs with no docs/README.md: list what is there rather than 404 the entry point.
+            if ($path === 'README') {
+                return $this->render('@SurvosTabler/docs/show.html.twig', [
+                    'markdown' => $this->indexMarkdown($docsDir),
+                    'path' => $path,
+                    'title' => 'Docs',
+                ]);
+            }
             throw $this->createNotFoundException(sprintf('Doc not found: %s', $path));
         }
 
@@ -42,6 +50,25 @@ final class DocsController extends AbstractController
             'path' => $path,
             'title' => $this->titleFromPath($path),
         ]);
+    }
+
+    private function indexMarkdown(string $docsDir): string
+    {
+        $paths = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($docsDir, \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if ($file->isFile() && $file->getExtension() === 'md') {
+                $paths[] = substr($file->getPathname(), strlen($docsDir) + 1, -3);
+            }
+        }
+        sort($paths);
+
+        $lines = ['# Docs', ''];
+        foreach ($paths as $docPath) {
+            $lines[] = sprintf('- [%s](%s)', $this->titleFromPath($docPath), $this->generateUrl('survos_tabler_doc', ['path' => $docPath]));
+        }
+
+        return implode("\n", $paths === [] ? ['# Docs', '', 'No documents yet.'] : $lines);
     }
 
     private function titleFromPath(string $path): string
