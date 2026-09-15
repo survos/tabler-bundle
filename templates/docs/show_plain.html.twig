@@ -1,3 +1,4 @@
+{# docs/show.html.twig without twig/markdown-extra, whose filter would not even compile. #}
 {% extends '@SurvosTabler/layout/base.html.twig' %}
 
 {% block title %}{{ title }} · Docs · {{ parent() }}{% endblock %}
@@ -14,7 +15,7 @@
                 </div>
             </div>
             <div class="card-body">
-                {% block doc_body %}<div class="markdown">{{ markdown|markdown_to_html }}</div>{% endblock %}
+                <pre class="mb-0" style="white-space:pre-wrap">{{ markdown }}</pre>
             </div>
         </div>
     </div>

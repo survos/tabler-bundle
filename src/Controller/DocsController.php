@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Attribute\Route;
+use Twig\Environment;
 
 /**
  * Renders the project's docs/*.md files as in-app pages (the nested menu is built by
@@ -20,7 +21,21 @@ final class DocsController extends AbstractController
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly Environment $twig,
     ) {}
+
+    /** twig/markdown-extra is only suggested; without it, show the markdown as text rather than 500. */
+    private function template(): string
+    {
+        try {
+            // twig/extra-bundle throws a SyntaxError (with an install hint) for a missing filter.
+            $available = $this->twig->getFilter('markdown_to_html') !== null;
+        } catch (\Twig\Error\SyntaxError) {
+            $available = false;
+        }
+
+        return $available ? '@SurvosTabler/docs/show.html.twig' : '@SurvosTabler/docs/show_plain.html.twig';
+    }
 
     #[Route('/docs/{path}', name: 'survos_tabler_doc', requirements: ['path' => '.+'], defaults: ['path' => 'README'])]
     #[Cache(public: true, maxage: 3600, smaxage: 3600)]
@@ -36,7 +51,7 @@ final class DocsController extends AbstractController
         if ($file === false || !str_starts_with($file, $docsDir . '/') || !is_file($file)) {
             // /docs with no docs/README.md: list what is there rather than 404 the entry point.
             if ($path === 'README') {
-                return $this->render('@SurvosTabler/docs/show.html.twig', [
+                return $this->render($this->template(), [
                     'markdown' => $this->indexMarkdown($docsDir),
                     'path' => $path,
                     'title' => 'Docs',
@@ -45,7 +60,7 @@ final class DocsController extends AbstractController
             throw $this->createNotFoundException(sprintf('Doc not found: %s', $path));
         }
 
-        return $this->render('@SurvosTabler/docs/show.html.twig', [
+        return $this->render($this->template(), [
             'markdown' => (string) file_get_contents($file),
             'path' => $path,
             'title' => $this->titleFromPath($path),
