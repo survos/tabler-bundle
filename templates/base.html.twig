@@ -42,6 +42,8 @@
     {% block logo_path %}{% endblock %}
 {% endset %}
 {% set id = tabler_identity ?? {} %}
+{# survos_tabler.app.header.layout: 'compact' puts NAVBAR_MENU in the brand row instead of a second one. #}
+{% set compactHeader = (id.header.layout ?? 'stacked') == 'compact' %}
 {% set showSidebar = tabler_menu_has_items(SIDEBAR) %}
 {% set debugMenuSlots = tabler_menu_debug_enabled() %}
 
@@ -115,7 +117,7 @@
                     <div class="{{ containerClass }}">
                         <div class="d-flex flex-row align-items-center gap-2 w-100" style="min-height:22px;">
                             <span class="badge bg-orange text-white" style="font-size:.55rem;line-height:1;padding:.1rem .25rem;letter-spacing:.04em;">admin</span>
-                            <div class="d-flex flex-fill align-items-center">
+                            <div class="d-flex flex-fill flex-wrap align-items-center min-w-0">
                                 {% if debugMenuSlots or tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
                                     <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
@@ -180,7 +182,21 @@
                     {% endif %}
                 </div>
 
-                {% if tabler_menu_has_items(NAVBAR_PRIMARY) %}
+                {% if compactHeader %}
+                    {# One row: every left-hand nav slot shares the collapse the toggler opens. #}
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        {% for slot in [NAVBAR_PRIMARY, NAVBAR_START, NAVBAR_MENU, NAVBAR_MENU_END] %}
+                            {% if debugMenuSlots or tabler_menu_has_items(slot) %}
+                                <div class="{% if debugMenuSlots %}tabler-debug-slot me-2{% endif %}">
+                                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">{{ slot }}</div>{% endif %}
+                                    {% if tabler_menu_has_items(slot) %}
+                                        {{ component('tabler:menu', {type: slot, caller: _self}) }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% elseif tabler_menu_has_items(NAVBAR_PRIMARY) %}
                     <div class="collapse navbar-collapse {% if debugMenuSlots %}tabler-debug-slot{% endif %}" id="navbar-primary">
                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_PRIMARY</div>{% endif %}
                         {{ component('tabler:menu', {type: NAVBAR_PRIMARY, caller: _self}) }}
@@ -204,7 +220,7 @@
     {% endblock %}
 
     {% block navbar_secondary %}
-        {% if tabler_menu_has_items(NAVBAR_START) or tabler_menu_has_items(NAVBAR_MENU) or tabler_menu_has_items(NAVBAR_MENU_END) %}
+        {% if not compactHeader and (tabler_menu_has_items(NAVBAR_START) or tabler_menu_has_items(NAVBAR_MENU) or tabler_menu_has_items(NAVBAR_MENU_END)) %}
             <header class="navbar-expand-md">
                 <div class="collapse navbar-collapse" id="navbar-menu">
                     <div class="navbar" style="min-height:2.75rem;">
@@ -259,15 +275,17 @@
                 </div>
             </header>
         {% endif %}
+    {% endif %}
 
-        {% if tabler_menu_has_items(BREADCRUMB) %}
-            <header class="navbar" style="min-height: 0;">
-                <div class="page-breadcrumb {{ containerClass }} py-1 {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
-                    {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
-                </div>
-            </header>
-        {% endif %}
+    {# Breadcrumbs are their own strip, not part of the page header: a page that draws its own
+       heading (show_page_header: false) still needs to say where it is. #}
+    {% if tabler_menu_has_items(BREADCRUMB) %}
+        <header class="navbar" style="min-height: 0;">
+            <div class="page-breadcrumb {{ containerClass }} py-1 {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
+                {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
+            </div>
+        </header>
     {% endif %}
 
     <div class="page-wrapper">
