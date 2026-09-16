@@ -12,7 +12,7 @@
     {% set tooltip = item.getExtra('tooltip') %}
     {% if not item.getExtra('debug_menu_slot') %}
     <div class="nav-item d-none d-md-flex me-3">
-        <a href="{{ item.uri }}" class="nav-link px-0"{% if tooltip %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip }}"{% endif %}{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
+        <a href="{{ item.uri }}" class="nav-link px-0"{% if tooltip %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip }}"{% endif %}{% for name, value in item.linkAttributes|filter((v, k) => k != 'class' and v is not same as(false) and v is not null) %} {{ name }}="{{ value is same as(true) ? name : value }}"{% endfor %}>
             {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {% if item.label %}<span class="ms-1">{{ block('label') }}</span>{% endif %}
         </a>
