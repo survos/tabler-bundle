@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Contracts\Service\Attribute\Required;
 
 use function Symfony\Component\String\u;
 
@@ -22,7 +23,10 @@ use function Symfony\Component\String\u;
 trait KnpMenuHelperTrait
 {
     const HEADING = 'heading';
-//    private ?AuthorizationCheckerInterface $authorizationChecker = null;
+    // Declared WITHOUT a default on purpose: classes that promote their own `private ?AuthorizationCheckerInterface
+    // $authorizationChecker = null` stay compatible with the trait (a default here would be a fatal "definition differs").
+    // Not declaring it at all made setAuthorizationChecker() create a dynamic property, deprecated since PHP 8.2.
+    private ?AuthorizationCheckerInterface $authorizationChecker;
     //    private ?ParameterBagInterface $bag=null;
 
     //    private ?array $options;
@@ -34,6 +38,8 @@ trait KnpMenuHelperTrait
         return true;
     }
 
+    /** Autowired: an AppMenu no longer needs to inject the checker in its constructor and call this. */
+    #[Required]
     public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->authorizationChecker = $authorizationChecker;
@@ -456,7 +462,9 @@ trait KnpMenuHelperTrait
 
     public function isGranted($attribute, $subject = null): bool|null
     {
-        return $this->security?->isGranted($attribute, $subject);
+        // The autowired checker first; `security` is a property only some consumers declare (it is not part
+        // of this trait), so a menu without it could never pass an isGranted() check.
+        return ($this->authorizationChecker ?? $this->security ?? null)?->isGranted($attribute, $subject);
     }
 
     public function isEnv(string $envName): bool
