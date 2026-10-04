@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survos\TablerBundle\Traits;
 
 use Knp\Menu\ItemInterface;
@@ -13,6 +15,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function Symfony\Component\String\u;
 
+/**
+ * @deprecated Legacy helper contract. New menus use Menu\MenuBuilderTrait and MenuEvent listeners.
+ * See docs/menu-builder-migration.md.
+ */
 interface KnpMenuHelperInterface
 {
     public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker);

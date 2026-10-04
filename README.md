@@ -1,5 +1,5 @@
 
-NOTE: During Dec 2025 development, bundle is in its own repo, NOT the mono-repo!
+Development source: `survos/mono`, under `bu/tabler-bundle`.
 
 composer config repositories.survos_admin_bundle '{"type": "vcs", "url": "git@github.com:survos/SurvosTablerBundle.git"}'
 composer req survos/tabler-bundle
@@ -15,6 +15,16 @@ A moderately-opinionated bundle that provides a quick way to get up and running 
 In particular, it sets up and uses the following:
 
 * Knp Menu for sidebar and top nagivation
+
+## Menu API
+
+Use `Survos\TablerBundle\Menu\MenuBuilderTrait` for new menus. Its `add()`
+automatically applies the route's collected `#[IsGranted]` requirements through
+`MenuService` when the menu is autowired. Controller authorization still enforces access.
+
+`Traits\KnpMenuHelperTrait` and its interface are deprecated compatibility APIs.
+They cannot be replaced by changing an import alone: `add()` has a different return
+contract and several different arguments. See [the migration guide](docs/menu-builder-migration.md).
 
 ## Assumptions
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Simplies the construction of menu items,
 namespace Survos\TablerBundle\Traits;
 
@@ -20,6 +22,11 @@ use Symfony\Contracts\Service\Attribute\Required;
 use function Symfony\Component\String\u;
 
 
+/**
+ * @deprecated Use \Survos\TablerBundle\Menu\MenuBuilderTrait for new menus.
+ * Kept for callers relying on fluent add(), returnItem and legacy helpers.
+ * See docs/menu-builder-migration.md before migrating; this is not a drop-in rename.
+ */
 trait KnpMenuHelperTrait
 {
     const HEADING = 'heading';

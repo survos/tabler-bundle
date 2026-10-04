@@ -8,6 +8,8 @@ use Knp\Menu\ItemInterface;
 use Survos\FieldBundle\Entity\RouteParametersInterface;
 use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Service\IconService;
+use Survos\TablerBundle\Service\MenuService;
+use Symfony\Contracts\Service\Attribute\Required;
 use Survos\TablerBundle\Service\RouteAliasService;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
@@ -16,13 +18,36 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 /**
  * Menu builder trait with smart icon inference and safe route handling.
  *
- * Classes using this trait should define these properties (via constructor promotion):
- *   - protected readonly ?RouterInterface $router
- *   - protected readonly ?RouteAliasService $routeAliasService
- *   - protected readonly ?IconService $iconService
+ * Autowired menu listeners receive the shared services through #[Required] setters.
+ * No base class or constructor dependencies are needed. Services used only for route
+ * and icon helpers are optional; existing constructor-promoted properties still work.
  */
 trait MenuBuilderTrait
 {
+    private ?MenuService $tablerMenuService = null;
+    private ?RouterInterface $tablerMenuRouter = null;
+    private ?IconService $tablerMenuIcons = null;
+    private ?RouteAliasService $tablerMenuRouteAliases = null;
+
+    /** Optional helpers, populated by Symfony when their services are available. */
+    #[Required]
+    public function setTablerMenuHelpers(
+        ?RouterInterface $router = null,
+        ?IconService $iconService = null,
+        ?RouteAliasService $routeAliasService = null,
+    ): void {
+        $this->tablerMenuRouter = $router;
+        $this->tablerMenuIcons = $iconService;
+        $this->tablerMenuRouteAliases = $routeAliasService;
+    }
+
+    /** Apply the bundle's collected route requirements to every autowired menu. */
+    #[Required]
+    public function setTablerMenuService(MenuService $menuService): void
+    {
+        $this->tablerMenuService = $menuService;
+    }
+
     // Use static to avoid readonly class conflicts
     private static ?AsciiSlugger $slugger = null;
 
@@ -36,7 +61,7 @@ trait MenuBuilderTrait
      */
     protected function resolveIcon(?string $icon, ?string $route = null): ?string
     {
-        $iconService = $this->iconService ?? null;
+        $iconService = $this->iconService ?? $this->tablerMenuIcons;
 
         if ($icon !== null) {
             return $iconService?->resolve($icon) ?? $icon;
@@ -58,7 +83,7 @@ trait MenuBuilderTrait
             return false;
         }
 
-        $router = $this->router ?? null;
+        $router = $this->router ?? $this->tablerMenuRouter;
         if (!$router) {
             return false;
         }
@@ -102,6 +127,13 @@ trait MenuBuilderTrait
         bool $allowNoLink = false,
     ): ItemInterface {
         if (!$if) {
+            return $menu;
+        }
+
+        // Authorize before flattening an entity to route parameters so voters receive it.
+        // This is independent of the route-existence check (including addAliased()).
+        if ($route && $this->tablerMenuService !== null
+            && !$this->tablerMenuService->canAccessRoute($route, $rp instanceof RouteParametersInterface ? $rp : null)) {
             return $menu;
         }
 
@@ -150,7 +182,7 @@ trait MenuBuilderTrait
             $child->setExtra('badge', $badgeDto);
         }
 
-        $iconService = $this->iconService ?? null;
+        $iconService = $this->iconService ?? $this->tablerMenuIcons;
         if ($external || ($uri && str_starts_with($uri, 'http'))) {
             $child->setLinkAttribute('target', '_blank');
             if (!$resolvedIcon) {
@@ -186,7 +218,7 @@ trait MenuBuilderTrait
         ?string $label = null,
         ?string $icon = null,
     ): ItemInterface {
-        $routeAliasService = $this->routeAliasService ?? null;
+        $routeAliasService = $this->routeAliasService ?? $this->tablerMenuRouteAliases;
 
         if (!$routeAliasService?->has($alias)) {
             return $menu;
@@ -222,7 +254,7 @@ trait MenuBuilderTrait
         $child->setExtra('submenu', true);
         $child->setExtra('safe_label', true);
 
-        $iconService = $this->iconService ?? null;
+        $iconService = $this->iconService ?? $this->tablerMenuIcons;
         if ($icon) {
             $child->setExtra('icon', $iconService?->resolve($icon) ?? $icon);
         }
