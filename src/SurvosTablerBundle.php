@@ -325,6 +325,17 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setPublic(false);
 
 
+        // The enabled locales as links; shared by the tabler:locale-switcher component and the NAVBAR_LANGUAGE listener.
+        $builder->register(\Survos\TablerBundle\Service\LocaleLinks::class)
+            ->setAutowired(true)
+            ->setPublic(false);
+
+        $builder->register(\Survos\TablerBundle\Menu\LocaleMenuSubscriber::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$enabled', $config['app']['header']['locale_switcher'] ?? true)
+            ->setPublic(false);
+
         $iconConfig = $config['icons'] ?? [];
         $iconAliases = array_merge([
             'layout-navbar' => 'menu-2',

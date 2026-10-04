@@ -1,5 +1,6 @@
 {# @SurvosTabler/menu/search.html.twig - Search widget #}
 {% extends '@KnpMenu/menu.html.twig' %}
+{% import '@SurvosTabler/menu/_attrs.html.twig' as attrs %}
 
 {% block root %}
 <div class="nav-item d-none d-md-flex me-3">
@@ -13,8 +14,17 @@
 {% if item.displayed %}
     {% set icon = item.getExtra('icon') %}
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
-    {% if not item.getExtra('debug_menu_slot') %}
-        <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm">
+    {% if item.getExtra('form') %}
+        {# A search box instead of a button: ->setExtra('form', true), uri = where it submits (GET), label = the
+           placeholder, ->setExtra('name', 'q') the query parameter (default q). The box is pre-filled from the URL. #}
+        {% set field = item.getExtra('name', 'q') %}
+        <form method="get" action="{{ item.uri }}" role="search" class="d-none d-md-block ms-2">
+            <input type="search" name="{{ field }}" value="{{ app.request.query.get(field) }}"
+                   class="form-control form-control-sm" placeholder="{{ item.label }}" aria-label="{{ item.label }}"
+                   autocomplete="off"{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'type', 'name', 'value', 'placeholder']) }}>
+        </form>
+    {% elseif not item.getExtra('debug_menu_slot') %}
+        <a href="{{ item.uri }}" class="btn btn-outline-secondary btn-sm"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}>
             {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {% if item.label %}<span class="ms-1">{{ item.label }}</span>{% endif %}
         </a>

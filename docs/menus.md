@@ -55,6 +55,39 @@ Listeners attach with `#[AsEventListener(event: 'card.actions')]`. The `tabler:m
 `tabler_menu()`; it **refuses** registered page slots and the old `type:` prop with an exception, so a leftover
 `component('tabler:menu', {type: NAVBAR_END})` fails loudly instead of rendering through a second path.
 
+## Behaviour on an item: attributes, dropdowns, search boxes
+
+Items are not just links. Every slot template carries the item's attributes through, so a listener can express what apps
+used to get by overriding a whole template block:
+
+```php
+// a link that opens a Stimulus-driven dialog without navigating
+$this->add($menu, uri: '#', label: 'footer.cookie_settings', checkRouteExists: false)
+    ->setLinkAttribute('data-action', 'click->klaro#open:prevent');
+
+// a dropdown whose container and entries carry data-* for your JS
+$picker = $this->addSubmenu($event->getMenu(), 'Fortepan', icon: 'tabler:palette', translationDomain: false);
+$picker->setAttribute('data-theme-switcher', true);                       // on the wrapper (<li> / .nav-item)
+$this->add($picker, uri: '#', label: 'Airtable', checkRouteExists: false)
+    ->setLinkAttribute('data-theme-key', 'airtable');                     // on the <a>
+
+// a search box instead of a button: uri = where it submits (GET), label = the placeholder
+$this->add($event->getMenu(), 'tenant_gallery', $tenant, label: 'Search...', translationDomain: false)
+    ->setExtra('form', true);                                             // ->setExtra('name', 'q') is the default field
+```
+
+`true` prints a bare attribute, `false`/`null` print nothing. A parent with children in `NAVBAR_THEME`, `NAVBAR_APPS`,
+`NAVBAR_NOTIFICATIONS`, `NAVBAR_START` or `NAVBAR_END` renders as a dropdown. Apps no longer need to override
+`navbar`, `navbar_admin` or `footer` to add a link, a switcher or a search box; do that in a listener.
+
+## The locale switcher
+
+When more than one locale is in `kernel.enabled_locales` (and `survos_tabler.app.header.locale_switcher` is on, the
+default), `LocaleMenuSubscriber` fills `NAVBAR_LANGUAGE` with a language dropdown, so every app gets one with no template
+work. Add to it, reorder it or remove it with a listener on `NAVBAR_LANGUAGE`. For a switcher somewhere else (a footer, a
+landing page) use `<twig:tabler:locale-switcher />`; both use `LocaleLinks`, which handles `/{_locale}/...` routes and
+`fr.example.org` subdomains.
+
 ## Debugging
 
 `?debugMenuSlots=1` (or the "Slots" toggle in the admin navbar) outlines and labels every slot rendered on the

@@ -28,7 +28,9 @@ final class MenuSlotRegistry
         MenuEvent::PAGE_ACTIONS => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/actions.html.twig'],
 
         MenuEvent::NAVBAR_PRIMARY => ['area' => 'navbar', 'template' => self::NAVBAR, 'currentClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav flex-row']],
-        MenuEvent::NAVBAR_LANGUAGE => ['area' => 'navbar', 'template' => self::NAVBAR, 'currentClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav flex-row']],
+        // a tool like the theme picker, not navigation: same compact toggle, and no 'active' underline just because
+        // the current locale's link matches the page URL
+        MenuEvent::NAVBAR_LANGUAGE => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
         MenuEvent::NAVBAR_START => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
         MenuEvent::NAVBAR_END => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
         MenuEvent::NAVBAR_THEME => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],

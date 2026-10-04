@@ -1,5 +1,6 @@
 {# @SurvosTabler/menu/footer.html.twig - Footer links #}
 {% extends '@KnpMenu/menu.html.twig' %}
+{% import '@SurvosTabler/menu/_attrs.html.twig' as attrs %}
 
 {% block list %}
 <ul {{ html_attr(listAttributes) }}>
@@ -12,8 +13,8 @@
     {% set icon = item.getExtra('icon') %}
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     {% if not item.getExtra('debug_menu_slot') %}
-    <li class="list-inline-item">
-            <a class="link-secondary" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}>
+    <li class="list-inline-item"{{ attrs.attrs(item.attributes, ['class']) }}>
+            <a class="link-secondary" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}>
                 {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
                 {{ block('label') }}
             </a>

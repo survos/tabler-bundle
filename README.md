@@ -16,6 +16,36 @@ In particular, it sets up and uses the following:
 
 * Knp Menu for sidebar and top nagivation
 
+## What you get
+
+This is not a light theme bundle. Install it and an app has, without further setup:
+
+**Tabler 1.6, with Bootstrap built in.** `@tabler/core` (JS and CSS, `^1.6.1`) is pinned in your importmap by Flex.
+Tabler 1.5+ includes Bootstrap 5.3's components and its data-api (dropdowns, collapse, modals, tooltips, offcanvas,
+toasts, tabs), and Popper for positioning them, so **do not also import `bootstrap` or `@popperjs/core`**: through
+jsDelivr the standalone package loses the data-api and dropdowns stop opening. `import '@tabler/core'` is enough, and
+`import { Tooltip, Offcanvas } from '@tabler/core'` gives you the component classes. See
+[upgrading to Tabler 1.6](docs/upgrading-to-tabler-1.6.md).
+
+**A menu system built on PHP listeners.** 20 slots (`NAVBAR_*`, `SIDEBAR`, `PAGE_NAV`, `PAGE_ACTIONS`, `BREADCRUMB`,
+`FOOTER`, `AUTH`, `SEARCH`, `BANNER`, and an admin strip). Each is populated by `#[AsEventListener]` classes, so
+security and context decisions stay in PHP, and drawn with `{{ tabler_menu(SLOT) }}`. Route `#[IsGranted]` rules are
+applied for you. Ready-made subscribers cover auth, docs, GitHub, the entity/field registry, messenger and RabbitMQ
+monitors, the Symfony inspector and a tunnel switch. A "Slots" toggle in the admin bar outlines every slot on the page.
+See [docs/menus.md](docs/menus.md).
+
+**About 270 Twig components**, ported from Tabler's own demo: `ui:` (66), `cards:` (93), `parts:` (51), `layout:` (41),
+`landing:` and `tabler:`, plus a page layout, a landing layout, a locale switcher and a dynamic SVG favicon.
+
+**Icons.** The Tabler icon set through `symfony/ux-icons` (`{{ ux_icon('tabler:home') }}`), with an alias table so menus
+can say `icon: 'edit'` and get the right glyph.
+
+**Stimulus controllers** (accordion, search, clipboard, closeable, tooltip, conditional fields), **flag-icons**
+(`fi fi-xx`), **@floating-ui/dom**, and **`marked`** so markdown renders in the browser too.
+
+**The PHP it needs**, so you do not add these yourself: KnpMenu and its bundle, `survos/field-bundle` and `kit-bundle`,
+`symfony/ux-icons` and `ux-twig-component`, forms, validator, security, mailer, and Twig's html/intl/string extras.
+
 ## Menu API
 
 Use `Survos\TablerBundle\Menu\MenuBuilderTrait` for new menus. Its `add()`

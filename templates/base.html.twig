@@ -206,7 +206,9 @@
                 <div class="navbar-nav flex-row order-md-last ms-auto">
                     {% for slot in [NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE, NAVBAR_END, SEARCH, AUTH] %}
                         {% if debugMenuSlots or tabler_menu_has_items(slot) %}
-                            <div class="{% if debugMenuSlots %}tabler-debug-slot ms-2{% endif %}">
+                            {# d-flex + align-items-center: whatever a slot holds (icon button, dropdown, search box, avatar) is centered on the
+                                 brand's line instead of hanging from the top of the 48px slot #}
+                            <div class="d-flex {{ debugMenuSlots ? 'flex-column tabler-debug-slot ms-2' : 'align-items-center' }}">
                                 {% if debugMenuSlots %}<div class="tabler-debug-slot-label">{{ slot }}</div>{% endif %}
                                 {% if tabler_menu_has_items(slot) %}
                                     {{ tabler_menu(slot) }}

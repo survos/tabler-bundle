@@ -47,7 +47,8 @@
       "flag-icons/css/flag-icons.min.css": "^7.5.0",
       "@floating-ui/dom": "^1.8.0",
       "@tabler/core": "^1.6.1",
-      "@tabler/core/dist/css/tabler.min.css": "^1.6.1"
+      "@tabler/core/dist/css/tabler.min.css": "^1.6.1",
+      "marked": "^18.0.0"
     },
     "autoimport": {}
   },

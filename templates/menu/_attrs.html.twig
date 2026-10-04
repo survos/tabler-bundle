@@ -1,0 +1,10 @@
+{# @SurvosTabler/menu/_attrs.html.twig
+   Renders a menu item's attributes. {% import '@SurvosTabler/menu/_attrs.html.twig' as attrs %} then
+   {{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}. `true` prints a bare attribute, `false`/null print nothing,
+   and `skip` lists the names the template already handles itself. This is what lets a listener put behaviour on an
+   item (->setLinkAttribute('data-action', 'klaro#open:prevent'), ->setAttribute('data-theme-switcher', true)). #}
+{% macro attrs(map, skip = []) -%}
+    {%- for name, value in map -%}
+        {%- if name not in skip and value is not same as(false) and value is not null %} {{ name }}{% if value is not same as(true) %}="{{ value }}"{% endif %}{% endif -%}
+    {%- endfor -%}
+{%- endmacro %}

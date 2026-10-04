@@ -1,5 +1,6 @@
 {# @SurvosTabler/menu/navbar.html.twig - Horizontal navbar menu #}
 {% extends '@KnpMenu/menu.html.twig' %}
+{% import '@SurvosTabler/menu/_attrs.html.twig' as attrs %}
 
 {% block list %}
     {% import _self as knp_menu %}
@@ -29,14 +30,14 @@
         {%- set badge = item.getExtra('badge') -%}
         {%- set badgeValue = badge.value|default(badge) -%}
 
-        <li class="nav-item {% if is_dropdown %} dropdown{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}">
+        <li class="nav-item {% if is_dropdown %} dropdown{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}"{{ attrs.attrs(item.attributes, ['class']) }}>
             {% if is_dropdown %}
                 <a class="nav-link dropdown-toggle{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %}"
                    href="#navbar-{{ item.name|slug }}"
                    data-bs-toggle="dropdown"
                    data-bs-auto-close="outside"
                    role="button"
-                   aria-expanded="false">
+                   aria-expanded="false"{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                 </a>
@@ -49,7 +50,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}"{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
+                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                     {% if badgeValue %}
@@ -75,7 +76,7 @@
                data-bs-toggle="dropdown"
                data-bs-auto-close="outside"
                role="button"
-               aria-expanded="false">
+               aria-expanded="false"{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
                 {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
                 {{ block('label') }}
             </a>
@@ -89,7 +90,7 @@
             </div>
         </div>
     {% else %}
-        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{% if item.linkAttribute('target') %} target="{{ item.linkAttribute('target') }}"{% endif %}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
+        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
             {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
             {% if badgeValue %}
