@@ -86,7 +86,10 @@ final class BreadcrumbMenuSubscriber
             $ancestors = $this->menuAncestors($event->options);
         }
 
-        $count = ($origin !== null ? 1 : 0) + count($entities) + count($ancestors) + ($currentLabel !== null && $ancestors === [] ? 1 : 0);
+        // A route can name the list it belongs to (#[RouteMeta(parents: ['app_catalog'])]); that list is the root crumb.
+        $roots = $entities === [] ? [] : $this->parentRoutes($entities[0][1]);
+
+        $count = ($origin !== null ? 1 : 0) + count($roots) + count($entities) + count($ancestors) + ($currentLabel !== null && $ancestors === [] ? 1 : 0);
         if ($count < 2) {
             return;
         }
@@ -95,6 +98,10 @@ final class BreadcrumbMenuSubscriber
             $item = $menu->addChild('origin', ['uri' => $origin['uri'], 'label' => $origin['label']]);
             $item->setExtra('icon', 'tabler:arrow-left');
             $item->setLinkAttribute('title', 'Where you came from');
+        }
+
+        foreach ($roots as $route => $label) {
+            $this->add($menu, $route, label: $label, translationDomain: false, inferIcon: false);
         }
 
         foreach ($entities as $i => [$entity, $page]) {
@@ -119,6 +126,23 @@ final class BreadcrumbMenuSubscriber
         if ($currentLabel !== null) {
             $this->current($menu, (string) $currentLabel, $currentMeta);
         }
+    }
+
+    /**
+     * @return array<string, string> route name => label, for the parent routes that need no parameters
+     */
+    private function parentRoutes(RouteMetaDescriptor $page): array
+    {
+        $roots = [];
+        foreach ($page->parents as $route) {
+            $meta = $this->routeMeta->get($route);
+            $definition = $this->router?->getRouteCollection()->get($route);
+            if ($definition !== null && $definition->compile()->getVariables() === []) {
+                $roots[$route] = $meta?->label ?? ucfirst(str_replace('_', ' ', preg_replace('/^[a-z]+_/', '', $route)));
+            }
+        }
+
+        return $roots;
     }
 
     /** @return array{uri: string, label: string}|null a same-site path the visitor came from, with the page's name */

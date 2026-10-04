@@ -151,3 +151,6 @@ The trail has two more sources besides entities.
   PAGE_NAV, SIDEBAR): `Collaboration › Virginia archives` when that entry is inside the Collaboration dropdown.
 
 Order: origin, then entities (or menu ancestors if there are none), then the page itself.
+
+A route can also name the list it belongs to: `#[RouteMeta(parents: ['app_catalog'])]` on a Show route puts that route's
+label first (`Catalog › jsonl-bundle › Libraries`). Parents with route variables are skipped.
