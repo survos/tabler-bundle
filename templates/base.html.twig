@@ -167,19 +167,23 @@
                         {% endblock %}
                     </a>
 
-                    {% set currentFolioTitle = app.request.attributes.get('current_folio_title') %}
-                    {% set route = app.request.attributes.get('_route') %}
+                    {# "Logo / Current folio". An app that knows its own current item overrides this block (zm derives the
+                       title from the provider/dataset route attributes) instead of copying the whole navbar. #}
+                    {% block navbar_crumb %}
+                        {% set currentFolioTitle = app.request.attributes.get('current_folio_title') %}
+                        {% set route = app.request.attributes.get('_route') %}
 
-                    {% if route in ['app_folio_search', 'survos_folio_search'] %}
-                        {% set currentFolioTitle = resolvedPageTitle|striptags|trim %}
-                    {% endif %}
+                        {% if route in ['app_folio_search', 'survos_folio_search'] %}
+                            {% set currentFolioTitle = resolvedPageTitle|striptags|trim %}
+                        {% endif %}
 
-                    {% if currentFolioTitle %}
-                        <span class="text-muted fw-normal mx-2 flex-shrink-0">/</span>
-                        <span class="fw-semibold text-body text-truncate d-inline-block" style="max-width: 360px;">
-                            {{ currentFolioTitle }}
-                        </span>
-                    {% endif %}
+                        {% if currentFolioTitle %}
+                            <span class="text-muted fw-normal mx-2 flex-shrink-0">/</span>
+                            <span class="fw-semibold text-body text-truncate d-inline-block" style="max-width: 360px;">
+                                {{ currentFolioTitle }}
+                            </span>
+                        {% endif %}
+                    {% endblock %}
                 </div>
 
                 {% if compactHeader %}
@@ -204,6 +208,9 @@
                 {% endif %}
 
                 <div class="navbar-nav flex-row order-md-last ms-auto">
+                    {# Before the slots: for a widget that is not a menu (zm's "Recent folios" dropdown has its own markup and
+                       Stimulus controller). Anything a menu item can express belongs in a slot listener instead. #}
+                    {% block navbar_tools_before %}{% endblock %}
                     {% for slot in [NAVBAR_THEME, NAVBAR_NOTIFICATIONS, NAVBAR_APPS, NAVBAR_LANGUAGE, NAVBAR_END, SEARCH, AUTH] %}
                         {% if debugMenuSlots or tabler_menu_has_items(slot) %}
                             {# d-flex + align-items-center: whatever a slot holds (icon button, dropdown, search box, avatar) is centered on the

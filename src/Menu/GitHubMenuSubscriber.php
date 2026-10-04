@@ -55,11 +55,11 @@ final class GitHubMenuSubscriber
             return;
         }
 
-        // Per-user opt-out (default on, matching the always-on behavior before this setting
-        // existed) via survos_settings.yaml's show_github -- see SettingsAwareMenuTrait. Only
-        // the user-facing item; the admin-bar copy (onAdminNavbarMenu) is a dev tool and stays
-        // unconditional.
-        if (!$this->settingEnabled('show_github', true)) {
+        // Opt-in (default off) via survos_settings.yaml's show_github -- see SettingsAwareMenuTrait. This copy
+        // is shown to exactly the people who already have the admin-bar one (dev, or ROLE_ADMIN), so by default
+        // it only adds a GitHub entry to the navigation row (and, in the stacked header, a second row for it).
+        // The admin-bar copy (onAdminNavbarMenu) is a dev tool and stays unconditional.
+        if (!$this->settingEnabled('show_github', false)) {
             return;
         }
 
