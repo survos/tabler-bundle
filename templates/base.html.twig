@@ -9,7 +9,9 @@
 
     {% set _page = page_context() %}
     {% set _routeName = app.request ? app.request.attributes.get('_route', 'home.title') : 'home.title' %}
-    {% set _routeTitle = _routeName|trans({}, 'routing') %}
+    {# Only a real translation counts: an untranslated route would otherwise print its own name as the heading. #}
+    {% set _routeTitleRaw = _routeName|trans({}, 'routing') %}
+    {% set _routeTitle = _routeTitleRaw != _routeName ? _routeTitleRaw : '' %}
     {% set _blockTitle = block('page_title') is defined ? block('page_title')|trim : '' %}
     {% set _blockPretitle = block('page_pretitle') is defined ? block('page_pretitle')|trim : '' %}
     {% set _blockSubtitle = block('page_subtitle') is defined ? block('page_subtitle')|trim : '' %}
@@ -17,9 +19,11 @@
     {% set resolvedPagePretitle = _page.pretitle|default(_blockPretitle ?: null) %}
     {% set resolvedPageSubtitle = _page.subtitle|default(_blockSubtitle ?: null) %}
     {% set containerClass = _page.container_class|default('container-xl') %}
-    {% set showPageHeader = _page.show_page_header is defined ? _page.show_page_header : (resolvedPageTitle or tabler_menu_has_items(BREADCRUMB) or tabler_menu_has_items(PAGE_NAV) or tabler_menu_has_items(PAGE_ACTIONS)) %}
+    {# The header is for what the page says about itself: a title, pretitle, subtitle or actions. Breadcrumbs and
+       PAGE_NAV are strips of their own. A page that draws its own heading just declares no title. #}
+    {% set showPageHeader = _page.show_page_header is defined ? _page.show_page_header : (resolvedPageTitle or resolvedPagePretitle or resolvedPageSubtitle or tabler_menu_has_items(PAGE_ACTIONS)) %}
 
-    <title>{% block title %}{{ resolvedPageTitle|striptags|trim }}{% endblock %}</title>
+    <title>{% block title %}{{ resolvedPageTitle|striptags|trim ?: (tabler_identity.title|default('')) }}{% endblock %}</title>
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
@@ -271,19 +275,18 @@
         {% endif %}
     {% endblock %}
 
-    {% if showPageHeader %}
-        {% if debugMenuSlots or tabler_menu_has_items(PAGE_NAV) %}
-            <header class="navbar">
-                <div class="page-nav {{ containerClass }} {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
-                    {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_NAV</div>{% endif %}
-                    <ul class="nav nav-underline">
-                        {% if tabler_menu_has_items(PAGE_NAV) %}
-                            {{ tabler_menu(PAGE_NAV, {title: resolvedPageTitle}) }}
-                        {% endif %}
-                    </ul>
-                </div>
-            </header>
-        {% endif %}
+    {# PAGE_NAV is a navigation strip of its own (like the breadcrumb), independent of the page header. #}
+    {% if debugMenuSlots or tabler_menu_has_items(PAGE_NAV) %}
+        <header class="navbar">
+            <div class="page-nav {{ containerClass }} {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_NAV</div>{% endif %}
+                <ul class="nav nav-underline">
+                    {% if tabler_menu_has_items(PAGE_NAV) %}
+                        {{ tabler_menu(PAGE_NAV, {title: resolvedPageTitle}) }}
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
     {% endif %}
 
     {# Breadcrumbs are their own strip, not part of the page header: a page that draws its own
@@ -300,7 +303,7 @@
     <div class="page-wrapper">
         {% block page_header %}
             {% if showPageHeader %}
-                <div class="page-header d-print-none">
+                <div class="page-header d-print-none{% if not (resolvedPageTitle or resolvedPagePretitle or resolvedPageSubtitle) %} my-2{% endif %}">
                     <div class="{{ containerClass }}">
                         <div class="row g-2 align-items-center">
                             <div class="col">

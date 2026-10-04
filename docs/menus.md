@@ -99,3 +99,55 @@ page. `/debug-menu` lists them all.
 * `component('tabler:menu', {type: SLOT, caller: _self})` for page slots (use `tabler_menu(SLOT)`).
 * The unused `menu/tabler_*.html.twig` template set and `MenuRenderer`'s template map.
 * `render_sidebar_menu.html.twig` / `render_page_menu.html.twig`.
+
+## Giving a menu the entity it is about
+
+Listeners read it with `$event->getOption('publication')`. You normally do nothing to put it there. In order of
+precedence, lowest first, a listener sees:
+
+1. `survos_tabler.menu_options`: static defaults. The `key: null` placeholders apps used to declare are not needed
+   (`getOption()` has a default); only put real defaults here.
+2. **Controller arguments that are objects**, keyed by parameter name. `issue(Publication $publication, Issue $issue)`
+   gives every slot `publication` and `issue`: the entities the argument resolver already loaded. Strings and
+   other scalars are skipped (a `{publication}` route parameter is a code, not an entity).
+3. **The template's own object variables**, picked up by `tabler_menu()` (it reads the calling template's context).
+   A page rendering `publication` needs no menu code at all.
+4. `{% do tabler_menu_options({tenant: _tenant}) %}`: for things neither of the above can see (a value a
+   kernel.request listener put on the request, a scalar such as a breadcrumb label).
+5. The options passed to a single call: `tabler_menu('PAGE_ACTIONS', {project: project})`.
+
+Unlike the old rule, a key does not have to be declared in `menu_options` first.
+
+## Breadcrumbs from the page's entities
+
+Set `survos_tabler.auto_breadcrumbs: true` and stop writing BREADCRUMB listeners. The trail is the ordered entities the
+page is about (the object options a menu receives, see above), and the only thing an entity needs is a route declared as
+its page:
+
+```php
+#[Route('/{publication}', name: 'ink_publication')]
+#[RouteMeta(description: 'Browse a paper\'s issues.', entity: Publication::class, purpose: Purpose::Show)]
+```
+
+- the route is the crumb's link, filled from the current URL's own route parameters, so entities need no identity method;
+- `description` is the hover title;
+- the text is the entity's `title`, `label`, `name` or `__toString()`;
+- the last crumb is the page itself: the final entity when the current route is its page, else the `crumb` option, else
+  the current route's `#[RouteMeta(label:)]`;
+- a trail that would be only the current page is not drawn, and an app listener that fills BREADCRUMB first wins.
+
+Two objects of one class (a template holding the entity under two names) make one crumb; the one named like a route
+variable is preferred. Needs survos/field-bundle.
+
+### Where you came from, and where the page sits in the menus
+
+The trail has two more sources besides entities.
+
+- **Origin (the Flickr idea).** A `?returnTo=/search?q=x` on the URL (a path on this site only; anything with a scheme
+  or `//` is ignored) becomes the first crumb, named by the page it points at (that route's `#[RouteMeta(label:)]`). The
+  same page therefore shows a different way back depending on how you arrived, and a bookmark keeps it. Pages that
+  list things link to their items with `returnTo: app.request.requestUri`.
+- **Menu ancestors.** A page with no entities gets the ancestors of its current menu item (NAVBAR_MENU, NAVBAR_MENU_END,
+  PAGE_NAV, SIDEBAR): `Collaboration › Virginia archives` when that entry is inside the Collaboration dropdown.
+
+Order: origin, then entities (or menu ancestors if there are none), then the page itself.

@@ -214,10 +214,16 @@ class SurvosTablerBundle extends AbstractUxBundle
         $builder->register(MenuDispatcher::class)
             ->setArgument('$factory', new Reference('knp_menu.factory'))
             ->setArgument('$dispatcher', new Reference('event_dispatcher'))
-            ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class));
+            ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class))
+            ->setArgument('$requests', new Reference('request_stack'));
 
         $builder->register(MenuContext::class)
             ->setArgument('$requestStack', new Reference('request_stack'));
+
+        $builder->register(\Survos\TablerBundle\Menu\AmbientMenuContext::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(false);
 
         $builder->register(PageContext::class)
             ->setArgument('$requestStack', new Reference('request_stack'));
@@ -249,6 +255,16 @@ class SurvosTablerBundle extends AbstractUxBundle
             $builder->register(\Survos\TablerBundle\Menu\EntityMetaMenuSubscriber::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
+                ->setPublic(false);
+        }
+
+        if (class_exists(\Survos\FieldBundle\Registry\RouteMetaRegistry::class)) {
+            $builder->register(\Survos\TablerBundle\Menu\BreadcrumbMenuSubscriber::class)
+                ->setAutowired(true)
+                ->setAutoconfigured(true)
+                ->setArgument('$enabled', $config['auto_breadcrumbs'] ?? false)
+                ->setArgument('$dispatcher', new Reference(MenuDispatcher::class))
+                ->setArgument('$matcher', new Reference('knp_menu.matcher', ContainerInterface::NULL_ON_INVALID_REFERENCE))
                 ->setPublic(false);
         }
 

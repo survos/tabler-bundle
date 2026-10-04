@@ -15,6 +15,7 @@ final class MenuOptionsResolver
     {
         return array_merge(
             $this->defaultOptions,
+            $this->menuContext->getAmbient(),
             $this->menuContext->getOptions(),
             $options
         );

@@ -1,5 +1,6 @@
 {# @SurvosTabler/menu/actions.html.twig - Page action buttons #}
 {% extends '@KnpMenu/menu.html.twig' %}
+{% import '@SurvosTabler/menu/_attrs.html.twig' as attrs %}
 
 {% block root %}
 {{ block('children') }}
@@ -11,7 +12,7 @@
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     <li class="nav-item">
         <a href="{{ item.uri }}"
-           class="nav-link rounded {% if matcher.isCurrent(item) %} active{% endif %}">
+           class="nav-link rounded {{ item.linkAttribute('class') }}{% if matcher.isCurrent(item) %} active{% endif %}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}>
 
             {% if resolvedIcon %}
                 {{ ux_icon(resolvedIcon, {class: 'icon me-1'}) }}
