@@ -50,15 +50,15 @@
 {#            </h1>#}
 
             <div class="navbar-nav flex-row order-md-last ms-auto">
-                {{ component('tabler:menu', {type: NAVBAR_END, caller: _self, options: {layout: this.layout}}) }}
-                {{ component('tabler:menu', {type: SEARCH, caller: _self, options: {layout: this.layout}}) }}
+                {{ tabler_menu(NAVBAR_END, {layout: this.layout}) }}
+                {{ tabler_menu(SEARCH, {layout: this.layout}) }}
 
                 {% set authEnabled = true %}
                 {% if id.header is defined and id.header.auth is defined and id.header.auth.enabled is defined %}
                     {% set authEnabled = id.header.auth.enabled %}
                 {% endif %}
                 {% if authEnabled %}
-                    {{ component('tabler:menu', {type: AUTH, caller: _self, options: {layout: this.layout}}) }}
+                    {{ tabler_menu(AUTH, {layout: this.layout}) }}
                 {% endif %}
 
                 {% set showLocale = true %}

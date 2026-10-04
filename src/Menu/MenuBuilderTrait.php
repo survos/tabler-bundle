@@ -150,8 +150,7 @@ trait MenuBuilderTrait
             return $menu;
         }
 
-        // Dev-only (assert() is a no-op in prod, same idiom KnpMenuHelperTrait::add() already
-        // uses for the opposite caller mistake, both route AND uri set) -- catches "forgot to
+        // Dev-only (assert() is a no-op in prod) -- catches "forgot to
         // pass uri/route" at the call site instead of a silently-broken href="" link discovered
         // by clicking around, or never discovered at all.
         assert(
@@ -198,7 +197,7 @@ trait MenuBuilderTrait
             $child->setAttribute('divider_append', true);
         }
 
-        if ($translationDomain) {
+        if ($translationDomain !== null && $translationDomain !== '') {
             $child->setExtra('translation_domain', $translationDomain);
         }
 
@@ -259,7 +258,7 @@ trait MenuBuilderTrait
             $child->setExtra('icon', $iconService?->resolve($icon) ?? $icon);
         }
 
-        if ($translationDomain) {
+        if ($translationDomain !== null && $translationDomain !== '') {
             $child->setExtra('translation_domain', $translationDomain);
         }
 

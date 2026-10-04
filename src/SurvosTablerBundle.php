@@ -24,6 +24,7 @@ use Survos\TablerBundle\Service\MenuDispatcher;
 use Survos\TablerBundle\Service\MenuContext;
 use Survos\TablerBundle\Service\MenuOptionsResolver;
 use Survos\TablerBundle\Service\MenuRenderer;
+use Survos\TablerBundle\Service\MenuSlotRegistry;
 use Survos\TablerBundle\Service\MenuService;
 use Survos\TablerBundle\Service\PageContext;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -225,11 +226,12 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$defaultOptions', $config['menu_options'])
             ->setArgument('$menuContext', new Reference(MenuContext::class));
 
+        $builder->register(MenuSlotRegistry::class);
+
         $builder->register(MenuRenderer::class)
             ->setArgument('$dispatcher', new Reference(MenuDispatcher::class))
             ->setArgument('$knpHelper', new Reference('knp_menu.helper'))
-            ->setArgument('$requestStack', new Reference('request_stack'))
-            ->setArgument('$templatePrefix', '@SurvosTabler/menu/');
+            ->setArgument('$slots', new Reference(MenuSlotRegistry::class));
 
         $builder->register(DebugMenuSlotsSubscriber::class)
             ->setAutowired(true)
@@ -430,14 +432,10 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // @todo: , MenuBreadcrumbComponent::class
         // Menu components need extra arguments
-        foreach ([MenuComponent::class] as $componentClass) {
-            $builder->register($componentClass)
-                ->setAutowired(true)
-                ->setAutoconfigured(true)
-                ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class))
-                ->setArgument('$helper', new Reference('knp_menu.helper'))
-                ->setArgument('$menuDispatcher', new Reference(MenuDispatcher::class));
-        }
+        $builder->register(MenuComponent::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setArgument('$slots', new Reference(MenuSlotRegistry::class));
 
         $this->registerRouteLoader($builder);
     }

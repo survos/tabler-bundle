@@ -62,7 +62,7 @@
 {% block banner %}
     {% if tabler_menu_has_items(BANNER) %}
         <div class="tblr-banner">
-            {{ component('tabler:menu', {type: BANNER, caller: _self}) }}
+            {{ tabler_menu(BANNER) }}
             <div class="tblr-banner-close" data-bs-dismiss="alert">{{ ux_icon('tabler:x') }}</div>
         </div>
     {% endif %}
@@ -122,7 +122,7 @@
                                     <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU</div>{% endif %}
                                         {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU) %}
-                                            {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU, caller: _self}) }}
+                                            {{ tabler_menu(ADMIN_NAVBAR_MENU) }}
                                         {% endif %}
                                     </div>
                                 {% endif %}
@@ -130,7 +130,7 @@
                                     <div class="ms-auto {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">ADMIN_NAVBAR_MENU_END</div>{% endif %}
                                         {% if tabler_menu_has_items(ADMIN_NAVBAR_MENU_END) %}
-                                            {{ component('tabler:menu', {type: ADMIN_NAVBAR_MENU_END, caller: _self}) }}
+                                            {{ tabler_menu(ADMIN_NAVBAR_MENU_END) }}
                                         {% endif %}
                                     </div>
                                 {% endif %}
@@ -190,7 +190,7 @@
                                 <div class="{% if debugMenuSlots %}tabler-debug-slot me-2{% endif %}">
                                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">{{ slot }}</div>{% endif %}
                                     {% if tabler_menu_has_items(slot) %}
-                                        {{ component('tabler:menu', {type: slot, caller: _self}) }}
+                                        {{ tabler_menu(slot) }}
                                     {% endif %}
                                 </div>
                             {% endif %}
@@ -199,7 +199,7 @@
                 {% elseif tabler_menu_has_items(NAVBAR_PRIMARY) %}
                     <div class="collapse navbar-collapse {% if debugMenuSlots %}tabler-debug-slot{% endif %}" id="navbar-primary">
                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_PRIMARY</div>{% endif %}
-                        {{ component('tabler:menu', {type: NAVBAR_PRIMARY, caller: _self}) }}
+                        {{ tabler_menu(NAVBAR_PRIMARY) }}
                     </div>
                 {% endif %}
 
@@ -209,7 +209,7 @@
                             <div class="{% if debugMenuSlots %}tabler-debug-slot ms-2{% endif %}">
                                 {% if debugMenuSlots %}<div class="tabler-debug-slot-label">{{ slot }}</div>{% endif %}
                                 {% if tabler_menu_has_items(slot) %}
-                                    {{ component('tabler:menu', {type: slot, caller: _self}) }}
+                                    {{ tabler_menu(slot) }}
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -231,7 +231,7 @@
                                         <div class="{% if debugMenuSlots %}tabler-debug-slot mb-2{% endif %}">
                                             {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_START</div>{% endif %}
                                             {% if tabler_menu_has_items(NAVBAR_START) %}
-                                                {{ component('tabler:menu', {type: NAVBAR_START, caller: _self}) }}
+                                                {{ tabler_menu(NAVBAR_START) }}
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -239,7 +239,7 @@
                                         <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                             {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_MENU</div>{% endif %}
                                             {% if tabler_menu_has_items(NAVBAR_MENU) %}
-                                                {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self}) }}
+                                                {{ tabler_menu(NAVBAR_MENU) }}
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -249,7 +249,7 @@
                                         <div class="{% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                             {% if debugMenuSlots %}<div class="tabler-debug-slot-label">NAVBAR_MENU_END</div>{% endif %}
                                             {% if tabler_menu_has_items(NAVBAR_MENU_END) %}
-                                                {{ component('tabler:menu', {type: NAVBAR_MENU_END, caller: _self}) }}
+                                                {{ tabler_menu(NAVBAR_MENU_END) }}
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -269,7 +269,7 @@
                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_NAV</div>{% endif %}
                     <ul class="nav nav-underline">
                         {% if tabler_menu_has_items(PAGE_NAV) %}
-                            {{ component('tabler:menu', {type: PAGE_NAV, caller: _self, options: {title: resolvedPageTitle}}) }}
+                            {{ tabler_menu(PAGE_NAV, {title: resolvedPageTitle}) }}
                         {% endif %}
                     </ul>
                 </div>
@@ -283,7 +283,7 @@
         <header class="navbar" style="min-height: 0;">
             <div class="page-breadcrumb {{ containerClass }} py-1 {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                 {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
-                {{ component('tabler:menu', {type: BREADCRUMB, caller: _self}) }}
+                {{ tabler_menu(BREADCRUMB) }}
             </div>
         </header>
     {% endif %}
@@ -313,7 +313,7 @@
                                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">PAGE_ACTIONS</div>{% endif %}
                                     <div class="nav border rounded">
                                         {% if tabler_menu_has_items(PAGE_ACTIONS) %}
-                                            {{ component('tabler:menu', {type: PAGE_ACTIONS, caller: _self, options: {title: resolvedPageTitle}}) }}
+                                            {{ tabler_menu(PAGE_ACTIONS, {title: resolvedPageTitle}) }}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -341,7 +341,7 @@
                                 <div class="card {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                                     {% if debugMenuSlots %}<div class="tabler-debug-slot-label">SIDEBAR</div>{% endif %}
                                     <div class="card-body p-0">
-                                        {% include '@SurvosTabler/render_sidebar_menu.html.twig' with {menuCode: SIDEBAR} %}
+                                        {{ tabler_menu(SIDEBAR) }}
                                     </div>
                                 </div>
                             {% endblock %}
@@ -369,7 +369,7 @@
                                     <div class="{% if debugMenuSlots %}tabler-debug-slot d-inline-block{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER_END</div>{% endif %}
                                         {% if tabler_menu_has_items(FOOTER_END) %}
-                                            {{ component('tabler:menu', {type: FOOTER_END, caller: _self}) }}
+                                            {{ tabler_menu(FOOTER_END) }}
                                         {% endif %}
                                     </div>
                                 {% endif %}
@@ -379,7 +379,7 @@
                                     <div class="{% if debugMenuSlots %}tabler-debug-slot d-inline-block{% endif %}">
                                         {% if debugMenuSlots %}<div class="tabler-debug-slot-label">FOOTER</div>{% endif %}
                                         {% if tabler_menu_has_items(FOOTER) %}
-                                            {{ component('tabler:menu', {type: FOOTER, caller: _self}) }}
+                                            {{ tabler_menu(FOOTER) }}
                                         {% endif %}
                                     </div>
                                 {% endif %}

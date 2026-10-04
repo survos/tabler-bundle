@@ -2,7 +2,7 @@
   "name": "@survos/tabler",
   "description": "integrate php and javascript helpers for tabler, including menus",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "symfony": {
     "controllers": {
       "accordion": {
@@ -45,7 +45,9 @@
     "importmap": {
       "@hotwired/stimulus": "^3.2.2",
       "flag-icons/css/flag-icons.min.css": "^7.5.0",
-      "@floating-ui/dom": "^1.8.0"
+      "@floating-ui/dom": "^1.8.0",
+      "@tabler/core": "^1.6.1",
+      "@tabler/core/dist/css/tabler.min.css": "^1.6.1"
     },
     "autoimport": {}
   },

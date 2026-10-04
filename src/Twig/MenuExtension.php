@@ -34,9 +34,13 @@ final class MenuExtension extends AbstractExtension
         ];
     }
 
-    public function renderMenu(string $slot, array $options = []): string
+    /**
+     * {{ tabler_menu('NAVBAR_END') }}, {{ tabler_menu(PAGE_ACTIONS, {project: project}) }}.
+     * $options reach the listeners; $render overrides how it is drawn (template, rootAttributes, ...).
+     */
+    public function renderMenu(string $slot, array $options = [], array $render = []): string
     {
-        return $this->renderer->render($slot, $options);
+        return $this->renderer->render($slot, $options, $render);
     }
 
     public function hasItems(string $slot, array $options = []): bool

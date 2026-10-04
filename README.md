@@ -22,7 +22,7 @@ Use `Survos\TablerBundle\Menu\MenuBuilderTrait` for new menus. Its `add()`
 automatically applies the route's collected `#[IsGranted]` requirements through
 `MenuService` when the menu is autowired. Controller authorization still enforces access.
 
-`Traits\KnpMenuHelperTrait` and its interface are deprecated compatibility APIs.
+`Traits\KnpMenuHelperTrait` and its interface have been removed (a breaking API change).
 They cannot be replaced by changing an import alone: `add()` has a different return
 contract and several different arguments. See [the migration guide](docs/menu-builder-migration.md).
 
@@ -217,7 +217,7 @@ Install the bundle, then go through the setup to add and configure the tools.
     
     composer req "kevinpapst/adminlte-bundle"
     composer require knplabs/knp-menu-bundle
-    bin/console make:subscriber KnpMenuSubscriber "Survos\BaseBundle\Event\KnpMenuEvent"
+    bin/console make:subscriber MenuSubscriber "Survos\TablerBundle\Event\MenuEvent"
     
     bin/console survos:init
     

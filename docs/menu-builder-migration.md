@@ -1,8 +1,9 @@
 # One menu builder API
 
-`Survos\TablerBundle\Menu\MenuBuilderTrait` is the canonical API for new menus.
-`Traits\KnpMenuHelperTrait` and `Traits\KnpMenuHelperInterface` are deprecated.
-They remain available for compatibility; do not replace their imports mechanically.
+`Survos\TablerBundle\Menu\MenuBuilderTrait` is the canonical menu API.
+`Traits\KnpMenuHelperTrait` and `Traits\KnpMenuHelperInterface` have been removed.
+This is a breaking API change: migrate consumers before updating the bundle.
+Do not replace their imports mechanically.
 
 ## Route permissions
 
@@ -27,7 +28,7 @@ only controls navigation. External URLs have no route attributes to inspect.
 | `dividerPrepend`, `dividerAppend` | `dividerBefore`, `dividerAfter` |
 | `rp: null` | Omit it or pass `[]` |
 | Default translation domain `routing` | Default `messages`; pass `routing` explicitly if needed |
-| `dataAttributes` | Set link attributes on the created item, only if it differs from the parent |
+| `dataAttributes` | Preserve the attributes expected by your renderer (link attributes, or `data_attributes` extras for custom templates); only mutate the result if it differs from the parent |
 | `baseUrl`, `translationParams`, `addMenuItem`, auth/workflow helpers | Review individually; no direct replacement promised |
 | Legacy helper interface | Remove only after checking code that type-hints or autoconfigures it |
 
@@ -51,27 +52,29 @@ plus any entity voter paths used by the app.
 From the monorepo root:
 
 ```sh
-vendor/bin/phpunit bu/tabler-bundle/tests/Menu/MenuBuilderAuthorizationTest.php
+vendor/bin/phpunit bu/tabler-bundle/tests/Menu bu/maker-bundle/tests/MenuSkeletonTest.php
 ```
 
-The tests cover denied/admin routes, public and external links, all required
-permissions, and preservation of entity voter subjects. Ink provides the first live
-consumer verification using `../mono/link .` with its application adapter removed.
+The tests cover route authorization, entity voter subjects, optional helper injection,
+existing constructor properties, disabled translation domains, and generated menu listeners.
+Also compile the application container and check rendered menus with its actual routes,
+translations, and templates.
 
 ## Local consumer audit
 
-A source-only survey under `~/sites` (excluding vendor, cache and node_modules)
-found roughly 45 legacy references, including alternate checkouts and stale imports.
-Examples requiring deliberate migration:
+The primary application checkouts were migrated before removing the legacy Tabler API:
+harvest, ssai, zm, pressia, repo, fotostory, kpa, ai-pipeline-demo, bench, cue, depot,
+global-giving, mediary, packages, priceit, and tree-demo. Mono's application menu,
+Brevo's subscriber, and the maker generator now use the canonical API as well.
+Fotostory's integration test checks route labels and localized URLs in English,
+French, and Hungarian.
 
-- `mono/src/EventListener/AppMenuEventListener.php`: implements the legacy interface
-  and uses `addMenuItem()` option arrays.
-- `pressia/src/Menu/AppMenu.php`: uses option arrays and nested-menu return behavior.
-- `kpa/src/Menu/AppMenu.php`: already uses the canonical trait but has a stale legacy import.
-- `feeds` and maker generator templates still reference the older Bootstrap namespace;
-  deprecating Tabler's trait does not migrate those separate APIs.
+The source and configuration audit found no remaining consumers of the removed
+Tabler trait or interface in primary checkouts. Alternate worktrees and archived
+applications were excluded and must be checked before updating their dependencies.
+The separate Bootstrap API used by feeds and the FwBundle API used by fw7-demo and
+priceit's phone menu are outside this removal.
 
-Modern first-party bundle menus already use `MenuBuilderTrait`, either directly
-(such as Folio's `RowMenu`) or through `AbstractAdminMenuSubscriber`. That base class
-is a consumer of the canonical trait, not a competing implementation. Retain the
-legacy trait until app callers and generator output have been migrated and tested.
+First-party bundle menus use `MenuBuilderTrait`, either directly (such as Folio's
+`RowMenu`) or through `AbstractAdminMenuSubscriber`. That base class is a consumer
+of the canonical trait, not a competing implementation.

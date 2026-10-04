@@ -70,6 +70,16 @@ final class MenuBuilderInjectionTest extends TestCase
         self::assertSame('custom:user', $item->getExtra('icon'));
     }
 
+    public function testLiteralLabelsDisableTranslationOnLinksAndSubmenus(): void
+    {
+        $builder = new InjectionTestMenu();
+        $menu = (new MenuFactory())->createItem('root');
+        $item = $builder->add($menu, uri: '#', label: 'Literal', translationDomain: false);
+        self::assertFalse($item->getExtra('translation_domain'));
+        $submenu = $builder->addSubmenu($menu, 'Literal group', translationDomain: false);
+        self::assertFalse($submenu->getExtra('translation_domain'));
+    }
+
     private function container(): ContainerBuilder
     {
         $container = new ContainerBuilder();

@@ -7,10 +7,10 @@
                 {# Tabler reference uses flex-column/flex-md-row here #}
                 <div class="row flex-column flex-md-row flex-fill align-items-center">
                     <div class="col">
-                        {{ component('tabler:menu', {type: NAVBAR_MENU, caller: _self, options: {layout: this.layout}}) }}
+                        {{ tabler_menu(NAVBAR_MENU, {layout: this.layout}) }}
                     </div>
                     <div class="col col-md-auto">
-                        {{ component('tabler:menu', {type: NAVBAR_MENU_END, caller: _self, options: {layout: this.layout}}) }}
+                        {{ tabler_menu(NAVBAR_MENU_END, {layout: this.layout}) }}
                     </div>
                 </div>
             </div>

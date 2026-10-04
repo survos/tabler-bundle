@@ -10,7 +10,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Opt-in mixin for menu subscribers that want a survos/settings-bundle setting to
  * control whether one of their items shows -- `use` this alongside
- * MenuBuilderTrait or KnpMenuHelperTrait and pass settingEnabled(...) as add()'s
+ * MenuBuilderTrait and pass settingEnabled(...) as add()'s
  * `if:` argument, e.g. `$this->add($menu, ..., if: $this->settingEnabled('show_tour', true))`.
  *
  * survos/settings-bundle is an OPTIONAL dependency of tabler-bundle (see

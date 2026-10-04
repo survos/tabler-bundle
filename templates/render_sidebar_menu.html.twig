@@ -1,7 +1,0 @@
-{% set requestedCode = menuCode|default(SIDEBAR) %}
-{% set resolvedType = requestedCode in ['survos_sidebar_menu', 'SIDEBAR_MENU'] ? SIDEBAR : requestedCode %}
-
-{{ component('tabler:menu', {
-    type: resolvedType,
-    caller: _self
-}) }}

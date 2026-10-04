@@ -63,11 +63,11 @@ grepping for before you start editing usages:
 ## 2. The menu constant mapping (the actual hard part)
 
 `survos/tabler-bundle`'s `MenuDispatcher` only ever dispatches
-`Survos\TablerBundle\Event\MenuEvent`, under **that class's own constant strings**. A
-same-named `Survos\TablerBundle\Event\KnpMenuEvent` class also ships (a BC shim carrying the
-*old* bootstrap-bundle constant values), but nothing dispatches under those strings anymore.
-Type-hinting a listener at the old class and swapping only the `use` statement compiles fine
-and then **silently never fires** — the nav/sidebar/footer/auth slot just renders empty, no
+`Survos\TablerBundle\Event\MenuEvent`, under **that class's own constant strings**. The old
+`KnpMenuEvent` class (a BC shim carrying the *old* bootstrap-bundle constant values) has been
+removed from this bundle. If you still import one from another package, nothing dispatches under
+its strings. Type-hinting a listener at the old class and swapping only the `use` statement
+compiles fine and then **silently never fires** — the nav/sidebar/footer/auth slot just renders empty, no
 error, because the string the framework dispatches under no longer matches what
 `#[AsEventListener(event: ...)]` is listening for. `NAVBAR_MENU` is the one slot whose string
 value didn't change, which makes it an easy false-negative during testing.
@@ -82,21 +82,23 @@ value didn't change, which makes it an easy false-negative during testing.
 
 For every class implementing menu listeners:
 1. `use Survos\BootstrapBundle\Event\KnpMenuEvent;` → `use Survos\TablerBundle\Event\MenuEvent;`
-   (same for `Service\MenuService`, `Traits\KnpMenuHelperTrait`, `Traits\KnpMenuHelperInterface`
-   — same class/method names, just root-namespace swap).
+   Use `Survos\TablerBundle\Menu\MenuBuilderTrait` for menu construction and follow
+   [the builder migration checklist](menu-builder-migration.md); the legacy Tabler trait
+   and interface have been removed, and helper calls require more than an import change.
 2. Swap every `KnpMenuEvent::*` constant per the table above, including inside
    `#[AsEventListener(event: ...)]` attributes and `getSubscribedEvents()` arrays.
 3. `MenuEvent` doesn't expose `getOptions(): array` (only `KnpMenuEvent` did) — use
    `$event->getOption('key', $default)` or the public readonly `$event->options` property.
-4. If a class `implements KnpMenuHelperInterface`, its `supports()` method signature is
-   `supports(KnpMenuEvent|MenuEvent $event): bool` (a union type) — narrowing your override to
-   just `MenuEvent` is a contravariance violation and fatals at container-compile time.
+4. Remove `implements KnpMenuHelperInterface` and its import after checking any app-specific
+   type hints or service configuration. Register listeners with `#[AsEventListener]` and
+   type their event argument as `MenuEvent`.
 5. `MenuService::addAuthMenu()` **does not exist** in tabler-bundle's `MenuService` — the AUTH
    slot is populated automatically by `Survos\TablerBundle\Menu\AuthSlotMenuSubscriber` (falls
    back to `app_login`/`app_register` if unconfigured). Delete any app code that still tries to
    call it.
 6. Any twig template calling `component('menu', {...})` needs to become
-   `component('tabler:menu', {...})` — namespaced twig components now.
+   `{{ tabler_menu(SLOT) }}`; see `docs/menus.md`. (The `tabler:menu` component no longer renders
+   page slots.)
 
 **Verify, don't assume.** After the rewrite, `bin/console debug:event-dispatcher NAVBAR_MENU`
 (and `SIDEBAR`, `FOOTER`, `AUTH`, `PAGE_NAV`) should list every app listener you just touched.
