@@ -232,6 +232,12 @@
         </header>
     {% endblock %}
 
+    {# With nothing on the left of the secondary row (e.g. only a NAVBAR_MENU_END section menu), the breadcrumb
+       takes that spot instead of a strip of its own. That row collapses on small screens, so there the
+       strip below still draws it. #}
+    {% set breadcrumbInNavbar = not compactHeader and tabler_menu_has_items(BREADCRUMB) and tabler_menu_has_items(NAVBAR_MENU_END)
+        and not tabler_menu_has_items(NAVBAR_START) and not tabler_menu_has_items(NAVBAR_MENU) %}
+
     {% block navbar_secondary %}
         {% if not compactHeader and (tabler_menu_has_items(NAVBAR_START) or tabler_menu_has_items(NAVBAR_MENU) or tabler_menu_has_items(NAVBAR_MENU_END)) %}
             <header class="navbar-expand-md">
@@ -254,6 +260,12 @@
                                             {% if tabler_menu_has_items(NAVBAR_MENU) %}
                                                 {{ tabler_menu(NAVBAR_MENU) }}
                                             {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if breadcrumbInNavbar %}
+                                        <div class="page-breadcrumb {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
+                                            {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
+                                            {{ tabler_menu(BREADCRUMB) }}
                                         </div>
                                     {% endif %}
                                 </div>
@@ -292,7 +304,7 @@
     {# Breadcrumbs are their own strip, not part of the page header: a page that draws its own
        heading (show_page_header: false) still needs to say where it is. #}
     {% if tabler_menu_has_items(BREADCRUMB) %}
-        <header class="navbar" style="min-height: 0;">
+        <header class="navbar{{ breadcrumbInNavbar ? ' d-md-none' }}" style="min-height: 0;">
             <div class="page-breadcrumb {{ containerClass }} py-1 {% if debugMenuSlots %}tabler-debug-slot{% endif %}">
                 {% if debugMenuSlots %}<div class="tabler-debug-slot-label">BREADCRUMB</div>{% endif %}
                 {{ tabler_menu(BREADCRUMB) }}
