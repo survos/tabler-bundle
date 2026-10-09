@@ -61,8 +61,6 @@ class SurvosTablerBundle extends AbstractUxBundle
 {
     use HasConfigurableRoutes;
 
-    public const ASSET_PACKAGE = 'tabler';
-
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
