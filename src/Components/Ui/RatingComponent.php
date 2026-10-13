@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/RatingComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -15,5 +16,4 @@ final class RatingComponent
     public ?string $color = null;
     public ?int $size = null;
     public ?string $value = null;
-
 }

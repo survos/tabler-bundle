@@ -22,12 +22,13 @@ final class RabbitMqMenuSubscriber
     public function __construct(
         private readonly ?string $queueDriver = null,
         private readonly ?string $asyncTransportDsn = null,
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
-        if ($this->queueDriver !== 'rabbitmq' || !$this->asyncTransportDsn) {
+        if ('rabbitmq' !== $this->queueDriver || !$this->asyncTransportDsn) {
             return;
         }
 
@@ -65,6 +66,6 @@ final class RabbitMqMenuSubscriber
         $vhost = trim((string) parse_url($dsn, PHP_URL_PATH), '/');
         $vhost = explode('/', $vhost)[0] ?: '/'; // '' (no path segment) means the default vhost
 
-        return $base . '/#/vhosts/' . rawurlencode($vhost);
+        return $base.'/#/vhosts/'.rawurlencode($vhost);
     }
 }

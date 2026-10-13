@@ -28,10 +28,11 @@ final class MessengerMonitorMenuSubscriber
     private const MONITOR_ROUTE = 'zenstruck_messenger_monitor_dashboard';
 
     public function __construct(
-        protected readonly ?RouterInterface   $router            = null,
+        protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
-        protected readonly ?IconService       $iconService       = null,
-    ) {}
+        protected readonly ?IconService $iconService = null,
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void

@@ -21,7 +21,9 @@ final class LocaleSwitcherComponent
     public bool $showFlag = false;
     public bool $showFullName = true;
 
-    public function __construct(private readonly LocaleLinks $links) {}
+    public function __construct(private readonly LocaleLinks $links)
+    {
+    }
 
     #[ExposeInTemplate]
     public function getCurrentLocale(): string

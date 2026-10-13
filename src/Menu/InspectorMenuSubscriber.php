@@ -23,10 +23,11 @@ final class InspectorMenuSubscriber
     use MenuBuilderTrait;
 
     public function __construct(
-        protected readonly ?RouterInterface   $router            = null,
+        protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
-        protected readonly ?IconService       $iconService       = null,
-    ) {}
+        protected readonly ?IconService $iconService = null,
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void

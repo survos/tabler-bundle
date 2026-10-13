@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survos\TablerBundle\Translation;
 
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 use function Symfony\Component\String\u;
 
@@ -56,6 +58,7 @@ class RoutesTranslationLoader implements LoaderInterface
                 $domain => $translations,
             ]
         );
+
         return $catalogue;
     }
 
@@ -63,9 +66,8 @@ class RoutesTranslationLoader implements LoaderInterface
     private static function commonWords(string $locale): array
     {
         static $dictionary = null;
-        $dictionary ??= require __DIR__ . '/common_route_words.php';
+        $dictionary ??= require __DIR__.'/common_route_words.php';
 
         return $dictionary[$locale] ?? [];
     }
-
 }

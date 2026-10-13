@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/BreadcrumbComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -14,5 +15,4 @@ final class BreadcrumbComponent
     public ?string $class = null;
     public ?string $separator = null;
     public ?string $homeIcon = null;
-
 }

@@ -9,7 +9,8 @@ final class MenuOptionsResolver
     public function __construct(
         private readonly array $defaultOptions,
         private readonly MenuContext $menuContext,
-    ) {}
+    ) {
+    }
 
     public function resolve(array $options = []): array
     {

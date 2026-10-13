@@ -1,4 +1,5 @@
 <?php
+
 /* src/Compiler/Configuration.php v1.1 */
 
 declare(strict_types=1);

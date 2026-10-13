@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Components\Cards;
 
-use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Survos\TablerBundle\Components\Traits\DataAwareTrait;
 use Survos\TablerBundle\Service\FixtureService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 /**
  * Reusable tab card component.
@@ -71,12 +71,13 @@ final class TabsComponent
 
     public function getActiveTab(): string
     {
-        if ($this->activeTab !== null) {
+        if (null !== $this->activeTab) {
             return $this->activeTab;
         }
         if (!empty($this->tabs)) {
             return (string) ($this->tabs[0]['id'] ?? '');
         }
+
         return '';
     }
 }

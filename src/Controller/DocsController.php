@@ -22,14 +22,15 @@ final class DocsController extends AbstractController
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         private readonly Environment $twig,
-    ) {}
+    ) {
+    }
 
     /** twig/markdown-extra is only suggested; without it, show the markdown as text rather than 500. */
     private function template(): string
     {
         try {
             // twig/extra-bundle throws a SyntaxError (with an install hint) for a missing filter.
-            $available = $this->twig->getFilter('markdown_to_html') !== null;
+            $available = null !== $this->twig->getFilter('markdown_to_html');
         } catch (\Twig\Error\SyntaxError) {
             $available = false;
         }
@@ -41,16 +42,16 @@ final class DocsController extends AbstractController
     #[Cache(public: true, maxage: 3600, smaxage: 3600)]
     public function show(string $path): Response
     {
-        $docsDir = realpath($this->projectDir . '/docs');
-        if ($docsDir === false) {
+        $docsDir = realpath($this->projectDir.'/docs');
+        if (false === $docsDir) {
             throw $this->createNotFoundException('No docs directory.');
         }
 
         // Resolve under docs/ and reject traversal / non-.md targets.
-        $file = realpath($docsDir . '/' . $path . '.md');
-        if ($file === false || !str_starts_with($file, $docsDir . '/') || !is_file($file)) {
+        $file = realpath($docsDir.'/'.$path.'.md');
+        if (false === $file || !str_starts_with($file, $docsDir.'/') || !is_file($file)) {
             // /docs with no docs/README.md: list what is there rather than 404 the entry point.
-            if ($path === 'README') {
+            if ('README' === $path) {
                 return $this->render($this->template(), [
                     'markdown' => $this->indexMarkdown($docsDir),
                     'path' => $path,
@@ -72,7 +73,7 @@ final class DocsController extends AbstractController
         $paths = [];
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($docsDir, \FilesystemIterator::SKIP_DOTS));
         foreach ($files as $file) {
-            if ($file->isFile() && $file->getExtension() === 'md') {
+            if ($file->isFile() && 'md' === $file->getExtension()) {
                 $paths[] = substr($file->getPathname(), strlen($docsDir) + 1, -3);
             }
         }
@@ -83,7 +84,7 @@ final class DocsController extends AbstractController
             $lines[] = sprintf('- [%s](%s)', $this->titleFromPath($docPath), $this->generateUrl('survos_tabler_doc', ['path' => $docPath]));
         }
 
-        return implode("\n", $paths === [] ? ['# Docs', '', 'No documents yet.'] : $lines);
+        return implode("\n", [] === $paths ? ['# Docs', '', 'No documents yet.'] : $lines);
     }
 
     private function titleFromPath(string $path): string

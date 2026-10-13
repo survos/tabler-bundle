@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/SwitchIconComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -17,5 +18,4 @@ final class SwitchIconComponent
     public ?string $iconBClass = null;
     public ?string $variant = null;
     public ?bool $active = null;
-
 }

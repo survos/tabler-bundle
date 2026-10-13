@@ -25,12 +25,13 @@ final class EntityMetaMenuSubscriber
     use MenuBuilderTrait;
 
     public function __construct(
-        private readonly EntityMetaRegistry  $registry,
-        private readonly ?ManagerRegistry    $managerRegistry  = null,
-        protected readonly ?RouterInterface  $router           = null,
+        private readonly EntityMetaRegistry $registry,
+        private readonly ?ManagerRegistry $managerRegistry = null,
+        protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
-        protected readonly ?IconService      $iconService      = null,
-    ) {}
+        protected readonly ?IconService $iconService = null,
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU, priority: -10)]
     public function onAdminNavbarMenu(MenuEvent $event): void
@@ -66,7 +67,7 @@ final class EntityMetaMenuSubscriber
                     'survos_admin_browse',
                     ['code' => EntityMetaPass::entityCode($descriptor->class)],
                     $descriptor->label,
-                    icon:  $descriptor->icon,
+                    icon: $descriptor->icon,
                     badge: $badge,
                 );
             }
@@ -80,7 +81,8 @@ final class EntityMetaMenuSubscriber
         }
         try {
             $count = $this->managerRegistry->getManagerForClass($class)?->getRepository($class)->count([]);
-            return $count !== null
+
+            return null !== $count
                 ? (new \NumberFormatter('en', \NumberFormatter::DECIMAL_COMPACT_SHORT))->format($count)
                 : null;
         } catch (\Throwable) {

@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Traits/DataAwareTrait.php v1.0 - Auto-load data for components */
 
 declare(strict_types=1);
@@ -11,10 +12,10 @@ use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
 /**
  * Trait for components that can load data from various sources.
- * 
+ *
  * Usage in component:
  *   use DataAwareTrait;
- *   
+ *
  * In template:
  *   <twig:cards:users-list fixture="people" :limit="10"/>
  *   <twig:cards:users-list endpoint="/api/users"/>
@@ -45,14 +46,14 @@ trait DataAwareTrait
     #[ExposeInTemplate]
     public function getItems(): iterable
     {
-        if ($this->resolvedItems !== null) {
+        if (null !== $this->resolvedItems) {
             return $this->resolvedItems;
         }
 
         $items = $this->resolveItems();
 
         // Apply limit/offset
-        if ($this->limit !== null || $this->offset !== null) {
+        if (null !== $this->limit || null !== $this->offset) {
             $items = array_slice(
                 is_array($items) ? $items : iterator_to_array($items),
                 $this->offset ?? 0,
@@ -61,23 +62,24 @@ trait DataAwareTrait
         }
 
         $this->resolvedItems = $items;
+
         return $items;
     }
 
     private function resolveItems(): iterable
     {
         // Priority 1: Direct data
-        if ($this->data !== null) {
+        if (null !== $this->data) {
             return $this->data;
         }
 
         // Priority 2: Fixture
-        if ($this->fixture !== null && $this->fixtureService !== null) {
+        if (null !== $this->fixture && null !== $this->fixtureService) {
             return $this->fixtureService->load($this->fixture);
         }
 
         // Priority 3: HTTP endpoint
-        if ($this->endpoint !== null && $this->httpClient !== null) {
+        if (null !== $this->endpoint && null !== $this->httpClient) {
             return $this->fetchFromEndpoint();
         }
 
@@ -87,10 +89,10 @@ trait DataAwareTrait
     private function fetchFromEndpoint(): array
     {
         $query = [];
-        if ($this->limit !== null) {
+        if (null !== $this->limit) {
             $query['itemsPerPage'] = $this->limit;
         }
-        if ($this->offset !== null) {
+        if (null !== $this->offset) {
             $query['page'] = (int) floor($this->offset / ($this->limit ?? 30)) + 1;
         }
 

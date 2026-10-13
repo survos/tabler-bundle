@@ -1,9 +1,10 @@
 <?php
 
-namespace Survos\TablerBundle\Menu;
-use Knp\Menu\FactoryInterface;
-use Knp\Menu\ItemInterface;
+declare(strict_types=1);
 
+namespace Survos\TablerBundle\Menu;
+
+use Knp\Menu\ItemInterface;
 
 interface AdminMenuInterface
 {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Twig\Components;
@@ -22,7 +23,7 @@ final class TablerFooter
      */
     public array $links = [
         'Documentation' => 'https://example.com/docs',
-        'License'       => '#',
+        'License' => '#',
     ];
 
     /** Debug flag to render raw props as a pretty JSON block */

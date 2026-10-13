@@ -38,19 +38,20 @@ abstract class AbstractAdminMenuSubscriber
     use MenuBuilderTrait;
 
     public function __construct(
-        protected readonly ?RouterInterface      $router              = null,
-        protected readonly ?RouteAliasService    $routeAliasService   = null,
-        protected readonly ?IconService          $iconService         = null,
-        protected readonly ?ManagerRegistry      $managerRegistry     = null,
-        protected readonly ?EntityMetaRegistry   $entityMetaRegistry  = null,
-    ) {}
+        protected readonly ?RouterInterface $router = null,
+        protected readonly ?RouteAliasService $routeAliasService = null,
+        protected readonly ?IconService $iconService = null,
+        protected readonly ?ManagerRegistry $managerRegistry = null,
+        protected readonly ?EntityMetaRegistry $entityMetaRegistry = null,
+    ) {
+    }
 
     abstract protected function getLabel(): string;
 
     /**
      * Entity FQCN list, optionally keyed by display label.
      *   [AiBatch::class]                → label from short class name
-     *   ['Batches' => AiBatch::class]   → explicit label
+     *   ['Batches' => AiBatch::class]   → explicit label.
      *
      * @return array<string|int, class-string>
      */
@@ -80,14 +81,14 @@ abstract class AbstractAdminMenuSubscriber
 
         $browseRoute = $this->getBrowseRoute();
 
-        if ($browseRoute !== null && !$this->routeExists($browseRoute, ['code' => '_'])) {
+        if (null !== $browseRoute && !$this->routeExists($browseRoute, ['code' => '_'])) {
             return;
         }
 
-        $menu    = $event->getMenu();
+        $menu = $event->getMenu();
         $submenu = $this->addSubmenu($menu, $this->getLabel(), $this->getGroupIcon());
 
-        if ($browseRoute === null) {
+        if (null === $browseRoute) {
             return;
         }
 
@@ -101,8 +102,8 @@ abstract class AbstractAdminMenuSubscriber
                 $browseRoute,
                 ['code' => EntityMetaPass::entityCode($class)],
                 $label,
-                icon:  $this->resolveEntityIcon($class),
-                badge: $this->entityMetaRegistry?->get($class)?->adminShowCount === false
+                icon: $this->resolveEntityIcon($class),
+                badge: false === $this->entityMetaRegistry?->get($class)?->adminShowCount
                     ? null
                     : $this->resolveCount($class),
             );
@@ -134,10 +135,11 @@ abstract class AbstractAdminMenuSubscriber
 
         try {
             $manager = $this->managerRegistry->getManagerForClass($class);
-            $count   = $manager?->getRepository($class)->count([]);
-            if ($count === null) {
+            $count = $manager?->getRepository($class)->count([]);
+            if (null === $count) {
                 return null;
             }
+
             return (new \NumberFormatter('en', \NumberFormatter::DECIMAL_COMPACT_SHORT))->format($count);
         } catch (\Throwable) {
             return null;

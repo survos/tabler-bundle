@@ -1,4 +1,5 @@
 <?php
+
 /* src/Twig/RouteAliasExtension.php v1.0 - Twig functions for route aliases */
 
 declare(strict_types=1);
@@ -13,7 +14,8 @@ final class RouteAliasExtension extends AbstractExtension
 {
     public function __construct(
         private readonly RouteAliasService $routeAliasService,
-    ) {}
+    ) {
+    }
 
     public function getFunctions(): array
     {

@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/CardDropdownComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -12,5 +13,4 @@ final class CardDropdownComponent
 {
     public ?string $icon = 'dots-vertical';
     public ?string $class = null;
-
 }

@@ -69,8 +69,8 @@ final class BreadcrumbMenuSubscriberTest extends TestCase
 
         $router = $this->createStub(RouterInterface::class);
         $router->method('getRouteCollection')->willReturn($routes);
-        $router->method('match')->willReturnCallback(static fn (string $path): array => $path === '/search' ? ['_route' => 'search_all'] : throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException());
-        $router->method('generate')->willReturnCallback(static fn (string $n, array $p = []): string => '/' . implode('/', $p));
+        $router->method('match')->willReturnCallback(static fn (string $path): array => '/search' === $path ? ['_route' => 'search_all'] : throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException());
+        $router->method('generate')->willReturnCallback(static fn (string $n, array $p = []): string => '/'.implode('/', $p));
 
         $request = new Request(query: $query, attributes: ['_route' => $currentRoute, '_route_params' => $routeParams]);
         $stack = new RequestStack();

@@ -46,8 +46,7 @@ class TwigExtension extends AbstractExtension
         return [
             new TwigFilter('attributes', [$this, 'attributes'], ['is_safe' => ['html']]),
             new TwigFilter('tabler_container', [$this, 'containerClass'], ['is_safe' => ['html']]),
-            new TwigFilter('route_alias', fn (string $routeName): ?string =>
-                ($this->routes[$routeName] === false)
+            new TwigFilter('route_alias', fn (string $routeName): ?string => (false === $this->routes[$routeName])
                     ? null
                     : $this->routes[$routeName] ?? $routeName),
         ];
@@ -79,7 +78,7 @@ class TwigExtension extends AbstractExtension
 
     public function setPage(array $options = [], mixed $caller = null): string
     {
-        if ($caller !== null) {
+        if (null !== $caller) {
             $options['caller'] = is_scalar($caller) ? (string) $caller : get_debug_type($caller);
         }
 
@@ -87,11 +86,11 @@ class TwigExtension extends AbstractExtension
         $defaults = $normalized['defaults'] ?? null;
         unset($normalized['defaults']);
 
-        if (is_array($defaults) && $defaults !== []) {
+        if (is_array($defaults) && [] !== $defaults) {
             $this->pageContext->addDefaults($defaults);
         }
 
-        if ($normalized !== []) {
+        if ([] !== $normalized) {
             $this->pageContext->addOptions($normalized);
         }
 

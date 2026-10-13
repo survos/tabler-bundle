@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/EmptyComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -19,5 +20,4 @@ final class EmptyComponent
     public ?string $subtitle = 'Try';
     public ?string $buttonText = 'Search';
     public ?string $buttonIcon = 'search';
-
 }

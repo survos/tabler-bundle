@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/CardTitleComponent.php v4.8 - Generated 2026-03-17 */
 
 declare(strict_types=1);
@@ -14,5 +15,4 @@ final class CardTitleComponent
     public ?string $text = null;
     public ?string $title = 'Card';
     public ?string $more = null;
-
 }

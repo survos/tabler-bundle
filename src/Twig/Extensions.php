@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Kimai time-tracking app.
  *
@@ -13,28 +15,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+
 use function Symfony\Component\String\u;
 
 /**
- * Multiple Twig extensions: filters and functions
+ * Multiple Twig extensions: filters and functions.
  */
 class Extensions extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getFilters(): array
     {
-
         return [
             new TwigFilter('indent', [$this, 'indent']),
             new TwigFilter('externalLink', [$this, 'formatExternalLink']),
-//            new TwigFilter('duration', [$this, 'duration']),
-//            new TwigFilter('money', [$this, 'money']),
-//            new TwigFilter('currency', [$this, 'currency']),
+            //            new TwigFilter('duration', [$this, 'duration']),
+            //            new TwigFilter('money', [$this, 'money']),
+            //            new TwigFilter('currency', [$this, 'currency']),
             new TwigFilter('country', [$this, 'country']),
-            new TwigFilter('route_alias', fn($str) => $str ), // so templates from adminlte bundle run
-            new TwigFilter('clean', function($s) { return $s . "!!"; }),
+            new TwigFilter('route_alias', fn ($str) => $str), // so templates from adminlte bundle run
+            new TwigFilter('clean', function ($s) { return $s.'!!'; }),
         ];
     }
 
@@ -43,18 +42,13 @@ class Extensions extends AbstractExtension
         return class_exists('Gajus\Dindent\Indenter')
         // if there's a dump it's too big to indent
             ? strstr('sf-dump', $value) ? $value : (new \Gajus\Dindent\Indenter())->indent($value)
-            : "<!-- composer req gajus/dindent to install indenter -->\n" . $value;
+            : "<!-- composer req gajus/dindent to install indenter -->\n".$value;
     }
 
-
-        /**
-     * {@inheritdoc}
-     */
     public function getFunctions(): array
     {
-
         return [
-            new TwigFunction('get_class', fn($entity) => $entity::class),
+            new TwigFunction('get_class', fn ($entity) => $entity::class),
             new TwigFunction('locales', [$this, 'getLocales']),
             new TwigFunction('breadcrumb', [$this, 'renderBreadcrumb'], ['is_safe' => ['html_attr']]),
             new TwigFunction('h', [$this, 'rstHeader']),
@@ -77,51 +71,51 @@ class Extensions extends AbstractExtension
                 return $attribute->getArguments()['properties'];
             }
         }
+
         return [];
     }
 
-//
-//
-//        $sortFields = [];
-//        foreach ($classInfo->getAttributes() as $attribute) {
-////            print_r($attribute->newInstance()->testArgument);
-//            switch ($attribute->getName()) {
-//                case OrderFilter::class:
-//
-//                    dd($attribute->getName(), $attribute->getArguments());
-//                    break;
-//                default:
-//
-//
-//    }
-//
+    //
+    //
+    //        $sortFields = [];
+    //        foreach ($classInfo->getAttributes() as $attribute) {
+    // //            print_r($attribute->newInstance()->testArgument);
+    //            switch ($attribute->getName()) {
+    //                case OrderFilter::class:
+    //
+    //                    dd($attribute->getName(), $attribute->getArguments());
+    //                    break;
+    //                default:
+    //
+    //
+    //    }
+    //
     public function renderBreadcrumb(string $text, ?string $url = null)
     {
-
-//        <li class="breadcrumb-item"><a href="#">Home</a></li>
-//    <li class="breadcrumb-item active" aria-current="page">Library</li>
+        //        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        //    <li class="breadcrumb-item active" aria-current="page">Library</li>
         return $url ? sprintf('<li class="breadcrumb-item"><a href="%s">%s</a></li>', $url, $text) : $text;
     }
 
     public function rstHeader($level, $text): string
     {
         $levels = [null, '-', '^', '='];
+
         return sprintf("%s\n%s\n\n", $text, str_repeat($levels[$level], mb_strlen($text)));
     }
 
     /**
-     * add icon and sets target
-     *
+     * add icon and sets target.
      */
-    public function formatExternalLink(string $url, $class=''): string
+    public function formatExternalLink(string $url, $class = ''): string
     {
         return sprintf("<a target='_blank' href='%s'>%s <i class='fas fa-external-link'></i> </a>", $url, $url);
     }
 
-
-    public function optionsResolver($defaults, array $options=[], $required = [])
+    public function optionsResolver($defaults, array $options = [], $required = [])
     {
         $resolver = new OptionsResolver();
+
         return $resolver->setDefaults($defaults)
             ->setRequired($required)
             ->resolve($options);
@@ -130,7 +124,7 @@ class Extensions extends AbstractExtension
     public function adminLinks($object, $root = null)
     {
         if (!$root) {
-            $root = u( (new \ReflectionClass($object))->getShortName())->lower();
+            $root = u((new \ReflectionClass($object))->getShortName())->lower();
         }
     }
 
@@ -138,16 +132,15 @@ class Extensions extends AbstractExtension
     {
         // $id = Utility::displayToCode($id);
         $resolver = new OptionsResolver();
+
         return $resolver->setDefaults([
             'tour' => $id,
-            'content' => sprintf("tour.%s.content", $id),
+            'content' => sprintf('tour.%s.content', $id),
             'title' => sprintf('tour.%s.title', $id),
             'placement' => 'bottom',
-            'id' => $id
+            'id' => $id,
         ])
             ->setRequired(['tour'])
             ->resolve($options);
     }
-
-
 }

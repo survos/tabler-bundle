@@ -23,7 +23,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class AmbientMenuContext
 {
-    public function __construct(private readonly MenuContext $menuContext) {}
+    public function __construct(private readonly MenuContext $menuContext)
+    {
+    }
 
     #[AsEventListener(event: KernelEvents::CONTROLLER_ARGUMENTS)]
     public function onControllerArguments(ControllerArgumentsEvent $event): void

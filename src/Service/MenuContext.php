@@ -13,7 +13,8 @@ final class MenuContext
 
     public function __construct(
         private readonly RequestStack $requestStack,
-    ) {}
+    ) {
+    }
 
     public function addOptions(array $options): void
     {

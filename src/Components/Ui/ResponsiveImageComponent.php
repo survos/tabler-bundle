@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/ResponsiveImageComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -15,5 +16,4 @@ final class ResponsiveImageComponent
     public ?string $alt = null;
     public ?string $class = null;
     public ?int $height = null;
-
 }

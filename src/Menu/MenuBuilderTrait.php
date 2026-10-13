@@ -9,11 +9,11 @@ use Survos\FieldBundle\Entity\RouteParametersInterface;
 use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\MenuService;
-use Symfony\Contracts\Service\Attribute\Required;
 use Survos\TablerBundle\Service\RouteAliasService;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Menu builder trait with smart icon inference and safe route handling.
@@ -63,7 +63,7 @@ trait MenuBuilderTrait
     {
         $iconService = $this->iconService ?? $this->tablerMenuIcons;
 
-        if ($icon !== null) {
+        if (null !== $icon) {
             return $iconService?->resolve($icon) ?? $icon;
         }
 
@@ -90,6 +90,7 @@ trait MenuBuilderTrait
 
         try {
             $router->generate($route, $parameters);
+
             return true;
         } catch (RouteNotFoundException) {
             return false;
@@ -132,14 +133,14 @@ trait MenuBuilderTrait
 
         // Authorize before flattening an entity to route parameters so voters receive it.
         // This is independent of the route-existence check (including addAliased()).
-        if ($route && $this->tablerMenuService !== null
+        if ($route && null !== $this->tablerMenuService
             && !$this->tablerMenuService->canAccessRoute($route, $rp instanceof RouteParametersInterface ? $rp : null)) {
             return $menu;
         }
 
         if ($rp instanceof RouteParametersInterface) {
             // Derive label from __toString() before flattening to array
-            if ($label === null && $rp instanceof \Stringable) {
+            if (null === $label && $rp instanceof \Stringable) {
                 $label = (string) $rp;
             }
             $rp = $rp->getRp();
@@ -154,19 +155,19 @@ trait MenuBuilderTrait
         // pass uri/route" at the call site instead of a silently-broken href="" link discovered
         // by clicking around, or never discovered at all.
         assert(
-            $allowNoLink || $route !== null || $uri !== null,
+            $allowNoLink || null !== $route || null !== $uri,
             sprintf('Menu item "%s" has neither a route nor a uri -- it would render as a dead href="" link. Pass route/uri, or use addHeading() for a non-interactive label.', $label ?? '(unlabeled)'),
         );
 
         $label ??= $this->routeToLabel($route ?? $uri ?? '');
-        $id = self::slugger()->slug($label ?: 'item')->toString() . '_' . bin2hex(random_bytes(4));
+        $id = self::slugger()->slug($label ?: 'item')->toString().'_'.bin2hex(random_bytes(4));
 
         $child = $menu->addChild($id, array_filter([
             'route' => $route,
             'routeParameters' => $rp ?: null,
             'uri' => $uri,
             'label' => $label,
-        ], fn($v) => $v !== null));
+        ], fn ($v) => null !== $v));
 
         // Resolve or infer icon
         $resolvedIcon = $inferIcon
@@ -197,7 +198,7 @@ trait MenuBuilderTrait
             $child->setAttribute('divider_append', true);
         }
 
-        if ($translationDomain !== null && $translationDomain !== '') {
+        if (null !== $translationDomain && '' !== $translationDomain) {
             $child->setExtra('translation_domain', $translationDomain);
         }
 
@@ -247,7 +248,7 @@ trait MenuBuilderTrait
         ?string $icon = null,
         string|false|null $translationDomain = 'messages',
     ): ItemInterface {
-        $id = self::slugger()->slug($label)->toString() . '_' . bin2hex(random_bytes(4));
+        $id = self::slugger()->slug($label)->toString().'_'.bin2hex(random_bytes(4));
 
         $child = $menu->addChild($id, ['label' => $label]);
         $child->setExtra('submenu', true);
@@ -258,7 +259,7 @@ trait MenuBuilderTrait
             $child->setExtra('icon', $iconService?->resolve($icon) ?? $icon);
         }
 
-        if ($translationDomain !== null && $translationDomain !== '') {
+        if (null !== $translationDomain && '' !== $translationDomain) {
             $child->setExtra('translation_domain', $translationDomain);
         }
 
@@ -273,13 +274,15 @@ trait MenuBuilderTrait
         $child = $this->add($menu, label: $label, icon: $icon, inferIcon: false, checkRouteExists: false, allowNoLink: true);
         $child->setExtra('heading', true);
         $child->setAttribute('class', 'menu-heading');
+
         return $child;
     }
 
     protected function addDivider(ItemInterface $menu): ItemInterface
     {
-        $child = $menu->addChild('divider_' . bin2hex(random_bytes(4)));
+        $child = $menu->addChild('divider_'.bin2hex(random_bytes(4)));
         $child->setExtra('divider', true);
+
         return $child;
     }
 
@@ -290,6 +293,7 @@ trait MenuBuilderTrait
         }
         $label = preg_replace('/^(app_|admin_|survos_)/', '', $route);
         $label = preg_replace('/_(index|show|edit|new)$/', '', $label);
+
         return ucwords(str_replace('_', ' ', $label));
     }
 }

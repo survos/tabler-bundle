@@ -13,7 +13,8 @@ final class PageContext
 
     public function __construct(
         private readonly RequestStack $requestStack,
-    ) {}
+    ) {
+    }
 
     public function addDefaults(array $options): void
     {

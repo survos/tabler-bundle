@@ -35,7 +35,8 @@ final class LocaleLinks
         private readonly UrlGeneratorInterface $urlGenerator,
         #[Autowire('%kernel.enabled_locales%')]
         private readonly array $enabledLocales = [],
-    ) {}
+    ) {
+    }
 
     public function hasMultiple(): bool
     {
@@ -56,7 +57,7 @@ final class LocaleLinks
         }
 
         $hostParts = explode('.', $request->getHttpHost());
-        $isSubdomainBased = count($hostParts) === 3 && in_array($hostParts[0], $this->enabledLocales, true);
+        $isSubdomainBased = 3 === count($hostParts) && in_array($hostParts[0], $this->enabledLocales, true);
         $current = $this->current();
 
         $locales = [];
@@ -88,7 +89,7 @@ final class LocaleLinks
     {
         $hostParts[0] = $locale;
 
-        return 'https://' . implode('.', $hostParts) . $pathInfo;
+        return 'https://'.implode('.', $hostParts).$pathInfo;
     }
 
     private function pathUrl(string $locale): string

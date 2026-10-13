@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/CarouselComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -21,5 +22,4 @@ final class CarouselComponent
     public ?string $indicatorsThumbRatio = null;
     public ?string $captions = null;
     public ?string $controls = null;
-
 }

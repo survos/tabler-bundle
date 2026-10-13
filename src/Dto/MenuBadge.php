@@ -14,7 +14,7 @@ final readonly class MenuBadge
 
     public static function fromMixed(mixed $badge): ?self
     {
-        if ($badge === null || $badge === false || $badge === '') {
+        if (null === $badge || false === $badge || '' === $badge) {
             return null;
         }
 

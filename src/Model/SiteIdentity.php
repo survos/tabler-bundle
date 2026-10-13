@@ -1,4 +1,5 @@
 <?php
+
 /* src/Model/SiteIdentity.php v1.0 */
 
 declare(strict_types=1);
@@ -26,7 +27,8 @@ final readonly class SiteIdentity
         public array $social = [],
         public array $meta = [],
         public array $header = [],
-    ) {}
+    ) {
+    }
 
     public function brandHtml(): string
     {

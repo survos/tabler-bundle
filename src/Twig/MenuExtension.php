@@ -1,11 +1,11 @@
 <?php
+
 /* src/Twig/MenuExtension.php v1.0 - Twig functions for menu rendering */
 
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Twig;
 
-use Knp\Menu\ItemInterface;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\MenuContext;
 use Survos\TablerBundle\Service\MenuRenderer;
@@ -21,7 +21,8 @@ final class MenuExtension extends AbstractExtension
         private readonly MenuContext $menuContext,
         private readonly RequestStack $requestStack,
         private readonly bool $debugMenuSlotsEnabled = false,
-    ) {}
+    ) {
+    }
 
     public function getFunctions(): array
     {
@@ -67,7 +68,7 @@ final class MenuExtension extends AbstractExtension
     {
         $ambient = [];
         foreach ($context as $key => $value) {
-            if (!is_string($key) || $key === '' || $key[0] === '_' || !is_object($value)) {
+            if (!is_string($key) || '' === $key || '_' === $key[0] || !is_object($value)) {
                 continue;
             }
             if ($value instanceof \Closure || $value instanceof \Twig\Markup || $value instanceof \Symfony\Bridge\Twig\AppVariable) {
@@ -86,7 +87,7 @@ final class MenuExtension extends AbstractExtension
 
     public function setMenuOptions(array $options = [], mixed $caller = null): string
     {
-        if ($caller !== null) {
+        if (null !== $caller) {
             $options['caller'] = is_scalar($caller) ? (string) $caller : get_debug_type($caller);
         }
 
@@ -103,12 +104,12 @@ final class MenuExtension extends AbstractExtension
         $summary = [];
 
         foreach ($this->menuContext->getOptions() as $key => $value) {
-            if (!is_string($key) || $value === null) {
+            if (!is_string($key) || null === $value) {
                 continue;
             }
 
             $formatted = $this->formatMenuOptionValue($value);
-            if ($formatted === null) {
+            if (null === $formatted) {
                 continue;
             }
 
@@ -126,7 +127,7 @@ final class MenuExtension extends AbstractExtension
         }
 
         $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
+        if (null === $request) {
             return $this->debugMenuSlotsEnabled;
         }
 
@@ -181,7 +182,7 @@ final class MenuExtension extends AbstractExtension
             $shortName = (new \ReflectionClass($value))->getShortName();
             $stringValue = $this->stringifyObject($value);
 
-            return $stringValue !== null
+            return null !== $stringValue
                 ? sprintf('%s: %s', $shortName, $stringValue)
                 : $shortName;
         }
@@ -205,6 +206,6 @@ final class MenuExtension extends AbstractExtension
             return null;
         }
 
-        return $stringValue !== '' ? $stringValue : null;
+        return '' !== $stringValue ? $stringValue : null;
     }
 }

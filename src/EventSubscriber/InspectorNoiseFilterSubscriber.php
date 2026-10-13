@@ -34,6 +34,6 @@ final class InspectorNoiseFilterSubscriber
         }
         self::$registered = true;
 
-        Inspector::beforeFlush(static fn (Inspector $inspector): bool => $inspector->transaction()?->result !== '404');
+        Inspector::beforeFlush(static fn (Inspector $inspector): bool => '404' !== $inspector->transaction()?->result);
     }
 }

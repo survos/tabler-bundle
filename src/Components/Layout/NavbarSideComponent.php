@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Layout/NavbarSideComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -21,5 +22,4 @@ final class NavbarSideComponent
     public ?string $showUser = null;
     public ?string $hideUsername = null;
     public ?bool $dark = null;
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /* src/Service/FixtureService.php v1.0 - Load JSON fixture data */
 
 declare(strict_types=1);
@@ -12,10 +13,11 @@ class FixtureService
     public function __construct(
         private readonly string $fixturesPath,
         private readonly string $assetsBaseUrl,
-    ) {}
+    ) {
+    }
 
     /**
-     * Load fixture data by name (e.g., 'people', 'commits')
+     * Load fixture data by name (e.g., 'people', 'commits').
      */
     public function load(string $name): array
     {
@@ -23,24 +25,24 @@ class FixtureService
             return $this->cache[$name];
         }
 
-        $file = $this->fixturesPath . '/' . $name . '.json';
+        $file = $this->fixturesPath.'/'.$name.'.json';
 
         if (!file_exists($file)) {
             return [];
         }
 
         $data = json_decode(file_get_contents($file), true) ?? [];
-        
+
         // Process image paths to use configured base URL
         $data = $this->processImagePaths($data);
-        
+
         $this->cache[$name] = $data;
 
         return $data;
     }
 
     /**
-     * Get multiple fixtures at once
+     * Get multiple fixtures at once.
      */
     public function loadMany(array $names): array
     {
@@ -48,11 +50,12 @@ class FixtureService
         foreach ($names as $name) {
             $result[$name] = $this->load($name);
         }
+
         return $result;
     }
 
     /**
-     * Resolve asset path to full URL
+     * Resolve asset path to full URL.
      */
     public function assetUrl(string $path): string
     {
@@ -64,11 +67,11 @@ class FixtureService
         // Remove 'static/' prefix if present (Tabler's internal path)
         $path = preg_replace('#^static/#', '', $path);
 
-        return rtrim($this->assetsBaseUrl, '/') . '/' . ltrim($path, '/');
+        return rtrim($this->assetsBaseUrl, '/').'/'.ltrim($path, '/');
     }
 
     /**
-     * Process array recursively to convert image paths
+     * Process array recursively to convert image paths.
      */
     private function processImagePaths(array $data): array
     {
@@ -79,6 +82,7 @@ class FixtureService
                 $data[$key] = $this->assetUrl($value);
             }
         }
+
         return $data;
     }
 

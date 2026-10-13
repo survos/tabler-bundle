@@ -1,9 +1,14 @@
-<?php // this uses the KevinPapst Tabler Menu
+<?php
+
+declare(strict_types=1);
+
+// this uses the KevinPapst Tabler Menu
 
 namespace Survos\TablerBundle\Menu;
 
 use Knp\Menu\ItemInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
 use function Symfony\Component\String\u;
 
 trait AdminMenuTrait
@@ -14,7 +19,7 @@ trait AdminMenuTrait
 
         $item = $menu->add($options['id'])
             ->label($options['label'])
-            ;
+        ;
 
         if ($options['icon']) {
             $item->icon($options['icon']);
@@ -31,8 +36,8 @@ trait AdminMenuTrait
 
         $item
             ->end();
-        return $item;
 
+        return $item;
     }
 
     private function menuOptions(array $options, array $extra = []): array
@@ -56,16 +61,16 @@ trait AdminMenuTrait
                 'uri' => null,
                 'classes' => [], // this doesn't feel quite right.  Maybe a "style: header"?
                 'style' => null,
-//                'childOptions' => $this->childOptions?? null,
+                //                'childOptions' => $this->childOptions?? null,
                 'description' => null,
-                'attributes' => []
+                'attributes' => [],
             ])->resolve($options);
 
         // rename rp
         if (is_object($options['rp'])) {
             $options['routeParameters'] = $options['rp']->getRp();
             if (empty($options['icon'])) {
-                $iconConstant = get_class($options['rp']) . '::ICON';
+                $iconConstant = get_class($options['rp']).'::ICON';
                 $options['icon'] = defined($iconConstant) ? constant($iconConstant) : 'fas fa-database'; // generic database entity
             }
         } elseif (is_array($options['rp'])) {
@@ -85,24 +90,23 @@ trait AdminMenuTrait
         }
 
         // if label is exactly true then automate the label from the route
-        if ($options['label'] === true) {
+        if (true === $options['label']) {
             $options['label'] = str_replace('_', '.', $options['route']);
         }
 
         // we could pass in a hash route and hash params instead.
         if ($fragment = $options['_fragment']) {
-            $options['uri'] = '#' . $fragment;
+            $options['uri'] = '#'.$fragment;
             unset($options['route']);
-            //
         }
 
         // default icons, should be configurable in survos_base.yaml
         if ($route = $options['route']) {
-            if ($options['icon'] === null) {
+            if (null === $options['icon']) {
                 foreach ([
-                             'show' => 'fas fa-eye',
-                             'edit' => 'fas fa-wrench'
-                         ] as $regex => $icon) {
+                    'show' => 'fas fa-eye',
+                    'edit' => 'fas fa-wrench',
+                ] as $regex => $icon) {
                     if (preg_match("|$regex|", $route)) {
                         $options['data-icon'] = $icon;
                     }
@@ -110,17 +114,15 @@ trait AdminMenuTrait
             }
         }
 
-
-
         // move the icon to attributes, where it belongs IF this is knp_menu
         if ($options['icon']) {
             $options['attributes']['data-icon'] = $options['icon'];
-//            $options['attributes']['class'] = 'text-danger';
+            //            $options['attributes']['class'] = 'text-danger';
             $options['label_attributes']['data-icon'] = $options['icon'];
-//            unset($options['icon']); // ??
+            //            unset($options['icon']); // ??
         }
 
-        if ($options['style'] === 'header') {
+        if ('header' === $options['style']) {
             $options['attributes']['class'] = 'sidebar-header';
         }
 
@@ -131,8 +133,7 @@ trait AdminMenuTrait
         if (empty($options['id'])) {
             $options['id'] = md5(json_encode($options));
         }
+
         return $options;
     }
-
-
 }

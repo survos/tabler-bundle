@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/InputGroupComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -23,5 +24,4 @@ final class InputGroupComponent
     public ?string $appendLink = null;
     public ?string $appendHtml = null;
     public ?string $appendButton = null;
-
 }

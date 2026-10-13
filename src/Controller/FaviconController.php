@@ -1,4 +1,5 @@
 <?php
+
 /* src/Controller/FaviconController.php v1.0 - serves the dynamic SVG favicon */
 
 declare(strict_types=1);

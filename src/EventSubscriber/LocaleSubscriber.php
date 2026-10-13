@@ -57,7 +57,7 @@ final class LocaleSubscriber implements EventSubscriberInterface
         $user = $this->security?->getUser();
 
         $switchedLocale = $this->resolveValid($request->query->get('_locale'));
-        if ($switchedLocale !== null) {
+        if (null !== $switchedLocale) {
             $this->persist($request, $switchedLocale, $user);
             $request->setLocale($switchedLocale);
 
@@ -66,14 +66,14 @@ final class LocaleSubscriber implements EventSubscriberInterface
 
         $session = $request->hasSession() ? $request->getSession() : null;
         $sessionLocale = $this->resolveValid($session?->get(self::SESSION_KEY));
-        if ($sessionLocale !== null) {
+        if (null !== $sessionLocale) {
             $request->setLocale($sessionLocale);
 
             return;
         }
 
         $userLocale = $user instanceof HasPreferredLocaleInterface ? $this->resolveValid($user->getPreferredLocale()) : null;
-        if ($userLocale !== null) {
+        if (null !== $userLocale) {
             $session?->set(self::SESSION_KEY, $userLocale);
             $request->setLocale($userLocale);
 
@@ -81,7 +81,7 @@ final class LocaleSubscriber implements EventSubscriberInterface
         }
 
         $negotiated = $request->getPreferredLanguage($this->enabledLocales);
-        if ($negotiated !== null) {
+        if (null !== $negotiated) {
             $request->setLocale($negotiated);
         }
     }
@@ -95,7 +95,7 @@ final class LocaleSubscriber implements EventSubscriberInterface
     {
         $request->getSession()->set(self::SESSION_KEY, $locale);
 
-        if ($user instanceof HasPreferredLocaleInterface && $this->em !== null && $user->getPreferredLocale() !== $locale) {
+        if ($user instanceof HasPreferredLocaleInterface && null !== $this->em && $user->getPreferredLocale() !== $locale) {
             $user->setPreferredLocale($locale);
             $this->em->flush();
         }

@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/HrComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -14,5 +15,4 @@ final class HrComponent
     public ?string $color = null;
     public ?string $class = null;
     public ?string $text = 'Label';
-
 }

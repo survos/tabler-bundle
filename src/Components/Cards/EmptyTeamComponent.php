@@ -1,20 +1,20 @@
 <?php
+
 /* src/Components/Cards/EmptyTeamComponent.php v4.8 - Generated 2026-03-17 */
 
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Components\Cards;
 
-use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Survos\TablerBundle\Components\Traits\DataAwareTrait;
 use Survos\TablerBundle\Service\FixtureService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent(name: 'cards:empty-team', template: '@SurvosTabler/components/cards/empty-team.html.twig')]
 final class EmptyTeamComponent
 {
     use DataAwareTrait;
-
 
     public function __construct(
         ?FixtureService $fixtureService = null,

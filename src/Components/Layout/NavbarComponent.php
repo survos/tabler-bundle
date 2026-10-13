@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Layout/NavbarComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -36,5 +37,4 @@ final class NavbarComponent
     public ?string $hideMenu = null;
     public ?string $fluidSearch = null;
     public ?string $darkSecondary = null;
-
 }

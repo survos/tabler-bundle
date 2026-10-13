@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survos\TablerBundle;
 
-use App\Model\MenuItem;
+use Survos\Kit\AbstractUxBundle;
+use Survos\Kit\Traits\HasConfigurableRoutes;
 use Survos\TablerBundle\Compiler\Configuration;
 use Survos\TablerBundle\Components\CardComponent;
 use Survos\TablerBundle\Components\DividerComponent;
@@ -20,12 +23,12 @@ use Survos\TablerBundle\Service\ContextService;
 use Survos\TablerBundle\Service\FaviconService;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LandingService;
-use Survos\TablerBundle\Service\MenuDispatcher;
 use Survos\TablerBundle\Service\MenuContext;
+use Survos\TablerBundle\Service\MenuDispatcher;
 use Survos\TablerBundle\Service\MenuOptionsResolver;
 use Survos\TablerBundle\Service\MenuRenderer;
-use Survos\TablerBundle\Service\MenuSlotRegistry;
 use Survos\TablerBundle\Service\MenuService;
+use Survos\TablerBundle\Service\MenuSlotRegistry;
 use Survos\TablerBundle\Service\PageContext;
 use Survos\TablerBundle\Service\RouteAliasService;
 use Survos\TablerBundle\Translation\RoutesTranslationLoader;
@@ -43,10 +46,6 @@ use Survos\TablerBundle\Twig\IconExtension;
 use Survos\TablerBundle\Twig\MenuExtension;
 use Survos\TablerBundle\Twig\RouteAliasExtension;
 use Survos\TablerBundle\Twig\TwigExtension;
-use Survos\Kit\AbstractUxBundle;
-use Survos\Kit\Traits\HasConfigurableRoutes;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -76,7 +75,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             return;
         }
 
-        $configFile = __DIR__ . '/../config/packages/ux_icons.yaml';
+        $configFile = __DIR__.'/../config/packages/ux_icons.yaml';
         if (!file_exists($configFile)) {
             return;
         }
@@ -166,7 +165,6 @@ class SurvosTablerBundle extends AbstractUxBundle
         if ($container->hasParameter('survos_tabler.app')) {
             $twigDef->addMethodCall('addGlobal', ['tabler_identity', $container->getParameter('survos_tabler.app')]);
         }
-
     }
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -181,12 +179,11 @@ class SurvosTablerBundle extends AbstractUxBundle
         // Load generated component services
         $container->import('../config/component-services.php');
 
-        foreach([CardComponent::class, DividerComponent::class] as $componentClass) {
+        foreach ([CardComponent::class, DividerComponent::class] as $componentClass) {
             $builder->register($componentClass)
                 ->setAutowired(true)
                 ->setAutoconfigured(true);
         }
-
 
         // find all the routes and create sensible translations from the route name.  We _could_ provide a hint in options
         // === Translation Loader ===
@@ -218,7 +215,7 @@ class SurvosTablerBundle extends AbstractUxBundle
         $builder->register(MenuContext::class)
             ->setArgument('$requestStack', new Reference('request_stack'));
 
-        $builder->register(\Survos\TablerBundle\Menu\AmbientMenuContext::class)
+        $builder->register(Menu\AmbientMenuContext::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setPublic(false);
@@ -245,19 +242,19 @@ class SurvosTablerBundle extends AbstractUxBundle
         // Fills every slot with dummy items when the `dummy_menu` option is set
         // (see DebugController / the /debug-menu route).
         $container->services()
-            ->set(\Survos\TablerBundle\Menu\DebugMenu::class)
+            ->set(Menu\DebugMenu::class)
             ->autowire()
             ->autoconfigure();
 
         if (class_exists(\Survos\FieldBundle\Registry\EntityMetaRegistry::class)) {
-            $builder->register(\Survos\TablerBundle\Menu\EntityMetaMenuSubscriber::class)
+            $builder->register(Menu\EntityMetaMenuSubscriber::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
                 ->setPublic(false);
         }
 
         if (class_exists(\Survos\FieldBundle\Registry\RouteMetaRegistry::class)) {
-            $builder->register(\Survos\TablerBundle\Menu\BreadcrumbMenuSubscriber::class)
+            $builder->register(Menu\BreadcrumbMenuSubscriber::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
                 ->setArgument('$enabled', $config['auto_breadcrumbs'] ?? false)
@@ -286,12 +283,12 @@ class SurvosTablerBundle extends AbstractUxBundle
         // so bot/crawler probes don't burn ingestion credits. Both are soft
         // dependencies, only registered when the library is actually installed.
         if (class_exists(\Inspector\Inspector::class)) {
-            $builder->register(\Survos\TablerBundle\Menu\InspectorMenuSubscriber::class)
+            $builder->register(Menu\InspectorMenuSubscriber::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
                 ->setPublic(false);
 
-            $builder->register(\Survos\TablerBundle\EventSubscriber\InspectorNoiseFilterSubscriber::class)
+            $builder->register(EventSubscriber\InspectorNoiseFilterSubscriber::class)
                 ->setAutowired(true)
                 ->setAutoconfigured(true)
                 ->setPublic(false);
@@ -299,7 +296,7 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // Fills the navbar AUTH slot with login/logout based on the configured routes;
         // self-skips when no login/logout route exists.
-        $builder->register(\Survos\TablerBundle\Menu\AuthSlotMenuSubscriber::class)
+        $builder->register(Menu\AuthSlotMenuSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setPublic(false);
@@ -322,7 +319,7 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // Docs dropdown: mirrors the project's docs/*.md (DocsMenuSubscriber + DocsController).
         // $projectDir is injected via #[Autowire] on the constructor.
-        $builder->register(\Survos\TablerBundle\Menu\DocsMenuSubscriber::class)
+        $builder->register(Menu\DocsMenuSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setPublic(false);
@@ -330,7 +327,7 @@ class SurvosTablerBundle extends AbstractUxBundle
         // Resolves + persists the request locale (query > session > user preference > Accept-Language).
         // Persisting to the user self-skips if the app's User class doesn't implement
         // HasPreferredLocaleInterface, or Doctrine ORM isn't installed.
-        $builder->register(\Survos\TablerBundle\EventSubscriber\LocaleSubscriber::class)
+        $builder->register(EventSubscriber\LocaleSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setArgument('$enabledLocales', '%kernel.enabled_locales%')
@@ -338,13 +335,12 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$em', new Reference('doctrine.orm.entity_manager', ContainerInterface::NULL_ON_INVALID_REFERENCE))
             ->setPublic(false);
 
-
         // The enabled locales as links; shared by the tabler:locale-switcher component and the NAVBAR_LANGUAGE listener.
-        $builder->register(\Survos\TablerBundle\Service\LocaleLinks::class)
+        $builder->register(Service\LocaleLinks::class)
             ->setAutowired(true)
             ->setPublic(false);
 
-        $builder->register(\Survos\TablerBundle\Menu\LocaleMenuSubscriber::class)
+        $builder->register(Menu\LocaleMenuSubscriber::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
             ->setArgument('$enabled', $config['app']['header']['locale_switcher'] ?? true)
@@ -401,7 +397,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             ->setArgument('$debugMenuSlotsEnabled', '%survos_tabler.debug.menu_slots%')
             ->addTag('twig.extension');
 
-// In loadExtension(), replace IconExtension registration:
+        // In loadExtension(), replace IconExtension registration:
         $builder->register(IconExtension::class)
 //            ->setArgument('$uxIconRuntime', new Reference(UXIconRuntime::class))
 //            ->setArgument('$uxIconRuntime', new Reference(UXIconRuntime::class, ContainerInterface::NULL_ON_INVALID_REFERENCE))
@@ -438,7 +434,7 @@ class SurvosTablerBundle extends AbstractUxBundle
             Hero::class,
             Sources::class,
             Faq::class,
-            Features::class
+            Features::class,
         ];
 
         foreach ($simpleComponents as $componentClass) {

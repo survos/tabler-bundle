@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/ButtonComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -37,5 +38,4 @@ final class ButtonComponent
     public ?string $iconColor = null;
     public ?string $dots = null;
     public ?string $iconEnd = null;
-
 }

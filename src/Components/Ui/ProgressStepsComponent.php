@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/ProgressStepsComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -16,5 +17,4 @@ final class ProgressStepsComponent
     public ?string $color = 'primary';
     public ?string $class = null;
     public ?string $id = null;
-
 }

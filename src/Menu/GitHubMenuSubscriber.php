@@ -25,7 +25,8 @@ final class GitHubMenuSubscriber
         /** survos_tabler.yaml's app.links.github — takes priority over .git/config auto-detection (which silently finds nothing once a deploy strips .git, e.g. most buildpack/Dokku slugs). */
         private readonly ?string $githubRepo = null,
         private readonly ?Security $security = null,
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
@@ -78,7 +79,7 @@ final class GitHubMenuSubscriber
 
         $submenu = $this->addSubmenu($event->getMenu(), $label, 'github');
         $this->add($submenu, uri: $repoUrl, label: 'Repo', icon: 'github', external: true);
-        $this->add($submenu, uri: $repoUrl . '/issues', label: 'Issues', icon: 'issues', external: true);
+        $this->add($submenu, uri: $repoUrl.'/issues', label: 'Issues', icon: 'issues', external: true);
         $this->add($submenu, uri: $this->newIssueUrl($repoUrl), label: 'New issue', icon: 'plus', external: true);
     }
 
@@ -109,9 +110,9 @@ final class GitHubMenuSubscriber
 
     private function gitConfig(): ?string
     {
-        $gitPath = $this->projectDir . '/.git';
-        if (is_file($gitPath . '/config')) {
-            return file_get_contents($gitPath . '/config') ?: null;
+        $gitPath = $this->projectDir.'/.git';
+        if (is_file($gitPath.'/config')) {
+            return file_get_contents($gitPath.'/config') ?: null;
         }
 
         if (!is_file($gitPath)) {
@@ -119,15 +120,15 @@ final class GitHubMenuSubscriber
         }
 
         $gitDir = trim((string) preg_replace('/^gitdir:\s*/', '', trim((string) file_get_contents($gitPath))));
-        if ($gitDir === '') {
+        if ('' === $gitDir) {
             return null;
         }
 
         if (!str_starts_with($gitDir, '/')) {
-            $gitDir = $this->projectDir . '/' . $gitDir;
+            $gitDir = $this->projectDir.'/'.$gitDir;
         }
 
-        foreach ([$gitDir . '/config', $this->commonGitConfig($gitDir)] as $configFile) {
+        foreach ([$gitDir.'/config', $this->commonGitConfig($gitDir)] as $configFile) {
             if ($configFile && is_file($configFile)) {
                 return file_get_contents($configFile) ?: null;
             }
@@ -138,21 +139,21 @@ final class GitHubMenuSubscriber
 
     private function commonGitConfig(string $gitDir): ?string
     {
-        $commonDirFile = $gitDir . '/commondir';
+        $commonDirFile = $gitDir.'/commondir';
         if (!is_file($commonDirFile)) {
             return null;
         }
 
         $commonDir = trim((string) file_get_contents($commonDirFile));
-        if ($commonDir === '') {
+        if ('' === $commonDir) {
             return null;
         }
 
         if (!str_starts_with($commonDir, '/')) {
-            $commonDir = $gitDir . '/' . $commonDir;
+            $commonDir = $gitDir.'/'.$commonDir;
         }
 
-        return $commonDir . '/config';
+        return $commonDir.'/config';
     }
 
     private function normalizeGitHubUrl(string $remoteUrl): ?string
@@ -160,15 +161,15 @@ final class GitHubMenuSubscriber
         $remoteUrl = preg_replace('/\.git$/', '', trim($remoteUrl)) ?? '';
 
         if (preg_match('#^git@github\.com:(?<path>[^/]+/[^/]+)$#', $remoteUrl, $matches)) {
-            return 'https://github.com/' . $matches['path'];
+            return 'https://github.com/'.$matches['path'];
         }
 
         if (preg_match('#^ssh://git@github\.com/(?<path>[^/]+/[^/]+)$#', $remoteUrl, $matches)) {
-            return 'https://github.com/' . $matches['path'];
+            return 'https://github.com/'.$matches['path'];
         }
 
         if (preg_match('#^https://github\.com/(?<path>[^/]+/[^/]+)$#', $remoteUrl, $matches)) {
-            return 'https://github.com/' . $matches['path'];
+            return 'https://github.com/'.$matches['path'];
         }
 
         return null;
@@ -180,8 +181,8 @@ final class GitHubMenuSubscriber
         $pageUrl = $request?->getUri();
         $body = $pageUrl ? "Page: {$pageUrl}\n\nProblem:\n" : "Problem:\n";
 
-        return $repoUrl . '/issues/new?' . http_build_query([
-            'title' => 'Issue from ' . ($request?->getPathInfo() ?: 'admin'),
+        return $repoUrl.'/issues/new?'.http_build_query([
+            'title' => 'Issue from '.($request?->getPathInfo() ?: 'admin'),
             'body' => $body,
         ]);
     }

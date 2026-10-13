@@ -1,4 +1,5 @@
 <?php
+
 /* src/Service/MenuDispatcher.php v2.1 - Root item not displayed */
 
 declare(strict_types=1);
@@ -38,12 +39,12 @@ class MenuDispatcher
 
         $request = $this->requests?->getCurrentRequest();
         $key = $slot.'|'.self::fingerprint($options);
-        if ($request !== null && isset($this->built[$request][$key])) {
+        if (null !== $request && isset($this->built[$request][$key])) {
             return $this->built[$request][$key];
         }
 
         $menu = $this->build($slot, $options);
-        if ($request !== null) {
+        if (null !== $request) {
             $memo = $this->built[$request] ?? [];
             $memo[$key] = $menu;
             $this->built[$request] = $memo;
@@ -59,7 +60,7 @@ class MenuDispatcher
             return match (true) {
                 is_object($v) => $v::class.'#'.spl_object_id($v),
                 is_array($v) => array_map($normalise, $v),
-                is_scalar($v) || $v === null => $v,
+                is_scalar($v) || null === $v => $v,
                 default => get_debug_type($v),
             };
         };

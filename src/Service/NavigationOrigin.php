@@ -34,8 +34,8 @@ final class NavigationOrigin
     /** Same-site paths only: no scheme, no protocol-relative //host, no backslash tricks, no control characters. */
     public static function safe(string $value): bool
     {
-        return $value !== '' && strlen($value) <= self::MAX_LENGTH
-            && $value[0] === '/' && !str_starts_with($value, '//')
+        return '' !== $value && strlen($value) <= self::MAX_LENGTH
+            && '/' === $value[0] && !str_starts_with($value, '//')
             && !str_contains($value, '\\') && !preg_match('/[\x00-\x1f]/', $value);
     }
 }

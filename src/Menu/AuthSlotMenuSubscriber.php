@@ -27,11 +27,12 @@ final class AuthSlotMenuSubscriber
     use MenuBuilderTrait;
 
     public function __construct(
-        protected readonly ?RouterInterface   $router            = null,
+        protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
-        protected readonly ?IconService       $iconService       = null,
-        protected readonly ?Security          $security          = null,
-    ) {}
+        protected readonly ?IconService $iconService = null,
+        protected readonly ?Security $security = null,
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::AUTH)]
     public function onAuthMenu(MenuEvent $event): void

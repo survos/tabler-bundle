@@ -1,4 +1,5 @@
 <?php
+
 /* src/Controller/DebugController.php v1.0 - Debug pages for menu slots */
 
 declare(strict_types=1);
@@ -14,7 +15,8 @@ class DebugController extends AbstractController
 {
     public function __construct(
         private readonly MenuContext $menuContext,
-    ) {}
+    ) {
+    }
 
     /**
      * Renders a page with every menu slot outlined and populated with dummy data.

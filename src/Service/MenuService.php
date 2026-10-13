@@ -19,10 +19,12 @@ final class MenuService
         private readonly ?AuthorizationCheckerInterface $authorizationChecker,
         private readonly array $usersToImpersonate,
         private readonly ?Security $security,
-    ) {}
+    ) {
+    }
 
     /**
      * Get security requirements for a route.
+     *
      * @return array<string> List of required roles/attributes
      */
     public function getRouteRequirements(string $routeName): array

@@ -31,31 +31,24 @@ final class MenuComponent
     /** removed: this was the slot name; use {{ tabler_menu(SLOT) }} */
     public ?string $type = null;
 
-    public function __construct(private readonly MenuSlotRegistry $slots) {}
+    public function __construct(private readonly MenuSlotRegistry $slots)
+    {
+    }
 
     /** PostMount, not mount(): UX sets the public props after mount() runs, so only here are they populated. */
     #[PostMount]
     public function validate(): void
     {
-        $name = $this->name !== '' ? $this->name : (string) $this->type;
+        $name = '' !== $this->name ? $this->name : (string) $this->type;
 
-        if ($this->type !== null && $this->name === '') {
-            throw new \LogicException(sprintf(
-                'The "type" prop of <twig:tabler:menu> was removed. Render the page slot with {{ tabler_menu(%s) }}; '
-                . 'use name="..." only for a menu that is not a slot (see docs/menus.md).',
-                $this->type,
-            ));
+        if (null !== $this->type && '' === $this->name) {
+            throw new \LogicException(sprintf('The "type" prop of <twig:tabler:menu> was removed. Render the page slot with {{ tabler_menu(%s) }}; use name="..." only for a menu that is not a slot (see docs/menus.md).', $this->type));
         }
-        if ($name === '') {
+        if ('' === $name) {
             throw new \LogicException('<twig:tabler:menu> needs a name="...": the event name your listeners populate.');
         }
         if ($this->slots->has($name)) {
-            throw new \LogicException(sprintf(
-                '"%s" is a page slot. Render it with {{ tabler_menu(%s) }}, not the tabler:menu component '
-                . '(the component is for menus attached to an element; see docs/menus.md).',
-                $name,
-                $name,
-            ));
+            throw new \LogicException(sprintf('"%s" is a page slot. Render it with {{ tabler_menu(%s) }}, not the tabler:menu component (the component is for menus attached to an element; see docs/menus.md).', $name, $name));
         }
         $this->name = $name;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/NavComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -14,5 +15,4 @@ final class NavComponent
     public ?string $header = null;
     public ?string $tabs = null;
     public ?string $class = null;
-
 }

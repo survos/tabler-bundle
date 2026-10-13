@@ -27,13 +27,14 @@ final class DocsMenuSubscriber
         private readonly string $projectDir,
         private readonly CacheInterface $cache,
         protected readonly ?IconService $iconService = null,
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         $tree = $this->docsTree();
-        if ($tree['files'] === [] && $tree['dirs'] === []) {
+        if ([] === $tree['files'] && [] === $tree['dirs']) {
             return;
         }
 
@@ -47,7 +48,7 @@ final class DocsMenuSubscriber
         return $this->cache->get('survos_tabler_docs_tree', function (CacheItem $item): array {
             $item->expiresAfter(3600);
 
-            return $this->scan($this->projectDir . '/docs', '');
+            return $this->scan($this->projectDir.'/docs', '');
         });
     }
 
@@ -57,28 +58,27 @@ final class DocsMenuSubscriber
         $dirs = [];
         $files = [];
         foreach (is_dir($absDir) ? (scandir($absDir) ?: []) : [] as $entry) {
-            if ($entry === '.' || $entry === '..' || str_starts_with($entry, '.')) {
+            if ('.' === $entry || '..' === $entry || str_starts_with($entry, '.')) {
                 continue;
             }
-            $abs = $absDir . '/' . $entry;
-            $rel = ltrim($relPrefix . '/' . $entry, '/');
+            $abs = $absDir.'/'.$entry;
+            $rel = ltrim($relPrefix.'/'.$entry, '/');
             if (is_dir($abs)) {
                 $sub = $this->scan($abs, $rel);
-                if ($sub['dirs'] !== [] || $sub['files'] !== []) {
+                if ([] !== $sub['dirs'] || [] !== $sub['files']) {
                     $dirs[$entry] = $sub;
                 }
             } elseif (str_ends_with(strtolower($entry), '.md')) {
                 $name = substr($entry, 0, -3);
                 $files[] = [
-                    'path' => ltrim($relPrefix . '/' . $name, '/'),
+                    'path' => ltrim($relPrefix.'/'.$name, '/'),
                     'label' => $this->label($name),
                 ];
             }
         }
 
         // README first, then the rest alphabetically by label.
-        usort($files, static fn(array $a, array $b): int =>
-            [strcasecmp($a['path'], 'README'), $a['label']] <=> [strcasecmp($b['path'], 'README'), $b['label']]);
+        usort($files, static fn (array $a, array $b): int => [strcasecmp($a['path'], 'README'), $a['label']] <=> [strcasecmp($b['path'], 'README'), $b['label']]);
         ksort($dirs);
 
         return ['dirs' => $dirs, 'files' => $files];

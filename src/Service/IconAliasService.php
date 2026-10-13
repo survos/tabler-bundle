@@ -17,7 +17,7 @@ final class IconAliasService
         'menu' => 'tabler:menu-2',
         'back' => 'tabler:arrow-left',
         'forward' => 'tabler:arrow-right',
-        
+
         // Auth
         'login' => 'tabler:login',
         'logout' => 'tabler:logout',
@@ -27,7 +27,7 @@ final class IconAliasService
         'users' => 'tabler:users',
         'password' => 'tabler:lock',
         'key' => 'tabler:key',
-        
+
         // CRUD
         'create' => 'tabler:plus',
         'new' => 'tabler:plus',
@@ -42,7 +42,7 @@ final class IconAliasService
         'hide' => 'tabler:eye-off',
         'list' => 'tabler:list',
         'grid' => 'tabler:grid-dots',
-        
+
         // Actions
         'search' => 'tabler:search',
         'filter' => 'tabler:filter',
@@ -60,7 +60,7 @@ final class IconAliasService
         'share' => 'tabler:share',
         'link' => 'tabler:link',
         'external' => 'tabler:external-link',
-        
+
         // Status
         'success' => 'tabler:check',
         'error' => 'tabler:x',
@@ -68,7 +68,7 @@ final class IconAliasService
         'info' => 'tabler:info-circle',
         'help' => 'tabler:help',
         'question' => 'tabler:question-mark',
-        
+
         // Content
         'file' => 'tabler:file',
         'folder' => 'tabler:folder',
@@ -79,7 +79,7 @@ final class IconAliasService
         'pdf' => 'tabler:file-type-pdf',
         'spreadsheet' => 'tabler:table',
         'archive' => 'tabler:archive',
-        
+
         // Communication
         'email' => 'tabler:mail',
         'message' => 'tabler:message',
@@ -87,20 +87,20 @@ final class IconAliasService
         'comment' => 'tabler:message-2',
         'notification' => 'tabler:bell',
         'phone' => 'tabler:phone',
-        
+
         // Settings
         'settings' => 'tabler:settings',
         'config' => 'tabler:adjustments',
         'preferences' => 'tabler:adjustments-horizontal',
         'admin' => 'tabler:shield',
         'tools' => 'tabler:tools',
-        
+
         // Data
         'database' => 'tabler:database',
         'api' => 'tabler:api',
         'code' => 'tabler:code',
         'terminal' => 'tabler:terminal-2',
-        
+
         // Social
         'github' => 'tabler:brand-github',
         'twitter' => 'tabler:brand-twitter',
@@ -108,7 +108,7 @@ final class IconAliasService
         'linkedin' => 'tabler:brand-linkedin',
         'youtube' => 'tabler:brand-youtube',
         'instagram' => 'tabler:brand-instagram',
-        
+
         // Misc
         'calendar' => 'tabler:calendar',
         'clock' => 'tabler:clock',
@@ -122,7 +122,7 @@ final class IconAliasService
         'globe' => 'tabler:world',
         'language' => 'tabler:language',
         'locale' => 'tabler:world',
-        
+
         // Layout
         'expand' => 'tabler:arrows-maximize',
         'collapse' => 'tabler:arrows-minimize',
@@ -130,7 +130,7 @@ final class IconAliasService
         'sidebar' => 'tabler:layout-sidebar',
         'columns' => 'tabler:columns',
         'rows' => 'tabler:rows',
-        
+
         // State
         'loading' => 'tabler:loader',
         'spinner' => 'tabler:loader-2',
@@ -139,7 +139,7 @@ final class IconAliasService
         'unlocked' => 'tabler:lock-open',
         'private' => 'tabler:eye-off',
         'public' => 'tabler:world',
-        
+
         // Arrows/Direction
         'up' => 'tabler:arrow-up',
         'down' => 'tabler:arrow-down',
@@ -152,7 +152,7 @@ final class IconAliasService
         'caret-up' => 'tabler:caret-up',
         'caret-down' => 'tabler:caret-down',
         'dropdown' => 'tabler:chevron-down',
-        
+
         // Toggle
         'check' => 'tabler:check',
         'close' => 'tabler:x',
@@ -161,9 +161,9 @@ final class IconAliasService
         'more' => 'tabler:dots',
         'more-vertical' => 'tabler:dots-vertical',
     ];
-    
+
     private array $resolved;
-    
+
     /**
      * @param array<string, string> $configuredAliases Overrides from config
      */
@@ -172,7 +172,7 @@ final class IconAliasService
     ) {
         $this->resolved = array_merge(self::DEFAULTS, $this->configuredAliases);
     }
-    
+
     /**
      * Get icon for alias. Returns the alias itself if not found (pass-through).
      */
@@ -180,7 +180,7 @@ final class IconAliasService
     {
         return $this->resolved[$alias] ?? $alias;
     }
-    
+
     /**
      * Check if alias is defined.
      */
@@ -188,25 +188,27 @@ final class IconAliasService
     {
         return isset($this->resolved[$alias]);
     }
-    
+
     /**
      * Get all resolved aliases.
+     *
      * @return array<string, string>
      */
     public function all(): array
     {
         return $this->resolved;
     }
-    
+
     /**
      * Get default icons (before config overrides).
+     *
      * @return array<string, string>
      */
     public static function getDefaults(): array
     {
         return self::DEFAULTS;
     }
-    
+
     /**
      * Resolve icon - if it looks like an alias (no prefix), resolve it.
      * If it already has a prefix (tabler:, fa:, etc.), return as-is.
@@ -217,7 +219,7 @@ final class IconAliasService
         if (str_contains($icon, ':')) {
             return $icon;
         }
-        
+
         // Try to resolve as alias
         return $this->get($icon);
     }

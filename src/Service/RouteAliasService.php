@@ -1,4 +1,5 @@
 <?php
+
 /* src/Service/RouteAliasService.php v1.0 - Route alias management with URL generation */
 
 declare(strict_types=1);
@@ -82,6 +83,7 @@ class RouteAliasService
 
         try {
             $this->router->generate($routeName, $parameters);
+
             return true;
         } catch (RouteNotFoundException) {
             return false;

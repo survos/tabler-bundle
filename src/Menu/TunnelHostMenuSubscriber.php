@@ -48,29 +48,29 @@ final class TunnelHostMenuSubscriber
     {
         // A tunnel points at somebody's laptop. Even with TUNNEL_HOST set by accident in a
         // deployed environment, that is not a link to put in front of production users.
-        if ($this->environment === 'prod') {
+        if ('prod' === $this->environment) {
             return;
         }
 
         $tunnelHost = $this->normalizeHost($this->tunnelHost);
         $request = $this->requestStack->getCurrentRequest();
-        if ($tunnelHost === null || $request === null) {
+        if (null === $tunnelHost || null === $request) {
             return;
         }
 
-        $onTunnel = strcasecmp($request->getHost(), $tunnelHost) === 0;
+        $onTunnel = 0 === strcasecmp($request->getHost(), $tunnelHost);
 
         // Coming back needs a configured local host; going out does not. An app that never
         // set APP_BASE_URL still gets the outbound half rather than nothing at all.
         $targetHost = $onTunnel ? $this->normalizeHost($this->localHost) : $tunnelHost;
-        if ($targetHost === null || strcasecmp($targetHost, $request->getHost()) === 0) {
+        if (null === $targetHost || 0 === strcasecmp($targetHost, $request->getHost())) {
             return;
         }
 
         // Path AND query: this exists for deep links -- a capture screen, a specific intake.
         // Dropping the query would land you on the same page with its filters reset, which
         // reads as the switch having broken something.
-        $uri = 'https://' . $targetHost . $request->getRequestUri();
+        $uri = 'https://'.$targetHost.$request->getRequestUri();
 
         $item = $this->add(
             $event->getMenu(),
@@ -90,7 +90,7 @@ final class TunnelHostMenuSubscriber
     private function normalizeHost(?string $value): ?string
     {
         $raw = trim((string) $value);
-        if ($raw === '') {
+        if ('' === $raw) {
             return null;
         }
 

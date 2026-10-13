@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Survos\TablerBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -18,13 +20,13 @@ class ChangePasswordFormType extends AbstractType
             'invalid_message' => 'The password fields must match.',
             'options' => ['attr' => ['class' => 'password-field']],
             'required' => true,
-            'first_options'  => ['label' => 'Password'],
+            'first_options' => ['label' => 'Password'],
             'second_options' => ['label' => 'Repeat Password'],
         ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Change Password'
+                'label' => 'Change Password',
             ])
-            ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

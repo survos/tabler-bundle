@@ -1,4 +1,5 @@
 <?php
+
 /* Auto-generated - DO NOT EDIT */
 
 declare(strict_types=1);
@@ -381,5 +382,4 @@ return static function (ContainerConfigurator $container): void {
     $services->set(Components\Parts\SelectgroupPaymentsComponent::class);
     $services->set(Components\Parts\DemoLayoutComponent::class);
     $services->set(Components\Parts\ActivityComponent::class);
-
 };

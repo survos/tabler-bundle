@@ -27,7 +27,8 @@ final class LocaleMenuSubscriber
         protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
         protected readonly ?IconService $iconService = null,
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::NAVBAR_LANGUAGE, priority: 100)]
     public function languages(MenuEvent $event): void

@@ -1,4 +1,5 @@
 <?php
+
 /* config/component-services.php v4.8 - Generated 2026-03-17 */
 /* Import this file in SurvosTablerBundle::loadExtension() */
 

@@ -1,14 +1,15 @@
 <?php
+
 /* src/Components/Cards/CarouselComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Components\Cards;
 
-use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Survos\TablerBundle\Components\Traits\DataAwareTrait;
 use Survos\TablerBundle\Service\FixtureService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent(name: 'cards:carousel', template: '@SurvosTabler/components/cards/carousel.html.twig')]
 final class CarouselComponent

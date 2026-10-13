@@ -1,4 +1,5 @@
 <?php
+
 /* src/Service/FaviconService.php v1.0 - dynamic SVG favicon */
 
 declare(strict_types=1);
@@ -31,7 +32,7 @@ final class FaviconService
         $parts = array_values(array_filter(preg_split('/[-_\s]+/', trim($this->appCode)) ?: []));
 
         if (count($parts) >= 2) {
-            return mb_strtoupper(mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1));
+            return mb_strtoupper(mb_substr($parts[0], 0, 1).mb_substr($parts[1], 0, 1));
         }
 
         return mb_strtoupper(mb_substr($parts[0] ?? $this->appCode, 0, 2));

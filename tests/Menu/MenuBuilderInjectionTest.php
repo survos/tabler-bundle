@@ -61,7 +61,8 @@ final class MenuBuilderInjectionTest extends TestCase
             public function __construct(
                 private readonly RouterInterface $router,
                 private readonly IconService $iconService,
-            ) {}
+            ) {
+            }
         };
         $builder->setTablerMenuHelpers(iconService: new IconService());
         $menu = (new MenuFactory())->createItem('root');
@@ -85,6 +86,7 @@ final class MenuBuilderInjectionTest extends TestCase
         $container = new ContainerBuilder();
         $container->register(MenuService::class)->setArguments([[], null, null, [], null]);
         $container->register(InjectionTestMenu::class)->setAutowired(true)->setPublic(true);
+
         return $container;
     }
 }

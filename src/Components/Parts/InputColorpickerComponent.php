@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Parts/InputColorpickerComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -12,5 +13,4 @@ final class InputColorpickerComponent
 {
     public ?string $label = 'Color';
     public ?string $color = 'site.colors.blue.hex';
-
 }

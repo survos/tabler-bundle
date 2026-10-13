@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/AvatarComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -26,5 +27,4 @@ final class AvatarComponent
     public ?string $statusIcon = null;
     public ?string $brand = null;
     public ?string $icon = null;
-
 }

@@ -22,7 +22,8 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
         protected readonly ?RouterInterface $router = null,
         protected readonly ?RouteAliasService $routeAliasService = null,
         protected readonly ?IconService $iconService = null,
-    ) {}
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -36,7 +37,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
 
     public function onMenuSlot(MenuEvent $event, string $slot): void
     {
-        if ($slot === MenuEvent::ADMIN_NAVBAR_MENU) {
+        if (MenuEvent::ADMIN_NAVBAR_MENU === $slot) {
             $this->addDebugToggle($event);
         }
 
@@ -61,7 +62,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
             $params['debugMenuSlots'] = 1;
         }
 
-        $uri = $request->getPathInfo() . ($params ? '?' . http_build_query($params) : '');
+        $uri = $request->getPathInfo().($params ? '?'.http_build_query($params) : '');
 
         $this->add(
             $event->menu,
@@ -74,11 +75,10 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
     private function isEnabled(): bool
     {
         $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
+        if (null === $request) {
             return $this->enabledByConfig;
         }
 
         return $this->enabledByConfig || $request->query->getBoolean('debugMenuSlots');
     }
-
 }

@@ -20,7 +20,8 @@ class MenuRenderer
         private readonly MenuDispatcher $dispatcher,
         private readonly Helper $knpHelper,
         private readonly MenuSlotRegistry $slots,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $options listener context: what the event's getOption() returns

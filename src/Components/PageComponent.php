@@ -1,11 +1,11 @@
 <?php
+
 /* src/Components/PageComponent.php v2.1 - Default horizontal, no sidebar */
 
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Components;
 
-use Survos\TablerBundle\Service\TablerService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
@@ -38,7 +38,8 @@ class PageComponent
     public function __construct(
         private readonly string $defaultLayout = 'horizontal',
         private readonly ?TranslatorInterface $translator = null,
-    ) {}
+    ) {
+    }
 
     #[PreMount]
     public function preMount(array $data): array
@@ -80,6 +81,7 @@ class PageComponent
         if ($this->containerClass) {
             return $this->containerClass;
         }
+
         return match (true) {
             $this->boxed => 'container',
             $this->fluid => 'container-fluid',
@@ -97,6 +99,7 @@ class PageComponent
         if ($this->dark) {
             $classes[] = 'theme-dark';
         }
+
         return implode(' ', $classes);
     }
 
@@ -107,8 +110,9 @@ class PageComponent
         }
         $domain = $this->translationDomain;
         if ($this->transPrefix) {
-            $key = $this->transPrefix . '.' . $key;
+            $key = $this->transPrefix.'.'.$key;
         }
+
         return $this->translator->trans($key, [], $domain);
     }
 }

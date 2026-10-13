@@ -15,7 +15,8 @@ trait JsonResponseTrait
         if ($request && $request->isXmlHttpRequest()) {
             $format = 'json';
         }
-        return $format === 'json'
+
+        return 'json' === $format
             ? new JsonResponse($data)
             : new Response(sprintf('<html lang="en"><body><pre>%s</pre></body></html>', json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)));
     }

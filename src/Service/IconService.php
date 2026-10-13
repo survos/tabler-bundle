@@ -211,6 +211,7 @@ final class IconService
 
     /**
      * Get style preset (icon + class).
+     *
      * @return array{icon: string, class: string}|null
      */
     public function getPreset(string $name): ?array
@@ -245,7 +246,7 @@ final class IconService
 
     /**
      * Infer icon from route name.
-     * e.g., 'app_project_edit' => 'tabler:edit', 'museum_index' => 'tabler:list'
+     * e.g., 'app_project_edit' => 'tabler:edit', 'museum_index' => 'tabler:list'.
      */
     public function inferFromRoute(?string $route): ?string
     {
@@ -294,5 +295,4 @@ final class IconService
     {
         return $this->resolvedPresets;
     }
-
 }

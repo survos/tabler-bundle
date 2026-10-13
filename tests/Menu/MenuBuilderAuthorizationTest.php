@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Tests\Menu;
 
-use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
 use Survos\FieldBundle\Entity\RouteParametersInterface;
@@ -43,7 +42,7 @@ final class MenuBuilderAuthorizationTest extends TestCase
     public function testEveryRequirementMustPass(): void
     {
         $checker = $this->createStub(AuthorizationCheckerInterface::class);
-        $checker->method('isGranted')->willReturnCallback(static fn ($attribute) => $attribute === 'ROLE_ADMIN');
+        $checker->method('isGranted')->willReturnCallback(static fn ($attribute) => 'ROLE_ADMIN' === $attribute);
         $builder = $this->builder(new MenuService(['debug' => ['ROLE_ADMIN', 'OTHER_PERMISSION']], null, $checker, [], null));
         $menu = (new MenuFactory())->createItem('root');
         $builder->add($menu, 'debug', checkRouteExists: false);
@@ -56,6 +55,7 @@ final class MenuBuilderAuthorizationTest extends TestCase
             use MenuBuilderTrait { add as public; }
         };
         $builder->setTablerMenuService($service);
+
         return $builder;
     }
 }

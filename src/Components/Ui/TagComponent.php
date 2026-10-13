@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/TagComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -21,5 +22,4 @@ final class TagComponent
     public ?string $checked = null;
     public ?string $text = null;
     public ?string $badge = null;
-
 }

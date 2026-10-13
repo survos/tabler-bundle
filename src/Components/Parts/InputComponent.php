@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Parts/InputComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -14,5 +15,4 @@ final class InputComponent
     public ?string $label = 'Static';
     public ?string $value = 'Input';
     public ?string $placeholder = 'Input';
-
 }

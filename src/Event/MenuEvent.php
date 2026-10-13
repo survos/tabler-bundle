@@ -1,4 +1,5 @@
 <?php
+
 /* src/Event/MenuEvent.php v2.1 - Menu slots */
 
 declare(strict_types=1);
@@ -48,7 +49,8 @@ class MenuEvent extends Event
         public readonly FactoryInterface $factory,
         public readonly array $options = [],
         public readonly array $childOptions = [],
-    ) {}
+    ) {
+    }
 
     public function getMenu(): ItemInterface
     {
@@ -61,7 +63,7 @@ class MenuEvent extends Event
     }
 
     /**
-     * Get all menu slot constants as name => value pairs
+     * Get all menu slot constants as name => value pairs.
      */
     public static function getConstants(): array
     {
@@ -72,6 +74,7 @@ class MenuEvent extends Event
                 $constants[$name] = $value;
             }
         }
+
         return $constants;
     }
 }

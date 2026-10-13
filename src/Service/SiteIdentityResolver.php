@@ -1,4 +1,5 @@
 <?php
+
 /* src/Service/SiteIdentityResolver.php v1.0 */
 
 declare(strict_types=1);
@@ -35,10 +36,10 @@ final class SiteIdentityResolver
         $app = $this->deepMerge($app, $overrides);
 
         return new SiteIdentity(
-            code: (string)($app['code'] ?? 'my-project'),
-            title: (string)($app['title'] ?? 'My Project'),
-            description: (string)($app['description'] ?? ''),
-            abbrHtml: (string)($app['abbr'] ?? ''),
+            code: (string) ($app['code'] ?? 'my-project'),
+            title: (string) ($app['title'] ?? 'My Project'),
+            description: (string) ($app['description'] ?? ''),
+            abbrHtml: (string) ($app['abbr'] ?? ''),
             logo: is_string($app['logo'] ?? null) ? $app['logo'] : null,
             logoSmall: is_string($app['logo_small'] ?? null) ? $app['logo_small'] : null,
             homepageRoute: is_string($app['homepage_route'] ?? null) ? $app['homepage_route'] : null,
@@ -51,7 +52,6 @@ final class SiteIdentityResolver
     }
 
     /**
-     * @param mixed $value
      * @return array<string,string>
      */
     private function stringMap(mixed $value): array
@@ -61,16 +61,18 @@ final class SiteIdentityResolver
         }
         $out = [];
         foreach ($value as $k => $v) {
-            if (is_string($k) && is_string($v) && $v !== '') {
+            if (is_string($k) && is_string($v) && '' !== $v) {
                 $out[$k] = $v;
             }
         }
+
         return $out;
     }
 
     /**
      * @param array<string,mixed> $base
      * @param array<string,mixed> $override
+     *
      * @return array<string,mixed>
      */
     private function deepMerge(array $base, array $override): array
@@ -89,6 +91,7 @@ final class SiteIdentityResolver
                 $base[$k] = $v;
             }
         }
+
         return $base;
     }
 }

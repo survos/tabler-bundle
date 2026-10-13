@@ -57,14 +57,15 @@ final class BreadcrumbMenuSubscriber
         private readonly ?MenuDispatcher $dispatcher = null,
         private readonly ?MatcherInterface $matcher = null,
         private readonly string $originParameter = 'returnTo',
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: MenuEvent::BREADCRUMB, priority: -100)]
     public function breadcrumb(MenuEvent $event): void
     {
         $menu = $event->getMenu();
         $request = $this->requests->getMainRequest();
-        if (!$this->enabled || $menu->hasChildren() || $request === null || $this->router === null) {
+        if (!$this->enabled || $menu->hasChildren() || null === $request || null === $this->router) {
             return;
         }
 
@@ -74,27 +75,27 @@ final class BreadcrumbMenuSubscriber
 
         // `in` is the token a list page puts on its links; `returnTo` is the plain-path form for hand-written links.
         $token = (string) $request->query->get(NavigationOrigin::PARAMETER, '');
-        $origin = $this->origin($token !== '' ? (NavigationOrigin::decode($token) ?? '') : (string) $request->query->get($this->originParameter, ''));
+        $origin = $this->origin('' !== $token ? (NavigationOrigin::decode($token) ?? '') : (string) $request->query->get($this->originParameter, ''));
         $entities = $this->entityTrail($event->options);
 
-        $last = $entities === [] ? null : $entities[array_key_last($entities)];
-        $lastIsCurrent = $last !== null && $last[1]->name === $currentRoute;
+        $last = [] === $entities ? null : $entities[array_key_last($entities)];
+        $lastIsCurrent = null !== $last && $last[1]->name === $currentRoute;
         $currentLabel = $lastIsCurrent ? null : ($event->getOption('crumb') ?? $currentMeta?->label);
 
         $ancestors = [];
-        if ($entities === []) {
+        if ([] === $entities) {
             $ancestors = $this->menuAncestors($event->options);
         }
 
         // A route can name the list it belongs to (#[RouteMeta(parents: ['app_catalog'])]); that list is the root crumb.
-        $roots = $entities === [] ? [] : $this->parentRoutes($entities[0][1]);
+        $roots = [] === $entities ? [] : $this->parentRoutes($entities[0][1]);
 
-        $count = ($origin !== null ? 1 : 0) + count($roots) + count($entities) + count($ancestors) + ($currentLabel !== null && $ancestors === [] ? 1 : 0);
+        $count = (null !== $origin ? 1 : 0) + count($roots) + count($entities) + count($ancestors) + (null !== $currentLabel && [] === $ancestors ? 1 : 0);
         if ($count < 2) {
             return;
         }
 
-        if ($origin !== null) {
+        if (null !== $origin) {
             $item = $menu->addChild('origin', ['uri' => $origin['uri'], 'label' => $origin['label']]);
             $item->setExtra('icon', 'tabler:arrow-left');
             $item->setLinkAttribute('title', 'Where you came from');
@@ -108,6 +109,7 @@ final class BreadcrumbMenuSubscriber
             $label = $this->labelFor($entity);
             if ($lastIsCurrent && $i === array_key_last($entities)) {
                 $this->current($menu, $label, $page);
+
                 return;
             }
             $item = $this->add($menu, $page->name, $this->paramsFor($page, $routeParams), label: $label, translationDomain: false, inferIcon: false);
@@ -117,13 +119,14 @@ final class BreadcrumbMenuSubscriber
         foreach ($ancestors as $i => $ancestor) {
             if ($i === array_key_last($ancestors)) {
                 $this->current($menu, (string) $ancestor->getLabel(), $currentMeta);
+
                 return;
             }
             $crumb = $menu->addChild('ancestor_'.$i, ['label' => $ancestor->getLabel()] + ($ancestor->getUri() ? ['uri' => $ancestor->getUri()] : []));
             $crumb->setExtra('translation_domain', false);
         }
 
-        if ($currentLabel !== null) {
+        if (null !== $currentLabel) {
             $this->current($menu, (string) $currentLabel, $currentMeta);
         }
     }
@@ -137,7 +140,7 @@ final class BreadcrumbMenuSubscriber
         foreach ($page->parents as $route) {
             $meta = $this->routeMeta->get($route);
             $definition = $this->router?->getRouteCollection()->get($route);
-            if ($definition !== null && $definition->compile()->getVariables() === []) {
+            if (null !== $definition && [] === $definition->compile()->getVariables()) {
                 $roots[$route] = $meta?->label ?? ucfirst(str_replace('_', ' ', preg_replace('/^[a-z]+_/', '', $route)));
             }
         }
@@ -162,6 +165,7 @@ final class BreadcrumbMenuSubscriber
 
     /**
      * @param array<string, mixed> $options
+     *
      * @return list<array{0: object, 1: RouteMetaDescriptor}>
      */
     private function entityTrail(array $options): array
@@ -174,7 +178,7 @@ final class BreadcrumbMenuSubscriber
                 continue;
             }
             $page = $this->routeMeta->forEntityPurpose($value::class, Purpose::Show);
-            if ($page === null) {
+            if (null === $page) {
                 continue;
             }
             $named = in_array($key, $this->variablesOf($page), true);
@@ -190,16 +194,17 @@ final class BreadcrumbMenuSubscriber
      * The chain from a top-level menu entry down to the item for this page, e.g. [Collaboration, Virginia archives].
      *
      * @param array<string, mixed> $options
+     *
      * @return list<ItemInterface>
      */
     private function menuAncestors(array $options): array
     {
-        if ($this->dispatcher === null || $this->matcher === null) {
+        if (null === $this->dispatcher || null === $this->matcher) {
             return [];
         }
         foreach (self::NAVIGATION_SLOTS as $slot) {
             $found = $this->findCurrent($this->dispatcher->dispatch($slot, $options), []);
-            if ($found !== null) {
+            if (null !== $found) {
                 // A dropdown whose first entry repeats its own name would read "Collaboration › Collaboration".
                 $labels = array_map(static fn (ItemInterface $i): string => (string) $i->getLabel(), $found);
 
@@ -212,6 +217,7 @@ final class BreadcrumbMenuSubscriber
 
     /**
      * @param list<ItemInterface> $path
+     *
      * @return list<ItemInterface>|null
      */
     private function findCurrent(ItemInterface $parent, array $path): ?array
@@ -219,10 +225,10 @@ final class BreadcrumbMenuSubscriber
         foreach ($parent->getChildren() as $child) {
             $here = [...$path, $child];
             $deeper = $this->findCurrent($child, $here);
-            if ($deeper !== null) {
+            if (null !== $deeper) {
                 return $deeper;
             }
-            if ($child->getUri() !== null && $this->matcher->isCurrent($child)) {
+            if (null !== $child->getUri() && $this->matcher->isCurrent($child)) {
                 return $here;
             }
         }
@@ -235,7 +241,7 @@ final class BreadcrumbMenuSubscriber
         $item = $menu->addChild('current', ['label' => $label]);
         $item->setCurrent(true);
         $item->setExtra('translation_domain', false);
-        if ($meta !== null) {
+        if (null !== $meta) {
             $item->setAttribute('title', $meta->description);
         }
     }
@@ -256,7 +262,7 @@ final class BreadcrumbMenuSubscriber
     {
         foreach (['title', 'label', 'name'] as $property) {
             $value = $entity->$property ?? null;
-            if (is_scalar($value) && (string) $value !== '') {
+            if (is_scalar($value) && '' !== (string) $value) {
                 return (string) $value;
             }
         }

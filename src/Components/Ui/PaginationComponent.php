@@ -1,4 +1,5 @@
 <?php
+
 /* src/Components/Ui/PaginationComponent.php v4.8 - Generated 2025-12-30 */
 
 declare(strict_types=1);
@@ -18,5 +19,4 @@ final class PaginationComponent
     public ?string $text = null;
     public ?string $prevDescription = null;
     public ?string $nextDescription = null;
-
 }
