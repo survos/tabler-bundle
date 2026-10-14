@@ -6,7 +6,8 @@
  #}
 
 {%- block icon -%}
-{%- if item.icon %}{{ ux_icon(':' in item.icon ? item.icon : 'tabler:' ~ item.icon, {class: icon_class|default('icon')}) }}{% endif -%}
+{#- the trailing space separates the icon from its label, as the knp templates' whitespace did -#}
+{%- if item.icon %}{{ ux_icon(':' in item.icon ? item.icon : 'tabler:' ~ item.icon, {class: icon_class|default('icon')}) }}{{ item.label is not empty ? ' ' }}{% endif -%}
 {%- endblock -%}
 
 {%- block badge -%}
