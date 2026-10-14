@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Menu;
 
 use Knp\Menu\ItemInterface;
+use Survos\MenuBundle\Event\MenuEvent;
 use Survos\MenuBundle\MenuSlot;
-use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

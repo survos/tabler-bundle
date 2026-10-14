@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Survos\FieldBundle\Enum\Purpose;
 use Survos\FieldBundle\Model\RouteMetaDescriptor;
 use Survos\FieldBundle\Registry\RouteMetaRegistry;
-use Survos\TablerBundle\Event\MenuEvent;
+use Survos\MenuBundle\Event\MenuEvent;
 use Survos\TablerBundle\Menu\BreadcrumbMenuSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

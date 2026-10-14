@@ -81,17 +81,19 @@ value didn't change, which makes it an easy false-negative during testing.
 | `PAGE_MENU` | `PAGE_NAV` (or `PAGE_ACTIONS` if the content is action buttons, not tabs) |
 
 For every class implementing menu listeners:
-1. `use Survos\BootstrapBundle\Event\KnpMenuEvent;` → `use Survos\TablerBundle\Event\MenuEvent;`
+1. `use Survos\BootstrapBundle\Event\KnpMenuEvent;` → `use Survos\MenuBundle\Event\MenuEvent;` and
+   `use Survos\MenuBundle\MenuSlot;` (tabler's own `MenuEvent` subclass is a deprecated BC shim).
    Use `Survos\TablerBundle\Menu\MenuBuilderTrait` for menu construction and follow
    [the builder migration checklist](menu-builder-migration.md); the legacy Tabler trait
    and interface have been removed, and helper calls require more than an import change.
-2. Swap every `KnpMenuEvent::*` constant per the table above, including inside
-   `#[AsEventListener(event: ...)]` attributes and `getSubscribedEvents()` arrays.
+2. Swap every `KnpMenuEvent::*` constant for the `MenuSlot::*` one per the table above, including inside
+   `#[AsEventListener(event: ...)]` attributes (better: `#[AsMenuListener(MenuSlot::X)]`) and
+   `getSubscribedEvents()` arrays.
 3. `MenuEvent` doesn't expose `getOptions(): array` (only `KnpMenuEvent` did) — use
    `$event->getOption('key', $default)` or the public readonly `$event->options` property.
 4. Remove `implements KnpMenuHelperInterface` and its import after checking any app-specific
-   type hints or service configuration. Register listeners with `#[AsEventListener]` and
-   type their event argument as `MenuEvent`.
+   type hints or service configuration. Register listeners with `#[AsMenuListener]` and
+   type their event argument as `Survos\MenuBundle\Event\MenuEvent`.
 5. `MenuService::addAuthMenu()` **does not exist** in tabler-bundle's `MenuService` — the AUTH
    slot is populated automatically by `Survos\TablerBundle\Menu\AuthSlotMenuSubscriber` (falls
    back to `app_login`/`app_register` if unconfigured). Delete any app code that still tries to

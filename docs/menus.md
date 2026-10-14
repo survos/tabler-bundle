@@ -8,15 +8,16 @@ the templates carry no conditions.
 A slot is an event name. Listen to it, add items to `$event->menu`:
 
 ```php
-use Survos\TablerBundle\Event\MenuEvent;
+use Survos\MenuBundle\Attribute\AsMenuListener;
+use Survos\MenuBundle\Event\MenuEvent;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Menu\MenuBuilderTrait;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 final class ProjectMenu
 {
     use MenuBuilderTrait;
 
-    #[AsEventListener(event: MenuEvent::PAGE_NAV)]
+    #[AsMenuListener(MenuSlot::PAGE_NAV)]
     public function nav(MenuEvent $event): void
     {
         $project = $event->getOption('project');
@@ -39,7 +40,7 @@ final class ProjectMenu
 {% if tabler_menu_has_items(FOOTER) %}...{% endif %}
 ```
 
-`NAVBAR_END`, `SIDEBAR`, `FOOTER`, ... are Twig globals (the `MenuEvent` constants). How each registered slot
+`NAVBAR_END`, `SIDEBAR`, `FOOTER`, ... are Twig globals (the `MenuSlot` constants). How each registered slot
 is drawn (template, classes) lives in `MenuSlotRegistry`.
 
 ## A menu that is not a page slot
@@ -51,7 +52,7 @@ Any other name is a custom menu: nothing in the page shell owns it, so use it fo
 <twig:tabler:menu name="card.actions" :options="{card: card}" />   {# same thing #}
 ```
 
-Listeners attach with `#[AsEventListener(event: 'card.actions')]`. The `tabler:menu` component is only sugar over
+Listeners attach with `#[AsMenuListener('card.actions')]`. The `tabler:menu` component is only sugar over
 `tabler_menu()`; it **refuses** registered page slots and the old `type:` prop with an exception, so a leftover
 `component('tabler:menu', {type: NAVBAR_END})` fails loudly instead of rendering through a second path.
 
@@ -159,7 +160,8 @@ label first (`Catalog › jsonl-bundle › Libraries`). Parents with route varia
 
 The slot constants, `MenuEvent` and the dispatcher now come from survos/menu-bundle. `MenuEvent::NAVBAR_END`
 still works but is deprecated: use `Survos\MenuBundle\MenuSlot::NAVBAR_END`, and `#[AsMenuListener(MenuSlot::X)]`
-for new listeners. Listeners type-hinted on `Survos\TablerBundle\Event\MenuEvent` keep receiving it.
+for new listeners, type-hinted on `Survos\MenuBundle\Event\MenuEvent`. Every Survos bundle in mono has moved;
+listeners still type-hinted on `Survos\TablerBundle\Event\MenuEvent` keep receiving it until the shim is removed.
 
 To draw menus with menu-bundle's composable themes instead of the KnpMenu templates:
 

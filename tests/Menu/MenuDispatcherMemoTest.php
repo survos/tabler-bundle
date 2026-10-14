@@ -6,7 +6,7 @@ namespace Survos\TablerBundle\Tests\Menu;
 
 use Knp\Menu\MenuFactory;
 use PHPUnit\Framework\TestCase;
-use Survos\TablerBundle\Event\MenuEvent;
+use Survos\MenuBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\MenuContext;
 use Survos\TablerBundle\Service\MenuDispatcher;
 use Survos\TablerBundle\Service\MenuOptionsResolver;

@@ -28,7 +28,7 @@ jsDelivr the standalone package loses the data-api and dropdowns stop opening. `
 [upgrading to Tabler 1.6](docs/upgrading-to-tabler-1.6.md).
 
 **A menu system built on PHP listeners.** 20 slots (`NAVBAR_*`, `SIDEBAR`, `PAGE_NAV`, `PAGE_ACTIONS`, `BREADCRUMB`,
-`FOOTER`, `AUTH`, `SEARCH`, `BANNER`, and an admin strip). Each is populated by `#[AsEventListener]` classes, so
+`FOOTER`, `AUTH`, `SEARCH`, `BANNER`, and an admin strip). Each is populated by `#[AsMenuListener(MenuSlot::X)]` classes, so
 security and context decisions stay in PHP, and drawn with `{{ tabler_menu(SLOT) }}`. Route `#[IsGranted]` rules are
 applied for you. Ready-made subscribers cover auth, docs, GitHub, the entity/field registry, messenger and RabbitMQ
 monitors, the Symfony inspector and a tunnel switch. A "Slots" toggle in the admin bar outlines every slot on the page.
@@ -247,7 +247,7 @@ Install the bundle, then go through the setup to add and configure the tools.
     
     composer req "kevinpapst/adminlte-bundle"
     composer require knplabs/knp-menu-bundle
-    bin/console make:subscriber MenuSubscriber "Survos\TablerBundle\Event\MenuEvent"
+    bin/console make:subscriber MenuSubscriber "Survos\MenuBundle\Event\MenuEvent"
     
     bin/console survos:init
     
