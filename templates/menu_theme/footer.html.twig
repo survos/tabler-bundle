@@ -1,0 +1,13 @@
+{# @SurvosTabler/menu_theme/footer.html.twig: FOOTER and FOOTER_END #}
+
+{%- block item_link -%}
+<li{{ menu_attrs(item.attributes, {class: 'list-inline-item'}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: 'link-secondary', href: item.uri, title: item.tooltip}) }}>{{ block('icon') }}{{ block('label') }}</a>
+</li>
+{%- endblock -%}
+
+{%- block item_divider -%}{%- endblock -%}
+
+{# a footer row has no dropdowns: a heading is muted text, a group contributes its links #}
+{%- block item_heading -%}<li class="list-inline-item text-secondary">{{ block('label') }}</li>{%- endblock -%}
+{%- block item_submenu -%}{% for item in item.children %}{{ block('item') }}{% endfor %}{%- endblock -%}

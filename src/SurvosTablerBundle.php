@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle;
 
+use Knp\Menu\FactoryInterface;
+use Knp\Menu\Matcher\MatcherInterface;
 use Survos\Kit\AbstractUxBundle;
 use Survos\Kit\Traits\HasConfigurableRoutes;
+use Survos\MenuBundle\MenuSlot;
+use Survos\MenuBundle\Service\MenuDispatcher as MenuBundleDispatcher;
+use Survos\MenuBundle\Service\MenuOptionsResolverInterface;
+use Survos\MenuBundle\Service\Menus;
 use Survos\TablerBundle\Compiler\Configuration;
 use Survos\TablerBundle\Components\CardComponent;
 use Survos\TablerBundle\Components\DividerComponent;
@@ -13,7 +19,6 @@ use Survos\TablerBundle\Components\LocaleSwitcherComponent;
 use Survos\TablerBundle\Components\MenuComponent;
 use Survos\TablerBundle\Components\PageComponent;
 use Survos\TablerBundle\Components\Ui\DropdownComponent;
-use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\EventSubscriber\DebugMenuSlotsSubscriber;
 use Survos\TablerBundle\Menu\GitHubMenuSubscriber;
 use Survos\TablerBundle\Menu\MessengerMonitorMenuSubscriber;
@@ -31,6 +36,7 @@ use Survos\TablerBundle\Service\MenuService;
 use Survos\TablerBundle\Service\MenuSlotRegistry;
 use Survos\TablerBundle\Service\PageContext;
 use Survos\TablerBundle\Service\RouteAliasService;
+use Survos\TablerBundle\Service\TablerMenuSpecs;
 use Survos\TablerBundle\Translation\RoutesTranslationLoader;
 use Survos\TablerBundle\Twig\Components\Landing\Benefits;
 use Survos\TablerBundle\Twig\Components\Landing\Faq;
@@ -97,6 +103,8 @@ class SurvosTablerBundle extends AbstractUxBundle
         // Set up Twig globals
         $this->configureTwigGlobals($container);
 
+        $this->wireMenuBundle($container);
+
         // Soft-wire RabbitMqMenuSubscriber from state-bundle's parameters, if present
         // (state-bundle's prependExtension() has already run for all bundles by now).
         if ($container->hasParameter('survos_state.queue_driver')
@@ -104,6 +112,23 @@ class SurvosTablerBundle extends AbstractUxBundle
             $container->getDefinition(RabbitMqMenuSubscriber::class)
                 ->setArgument('$queueDriver', $container->getParameter('survos_state.queue_driver'))
                 ->setArgument('$asyncTransportDsn', $container->getParameter('survos_state.async_transport_dsn'));
+        }
+    }
+
+    /**
+     * When survos/menu-bundle is registered, its menu() / <twig:menu> build menus with tabler's dispatcher, so
+     * listeners receive tabler's MenuEvent and the same options tabler_menu() gives them.
+     */
+    private function wireMenuBundle(ContainerBuilder $container): void
+    {
+        $registered = $container->has(MenuBundleDispatcher::class);   // has(), not hasDefinition(): after the first pass it is an alias
+        if ($container->hasDefinition(MenuBundleDispatcher::class) && $container->hasDefinition(MenuDispatcher::class)) {
+            $container->removeDefinition(MenuBundleDispatcher::class);
+            $container->setAlias(MenuBundleDispatcher::class, MenuDispatcher::class);
+        }
+
+        if (!$registered && 'survos' === $container->getParameter('survos_tabler.menu_renderer')) {
+            throw new \LogicException('survos_tabler.menu_renderer is "survos" but SurvosMenuBundle is not registered. Add Survos\\MenuBundle\\SurvosMenuBundle::class => [\'all\' => true] to config/bundles.php, or set menu_renderer: knp.');
         }
     }
 
@@ -152,10 +177,10 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         $twigDef = $container->getDefinition('twig');
 
-        foreach (MenuEvent::getConstants() as $name => $value) {
+        foreach (MenuSlot::all() as $name => $value) {
             $twigDef->addMethodCall('addGlobal', [$name, $value]);
         }
-        $twigDef->addMethodCall('addGlobal', ['menuSlots', array_keys(MenuEvent::getConstants())]);
+        $twigDef->addMethodCall('addGlobal', ['menuSlots', array_keys(MenuSlot::all())]);
 
         // Theme from config
         if ($container->hasParameter('survos_tabler.theme')) {
@@ -207,9 +232,9 @@ class SurvosTablerBundle extends AbstractUxBundle
         // === Core Services ===
 
         $builder->register(MenuDispatcher::class)
-            ->setArgument('$factory', new Reference('knp_menu.factory'))
+            ->setArgument('$factory', new Reference(FactoryInterface::class))
             ->setArgument('$dispatcher', new Reference('event_dispatcher'))
-            ->setArgument('$menuOptionsResolver', new Reference(MenuOptionsResolver::class))
+            ->setArgument('$optionsResolver', new Reference(MenuOptionsResolver::class))
             ->setArgument('$requests', new Reference('request_stack'));
 
         $builder->register(MenuContext::class)
@@ -226,13 +251,25 @@ class SurvosTablerBundle extends AbstractUxBundle
         $builder->register(MenuOptionsResolver::class)
             ->setArgument('$defaultOptions', $config['menu_options'])
             ->setArgument('$menuContext', new Reference(MenuContext::class));
+        $builder->setAlias(MenuOptionsResolverInterface::class, MenuOptionsResolver::class);
 
         $builder->register(MenuSlotRegistry::class);
+
+        // survos_tabler.menu_renderer: survos draws through survos/menu-bundle; process() checks it is registered.
+        $useMenuBundle = 'survos' === ($config['menu_renderer'] ?? 'knp');
+        $builder->setParameter('survos_tabler.menu_renderer', $useMenuBundle ? 'survos' : 'knp');
+        if ($useMenuBundle) {
+            $builder->register(TablerMenuSpecs::class)
+                ->setArgument('$slots', new Reference(MenuSlotRegistry::class))
+                ->setArgument('$appThemes', $config['menu_themes'] ?? [])
+                ->setAutoconfigured(true);
+        }
 
         $builder->register(MenuRenderer::class)
             ->setArgument('$dispatcher', new Reference(MenuDispatcher::class))
             ->setArgument('$knpHelper', new Reference('knp_menu.helper'))
-            ->setArgument('$slots', new Reference(MenuSlotRegistry::class));
+            ->setArgument('$slots', new Reference(MenuSlotRegistry::class))
+            ->setArgument('$menus', $useMenuBundle ? new Reference(Menus::class) : null);
 
         $builder->register(DebugMenuSlotsSubscriber::class)
             ->setAutowired(true)
@@ -259,7 +296,7 @@ class SurvosTablerBundle extends AbstractUxBundle
                 ->setAutoconfigured(true)
                 ->setArgument('$enabled', $config['auto_breadcrumbs'] ?? false)
                 ->setArgument('$dispatcher', new Reference(MenuDispatcher::class))
-                ->setArgument('$matcher', new Reference('knp_menu.matcher', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+                ->setArgument('$matcher', new Reference(MatcherInterface::class, ContainerInterface::NULL_ON_INVALID_REFERENCE))
                 ->setPublic(false);
         }
 

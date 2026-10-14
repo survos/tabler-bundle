@@ -7,6 +7,7 @@ namespace Survos\TablerBundle\Menu;
 use Doctrine\Persistence\ManagerRegistry;
 use Survos\FieldBundle\Compiler\EntityMetaPass;
 use Survos\FieldBundle\Registry\EntityMetaRegistry;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -33,7 +34,7 @@ final class EntityMetaMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU, priority: -10)]
+    #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU, priority: -10)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         if (!$this->routeExists('survos_admin_browse', ['code' => '_'])) {

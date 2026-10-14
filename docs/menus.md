@@ -154,3 +154,29 @@ Order: origin, then entities (or menu ancestors if there are none), then the pag
 
 A route can also name the list it belongs to: `#[RouteMeta(parents: ['app_catalog'])]` on a Show route puts that route's
 label first (`Catalog › jsonl-bundle › Libraries`). Parents with route variables are skipped.
+
+## survos/menu-bundle (opt-in)
+
+The slot constants, `MenuEvent` and the dispatcher now come from survos/menu-bundle. `MenuEvent::NAVBAR_END`
+still works but is deprecated: use `Survos\MenuBundle\MenuSlot::NAVBAR_END`, and `#[AsMenuListener(MenuSlot::X)]`
+for new listeners. Listeners type-hinted on `Survos\TablerBundle\Event\MenuEvent` keep receiving it.
+
+To draw menus with menu-bundle's composable themes instead of the KnpMenu templates:
+
+```php
+// config/bundles.php
+Survos\MenuBundle\SurvosMenuBundle::class => ['all' => true],
+```
+```yaml
+survos_tabler:
+    menu_renderer: survos            # default: knp
+    menu_themes:                     # optional: per slot, only the blocks you change
+        SIDEBAR: 'menu/sidebar.html.twig'
+```
+
+Same listeners, same `tabler_menu()` calls. The slot themes live in `templates/menu_theme/`
+(`TablerMenuSpecs` maps slots to them). Differences from the knp templates: dropdowns whose children were
+all filtered out are dropped in every slot (not only the navbar), `dividerBefore`/`dividerAfter` draw
+dividers, the sidebar marks the current page and carries link attributes, and dropdowns in the breadcrumb,
+footer and banner are flattened instead of printing a dead link. `{{ menu(SLOT) }}` and `<twig:menu name="SLOT"/>`
+draw the same menus as `tabler_menu()`.

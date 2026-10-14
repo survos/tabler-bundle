@@ -1,0 +1,30 @@
+{# @SurvosTabler/menu_theme/navbar_end.html.twig: the navbar's right-hand tools (NAVBAR_END, NAVBAR_THEME, NAVBAR_LANGUAGE, ...) #}
+
+{%- block menu -%}
+<div{{ menu_attrs(menu.attributes) }}>
+    {%- for item in menu.children %}{{ block('item') }}{% endfor -%}
+</div>
+{%- endblock -%}
+
+{%- block item_link -%}
+<div{{ menu_attrs(item.attributes, {class: 'nav-item d-none d-md-flex me-3'}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: 'nav-link px-0', href: item.uri, title: item.tooltip, 'data-bs-toggle': item.tooltip ? 'tooltip', 'data-bs-placement': item.tooltip ? 'bottom'}) }}>
+        {{- block('icon') }}{% if item.label %}<span class="ms-1">{{ block('label') }}</span>{% endif -%}
+    </a>
+</div>
+{%- endblock -%}
+
+{# a parent with children is a dropdown: a theme picker, an apps list, a language switcher #}
+{%- block item_submenu -%}
+{%- set options = options|merge({dropdownMenuClass: 'dropdown-menu-end dropdown-menu-arrow'}) -%}
+<div{{ menu_attrs(item.attributes, {class: 'nav-item dropdown me-3'}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: 'nav-link dropdown-toggle d-flex align-items-center lh-1 p-0 px-2', href: '#', 'data-bs-toggle': 'dropdown', 'aria-expanded': 'false', title: item.tooltip}) }}>
+        {{- block('icon') }}{% if item.label %}<span class="nav-link-title ms-1 d-none d-lg-inline">{{ block('label') }}</span>{% endif -%}
+    </a>
+    {{- block('submenu') -}}
+</div>
+{%- endblock -%}
+
+{%- block item_heading -%}<div class="nav-item d-none d-md-flex me-3"><span class="nav-link px-0 disabled">{{ block('label') }}</span></div>{%- endblock -%}
+{%- block item_divider -%}<div class="vr mx-2"></div>{%- endblock -%}
+{%- block item_search -%}{{ block('search_form') }}{%- endblock -%}

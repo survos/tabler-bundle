@@ -1,0 +1,16 @@
+{# @SurvosTabler/menu_theme/auth.html.twig: the user dropdown (AUTH). Every item is a dropdown entry. #}
+
+{%- block menu -%}
+<div class="d-flex">
+    <div class="nav-item dropdown">
+        <a href="#" class="nav-link d-flex lh-1 text-reset p-0 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu">
+            <span class="avatar avatar-sm">{{ ux_icon('tabler:user') }}</span>
+            {#- who you are logged in as lives here, not as a dropdown entry (see AuthSlotMenuSubscriber) -#}
+            {%- if app.user ?? null %}<span class="ms-2 d-none d-sm-block">{{ app.user.userIdentifier }}</span>{% endif %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            {%- for item in menu.children %}{{ block('dropdown_item') }}{% endfor -%}
+        </div>
+    </div>
+</div>
+{%- endblock -%}

@@ -9,6 +9,7 @@ use Knp\Menu\Matcher\MatcherInterface;
 use Survos\FieldBundle\Enum\Purpose;
 use Survos\FieldBundle\Model\RouteMetaDescriptor;
 use Survos\FieldBundle\Registry\RouteMetaRegistry;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\MenuDispatcher;
@@ -45,7 +46,7 @@ final class BreadcrumbMenuSubscriber
     use MenuBuilderTrait;
 
     /** Slots searched for the current page when no entity describes it. */
-    private const NAVIGATION_SLOTS = [MenuEvent::NAVBAR_MENU, MenuEvent::NAVBAR_MENU_END, MenuEvent::PAGE_NAV, MenuEvent::SIDEBAR];
+    private const NAVIGATION_SLOTS = [MenuSlot::NAVBAR_MENU, MenuSlot::NAVBAR_MENU_END, MenuSlot::PAGE_NAV, MenuSlot::SIDEBAR];
 
     public function __construct(
         private readonly RouteMetaRegistry $routeMeta,
@@ -60,7 +61,7 @@ final class BreadcrumbMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::BREADCRUMB, priority: -100)]
+    #[AsEventListener(event: MenuSlot::BREADCRUMB, priority: -100)]
     public function breadcrumb(MenuEvent $event): void
     {
         $menu = $event->getMenu();

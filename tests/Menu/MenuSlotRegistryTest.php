@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Survos\TablerBundle\Tests\Menu;
 
 use PHPUnit\Framework\TestCase;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Components\MenuComponent;
-use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\MenuSlotRegistry;
 
 final class MenuSlotRegistryTest extends TestCase
@@ -14,7 +14,7 @@ final class MenuSlotRegistryTest extends TestCase
     public function testEveryDeclaredSlotIsRegistered(): void
     {
         $registry = new MenuSlotRegistry();
-        foreach (MenuEvent::getConstants() as $slot) {
+        foreach (MenuSlot::all() as $slot) {
             self::assertTrue($registry->has($slot), "$slot has no render spec in MenuSlotRegistry");
         }
     }
@@ -29,7 +29,7 @@ final class MenuSlotRegistryTest extends TestCase
     public function testComponentRefusesRegisteredSlots(): void
     {
         $component = new MenuComponent(new MenuSlotRegistry());
-        $component->name = MenuEvent::NAVBAR_END;
+        $component->name = MenuSlot::NAVBAR_END;
 
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('tabler_menu(NAVBAR_END)');
@@ -39,7 +39,7 @@ final class MenuSlotRegistryTest extends TestCase
     public function testComponentRefusesTheOldTypeProp(): void
     {
         $component = new MenuComponent(new MenuSlotRegistry());
-        $component->type = MenuEvent::SIDEBAR;
+        $component->type = MenuSlot::SIDEBAR;
 
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('"type" prop');

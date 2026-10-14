@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -34,7 +35,7 @@ final class MessengerMonitorMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
+    #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         $this->add(

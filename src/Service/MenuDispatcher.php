@@ -1,89 +1,23 @@
 <?php
 
-/* src/Service/MenuDispatcher.php v2.1 - Root item not displayed */
-
 declare(strict_types=1);
 
 namespace Survos\TablerBundle\Service;
 
-use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Survos\MenuBundle\Event\MenuEvent as BaseMenuEvent;
+use Survos\MenuBundle\Service\MenuDispatcher as BaseMenuDispatcher;
 use Survos\TablerBundle\Event\MenuEvent;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class MenuDispatcher
+/**
+ * survos/menu-bundle's dispatcher, dispatching tabler's MenuEvent subclass so listeners type-hinted on
+ * Survos\TablerBundle\Event\MenuEvent keep working. It also stands in for the menu-bundle service (see
+ * SurvosTablerBundle::process()), so <twig:menu> and menu() build exactly the menus tabler_menu() does.
+ */
+class MenuDispatcher extends BaseMenuDispatcher
 {
-    /**
-     * Built menus for the current request, by slot and resolved options. A layout asks "has items?" and then renders
-     * the same slot, and the breadcrumb looks at other slots too: without this every listener ran two or more times
-     * per slot per request. Keyed on the request object, so a worker never serves one request's menu to the next.
-     *
-     * @var \WeakMap<Request, array<string, ItemInterface>>
-     */
-    private \WeakMap $built;
-
-    public function __construct(
-        private readonly FactoryInterface $factory,
-        private readonly EventDispatcherInterface $dispatcher,
-        private readonly MenuOptionsResolver $menuOptionsResolver,
-        private readonly ?RequestStack $requests = null,
-    ) {
-        $this->built = new \WeakMap();
-    }
-
-    public function dispatch(string $slot, array $options = []): ItemInterface
+    protected function createEvent(ItemInterface $menu, array $options): BaseMenuEvent
     {
-        $options = $this->menuOptionsResolver->resolve($options);
-
-        $request = $this->requests?->getCurrentRequest();
-        $key = $slot.'|'.self::fingerprint($options);
-        if (null !== $request && isset($this->built[$request][$key])) {
-            return $this->built[$request][$key];
-        }
-
-        $menu = $this->build($slot, $options);
-        if (null !== $request) {
-            $memo = $this->built[$request] ?? [];
-            $memo[$key] = $menu;
-            $this->built[$request] = $memo;
-        }
-
-        return $menu;
-    }
-
-    /** Objects count by identity, so two different entities never share a menu. */
-    private static function fingerprint(mixed $value): string
-    {
-        $normalise = static function (mixed $v) use (&$normalise) {
-            return match (true) {
-                is_object($v) => $v::class.'#'.spl_object_id($v),
-                is_array($v) => array_map($normalise, $v),
-                is_scalar($v) || null === $v => $v,
-                default => get_debug_type($v),
-            };
-        };
-
-        return md5(json_encode($normalise($value), JSON_PARTIAL_OUTPUT_ON_ERROR) ?: '');
-    }
-
-    private function build(string $slot, array $options): ItemInterface
-    {
-        // Create root menu - name doesn't matter since it won't be displayed
-        $menu = $this->factory->createItem($options['name'] ?? $slot);
-
-        // IMPORTANT: Don't display the root item itself, only its children
-        $menu->setDisplay(false);
-
-        $event = new MenuEvent($menu, $this->factory, $options);
-        $this->dispatcher->dispatch($event, $slot);
-
-        return $menu;
-    }
-
-    public function getFactory(): FactoryInterface
-    {
-        return $this->factory;
+        return new MenuEvent($menu, $this->getFactory(), $options);
     }
 }

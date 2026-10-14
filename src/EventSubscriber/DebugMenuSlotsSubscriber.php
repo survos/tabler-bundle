@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\EventSubscriber;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Menu\MenuBuilderTrait;
 use Survos\TablerBundle\Service\IconService;
@@ -28,7 +29,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         $events = [];
-        foreach (MenuEvent::getConstants() as $slot) {
+        foreach (MenuSlot::all() as $slot) {
             $events[$slot] = ['onMenuSlot', 1000];
         }
 
@@ -37,7 +38,7 @@ final class DebugMenuSlotsSubscriber implements EventSubscriberInterface
 
     public function onMenuSlot(MenuEvent $event, string $slot): void
     {
-        if (MenuEvent::ADMIN_NAVBAR_MENU === $slot) {
+        if (MenuSlot::ADMIN_NAVBAR_MENU === $slot) {
             $this->addDebugToggle($event);
         }
 

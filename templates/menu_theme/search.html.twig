@@ -1,0 +1,15 @@
+{# @SurvosTabler/menu_theme/search.html.twig: SEARCH. Buttons, or a search box (->setExtra('form', true)). #}
+
+{%- block menu -%}
+<div class="nav-item d-none d-md-flex me-3">
+    <div class="btn-list">
+        {%- for item in menu.children %}{{ block('item') }}{% endfor -%}
+    </div>
+</div>
+{%- endblock -%}
+
+{%- block item_link -%}
+<a{{ menu_attrs(item.linkAttributes, {class: 'btn btn-outline-secondary btn-sm', href: item.uri}) }}>{{ block('icon') }}{% if item.label %}<span class="ms-1">{{ block('label') }}</span>{% endif %}</a>
+{%- endblock -%}
+
+{%- block item_search -%}{{ block('search_form') }}{%- endblock -%}

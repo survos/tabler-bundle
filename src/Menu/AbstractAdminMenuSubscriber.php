@@ -7,6 +7,7 @@ namespace Survos\TablerBundle\Menu;
 use Doctrine\Persistence\ManagerRegistry;
 use Survos\FieldBundle\Compiler\EntityMetaPass;
 use Survos\FieldBundle\Registry\EntityMetaRegistry;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -26,7 +27,7 @@ use Symfony\Component\Routing\RouterInterface;
  *       protected function getLabel(): string { return 'AI Batch'; }
  *       protected function getResourceClasses(): array { return [AiBatch::class]; }
  *
- *       #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
+ *       #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU)]
  *       public function onAdminNavbarMenu(MenuEvent $event): void
  *       {
  *           $this->buildAdminMenu($event);

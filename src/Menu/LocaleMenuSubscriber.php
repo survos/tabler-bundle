@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\LocaleLinks;
@@ -30,7 +31,7 @@ final class LocaleMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::NAVBAR_LANGUAGE, priority: 100)]
+    #[AsEventListener(event: MenuSlot::NAVBAR_LANGUAGE, priority: 100)]
     public function languages(MenuEvent $event): void
     {
         if (!$this->enabled || !$this->links->hasMultiple()) {

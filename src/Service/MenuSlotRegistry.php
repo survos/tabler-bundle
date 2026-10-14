@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Service;
 
-use Survos\TablerBundle\Event\MenuEvent;
+use Survos\MenuBundle\MenuSlot;
 
 /**
  * How each registered slot is rendered: the KnpMenu template plus the options that used to live in a
@@ -22,33 +22,33 @@ final class MenuSlotRegistry
 
     /** @var array<string, array<string, mixed>> */
     private const SLOTS = [
-        MenuEvent::BANNER => ['area' => 'banner', 'template' => '@SurvosTabler/menu/banner.html.twig'],
-        MenuEvent::BREADCRUMB => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/breadcrumb.html.twig'],
-        MenuEvent::PAGE_NAV => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/actions.html.twig'],
-        MenuEvent::PAGE_ACTIONS => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/actions.html.twig'],
+        MenuSlot::BANNER => ['area' => 'banner', 'template' => '@SurvosTabler/menu/banner.html.twig'],
+        MenuSlot::BREADCRUMB => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/breadcrumb.html.twig'],
+        MenuSlot::PAGE_NAV => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/actions.html.twig'],
+        MenuSlot::PAGE_ACTIONS => ['area' => 'page-header', 'template' => '@SurvosTabler/menu/actions.html.twig'],
 
-        MenuEvent::NAVBAR_PRIMARY => ['area' => 'navbar', 'template' => self::NAVBAR, 'currentClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav flex-row']],
+        MenuSlot::NAVBAR_PRIMARY => ['area' => 'navbar', 'template' => self::NAVBAR, 'currentClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav flex-row']],
         // a tool like the theme picker, not navigation: same compact toggle, and no 'active' underline just because
         // the current locale's link matches the page URL
-        MenuEvent::NAVBAR_LANGUAGE => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::NAVBAR_START => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::NAVBAR_END => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::NAVBAR_THEME => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::NAVBAR_NOTIFICATIONS => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::NAVBAR_APPS => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
-        MenuEvent::AUTH => ['area' => 'navbar', 'template' => '@SurvosTabler/menu/auth.html.twig'],
-        MenuEvent::SEARCH => ['area' => 'navbar', 'template' => '@SurvosTabler/menu/search.html.twig'],
+        MenuSlot::NAVBAR_LANGUAGE => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::NAVBAR_START => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::NAVBAR_END => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::NAVBAR_THEME => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::NAVBAR_NOTIFICATIONS => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::NAVBAR_APPS => ['area' => 'navbar', 'template' => self::NAVBAR_END, 'rootAttributes' => ['class' => 'd-flex']],
+        MenuSlot::AUTH => ['area' => 'navbar', 'template' => '@SurvosTabler/menu/auth.html.twig'],
+        MenuSlot::SEARCH => ['area' => 'navbar', 'template' => '@SurvosTabler/menu/search.html.twig'],
 
-        MenuEvent::NAVBAR_MENU => ['area' => 'navbar-secondary', 'template' => self::NAVBAR, 'currentClass' => 'active', 'dense' => true, 'rootAttributes' => ['class' => 'navbar-nav']],
-        MenuEvent::NAVBAR_MENU_END => ['area' => 'navbar-secondary', 'template' => self::NAVBAR, 'currentClass' => 'active', 'dense' => true, 'rootAttributes' => ['class' => 'navbar-nav']],
+        MenuSlot::NAVBAR_MENU => ['area' => 'navbar-secondary', 'template' => self::NAVBAR, 'currentClass' => 'active', 'dense' => true, 'rootAttributes' => ['class' => 'navbar-nav']],
+        MenuSlot::NAVBAR_MENU_END => ['area' => 'navbar-secondary', 'template' => self::NAVBAR, 'currentClass' => 'active', 'dense' => true, 'rootAttributes' => ['class' => 'navbar-nav']],
 
-        MenuEvent::ADMIN_NAVBAR_MENU => ['area' => 'admin', 'template' => self::NAVBAR, 'currentClass' => 'active', 'compact' => true, 'rootAttributes' => ['class' => 'navbar-nav flex-row flex-wrap']],
-        MenuEvent::ADMIN_NAVBAR_MENU_END => ['area' => 'admin', 'template' => self::NAVBAR, 'currentClass' => 'active', 'compact' => true, 'rootAttributes' => ['class' => 'navbar-nav flex-row flex-wrap']],
+        MenuSlot::ADMIN_NAVBAR_MENU => ['area' => 'admin', 'template' => self::NAVBAR, 'currentClass' => 'active', 'compact' => true, 'rootAttributes' => ['class' => 'navbar-nav flex-row flex-wrap']],
+        MenuSlot::ADMIN_NAVBAR_MENU_END => ['area' => 'admin', 'template' => self::NAVBAR, 'currentClass' => 'active', 'compact' => true, 'rootAttributes' => ['class' => 'navbar-nav flex-row flex-wrap']],
 
-        MenuEvent::SIDEBAR => ['area' => 'sidebar', 'template' => '@SurvosTabler/menu/sidebar.html.twig', 'currentClass' => 'active', 'ancestorClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav pt-lg-3']],
+        MenuSlot::SIDEBAR => ['area' => 'sidebar', 'template' => '@SurvosTabler/menu/sidebar.html.twig', 'currentClass' => 'active', 'ancestorClass' => 'active', 'rootAttributes' => ['class' => 'navbar-nav pt-lg-3']],
 
-        MenuEvent::FOOTER => ['area' => 'footer', 'template' => '@SurvosTabler/menu/footer.html.twig', 'rootAttributes' => ['class' => 'list-inline list-inline-dots mb-0']],
-        MenuEvent::FOOTER_END => ['area' => 'footer', 'template' => '@SurvosTabler/menu/footer.html.twig', 'rootAttributes' => ['class' => 'list-inline list-inline-dots mb-0']],
+        MenuSlot::FOOTER => ['area' => 'footer', 'template' => '@SurvosTabler/menu/footer.html.twig', 'rootAttributes' => ['class' => 'list-inline list-inline-dots mb-0']],
+        MenuSlot::FOOTER_END => ['area' => 'footer', 'template' => '@SurvosTabler/menu/footer.html.twig', 'rootAttributes' => ['class' => 'list-inline list-inline-dots mb-0']],
     ];
 
     public function has(string $name): bool

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -28,7 +29,7 @@ final class GitHubMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
+    #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         $this->buildGitHubSubmenu($event);
@@ -46,7 +47,7 @@ final class GitHubMenuSubscriber
      * as a single broken href="" link instead of a working dropdown. NAVBAR_MENU (navbar.html.twig)
      * is the slot that actually supports nested children — same one AppMenu's own dropdowns use.
      */
-    #[AsEventListener(event: MenuEvent::NAVBAR_MENU)]
+    #[AsEventListener(event: MenuSlot::NAVBAR_MENU)]
     public function onNavbarMenu(MenuEvent $event): void
     {
         // Filing an issue with the page URL pre-filled is handy while everyone hitting the app

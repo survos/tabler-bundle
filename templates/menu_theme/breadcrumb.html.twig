@@ -1,0 +1,25 @@
+{# @SurvosTabler/menu_theme/breadcrumb.html.twig: BREADCRUMB. The current page is text, not a link. #}
+
+{%- block menu -%}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {%- for item in menu.children %}{{ block('item') }}{% endfor -%}
+    </ol>
+</nav>
+{%- endblock -%}
+
+{%- block item_link -%}
+{%- set icon_class = 'icon me-1' -%}
+<li{{ menu_attrs(item.attributes, {class: ['breadcrumb-item', item.current ? 'active'], 'aria-current': item.current ? 'page' : null}) }}>
+    {%- if item.uri and not item.current -%}
+        <a{{ menu_attrs(item.linkAttributes, {href: item.uri}) }}>{{ block('icon') }}{{ block('label') }}</a>
+    {%- else -%}
+        {{ block('label') }}
+    {%- endif -%}
+</li>
+{%- endblock -%}
+
+{# a trail has no dropdowns: a heading or group is a crumb that is not a link #}
+{%- block item_heading -%}<li{{ menu_attrs(item.attributes, {class: 'breadcrumb-item'}) }}>{{ block('label') }}</li>{%- endblock -%}
+{%- block item_submenu -%}{{ block('item_link') }}{%- endblock -%}
+{%- block item_divider -%}{%- endblock -%}

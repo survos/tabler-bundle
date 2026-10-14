@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -29,7 +30,7 @@ final class InspectorMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
+    #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         $appId = $_ENV['INSPECTOR_APP_ID'] ?? getenv('INSPECTOR_APP_ID') ?: null;

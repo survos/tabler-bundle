@@ -1,0 +1,18 @@
+{# @SurvosTabler/menu_theme/actions.html.twig: PAGE_NAV and PAGE_ACTIONS. The layout supplies the list element. #}
+
+{%- block menu -%}{% for item in menu.children %}{{ block('item') }}{% endfor %}{%- endblock -%}
+
+{%- block item_link -%}
+{%- set icon_class = 'icon me-1' -%}
+<li{{ menu_attrs(item.attributes, {class: 'nav-item'}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: ['nav-link', 'rounded', item.current ? 'active'], href: item.uri, title: item.tooltip, 'aria-current': item.current ? 'page' : null}) }}>{{ block('icon') }}{{ block('label') }}{{ block('badge') }}</a>
+</li>
+{%- endblock -%}
+
+{%- block item_submenu -%}
+{%- set options = options|merge({dropdownMenuClass: 'dropdown-menu-end'}) -%}
+<li{{ menu_attrs(item.attributes, {class: 'nav-item dropdown'}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: 'nav-link rounded dropdown-toggle', href: '#', 'data-bs-toggle': 'dropdown', role: 'button', 'aria-expanded': 'false'}) }}>{{ block('icon') }}{{ block('label') }}</a>
+    {{- block('submenu') -}}
+</li>
+{%- endblock -%}

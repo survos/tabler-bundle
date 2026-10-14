@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -43,7 +44,7 @@ final class TunnelHostMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::NAVBAR_END)]
+    #[AsEventListener(event: MenuSlot::NAVBAR_END)]
     public function onNavbarEnd(MenuEvent $event): void
     {
         // A tunnel points at somebody's laptop. Even with TUNNEL_HOST set by accident in a

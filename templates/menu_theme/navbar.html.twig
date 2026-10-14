@@ -1,0 +1,28 @@
+{# @SurvosTabler/menu_theme/navbar.html.twig: horizontal navbars (NAVBAR_PRIMARY, NAVBAR_MENU*, ADMIN_NAVBAR_MENU*, custom menus) #}
+
+{%- block menu -%}
+<ul{{ menu_attrs(menu.attributes, {class: 'navbar-nav'}) }}>
+    {%- for item in menu.children %}{{ block('item') }}{% endfor -%}
+</ul>
+{%- endblock -%}
+
+{%- block item_link -%}
+{%- set icon_class = 'icon icon-1' -%}
+<li{{ menu_attrs(item.attributes, {class: ['nav-item', item.active ? options.currentClass]}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: ['nav-link', block('nav_link_size'), item.active ? options.currentClass], href: item.uri, title: item.tooltip, 'aria-current': item.current ? 'page' : null}) }}>
+        {{- block('icon') }}<span class="nav-link-title">{{ block('label') }}</span>{{ block('badge') -}}
+    </a>
+</li>
+{%- endblock -%}
+
+{%- block item_submenu -%}
+{%- set icon_class = 'icon icon-1' -%}
+<li{{ menu_attrs(item.attributes, {class: ['nav-item', 'dropdown', item.active ? options.currentClass]}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: ['nav-link', 'dropdown-toggle', block('nav_link_size')], href: '#', 'data-bs-toggle': 'dropdown', 'data-bs-auto-close': 'outside', role: 'button', 'aria-expanded': 'false'}) }}>
+        {{- block('icon') }}<span class="nav-link-title">{{ block('label') }}</span>
+    </a>
+    {{- block('submenu') -}}
+</li>
+{%- endblock -%}
+
+{%- block nav_link_size -%}{{ options.compact|default(false) ? 'py-0 px-1' : (options.dense|default(false) ? 'py-2 px-2') }}{%- endblock -%}

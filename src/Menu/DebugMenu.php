@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\RouteAliasService;
@@ -34,7 +35,7 @@ final class DebugMenu implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         $events = [];
-        foreach (MenuEvent::getConstants() as $slot) {
+        foreach (MenuSlot::all() as $slot) {
             // low priority so real menu items (if any) come first
             $events[$slot] = ['onMenuSlot', -1000];
         }

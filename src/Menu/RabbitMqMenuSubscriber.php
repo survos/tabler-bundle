@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Menu;
 
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Event\MenuEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -25,7 +26,7 @@ final class RabbitMqMenuSubscriber
     ) {
     }
 
-    #[AsEventListener(event: MenuEvent::ADMIN_NAVBAR_MENU)]
+    #[AsEventListener(event: MenuSlot::ADMIN_NAVBAR_MENU)]
     public function onAdminNavbarMenu(MenuEvent $event): void
     {
         if ('rabbitmq' !== $this->queueDriver || !$this->asyncTransportDsn) {

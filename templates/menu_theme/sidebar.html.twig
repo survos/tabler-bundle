@@ -1,0 +1,29 @@
+{# @SurvosTabler/menu_theme/sidebar.html.twig: SIDEBAR. Dropdowns stay open while you click inside them. #}
+
+{%- block menu -%}
+{%- set options = options|merge({dropdownAutoClose: 'false'}) -%}
+<ul{{ menu_attrs(menu.attributes, {class: 'navbar-nav'}) }}>
+    {%- for item in menu.children %}{{ block('item') }}{% endfor -%}
+</ul>
+{%- endblock -%}
+
+{%- block item_link -%}
+<li{{ menu_attrs(item.attributes, {class: ['nav-item', item.active ? options.currentClass]}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: ['nav-link', item.active ? options.currentClass], href: item.uri, title: item.tooltip, 'aria-current': item.current ? 'page' : null}) }}>
+        {{- block('sidebar_icon') }}<span class="nav-link-title">{{ block('label') }}</span>{{ block('badge') -}}
+    </a>
+</li>
+{%- endblock -%}
+
+{%- block item_submenu -%}
+<li{{ menu_attrs(item.attributes, {class: ['nav-item', 'dropdown', item.active ? options.currentClass]}) }}>
+    <a{{ menu_attrs(item.linkAttributes, {class: 'nav-link dropdown-toggle', href: '#', 'data-bs-toggle': 'dropdown', 'data-bs-auto-close': 'false', role: 'button', 'aria-expanded': item.ancestor ? 'true' : 'false'}) }}>
+        {{- block('sidebar_icon') }}<span class="nav-link-title">{{ block('label') }}</span>
+    </a>
+    {{- block('submenu') -}}
+</li>
+{%- endblock -%}
+
+{%- block sidebar_icon -%}
+{%- if item.icon %}<span class="nav-link-icon d-md-none d-lg-inline-block">{{ block('icon') }}</span>{% endif -%}
+{%- endblock -%}

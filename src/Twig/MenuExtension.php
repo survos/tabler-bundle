@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace Survos\TablerBundle\Twig;
 
-use Survos\TablerBundle\Event\MenuEvent;
+use Survos\MenuBundle\MenuSlot;
 use Survos\TablerBundle\Service\MenuContext;
 use Survos\TablerBundle\Service\MenuRenderer;
 use Survos\TablerBundle\Service\NavigationOrigin;
@@ -141,7 +141,7 @@ final class MenuExtension extends AbstractExtension
     {
         $states = [];
 
-        foreach (MenuEvent::getConstants() as $slot) {
+        foreach (MenuSlot::all() as $slot) {
             $states[] = [
                 'slot' => $slot,
                 'area' => self::BASE_LAYOUT_AREAS[$slot] ?? 'custom',
@@ -153,23 +153,23 @@ final class MenuExtension extends AbstractExtension
     }
 
     private const BASE_LAYOUT_AREAS = [
-        MenuEvent::BANNER => 'banner',
-        MenuEvent::NAVBAR_START => 'top nav / left',
-        MenuEvent::NAVBAR_THEME => 'top nav / right',
-        MenuEvent::NAVBAR_NOTIFICATIONS => 'top nav / right',
-        MenuEvent::NAVBAR_APPS => 'top nav / right',
-        MenuEvent::NAVBAR_LANGUAGE => 'top nav / right',
-        MenuEvent::NAVBAR_END => 'top nav / right',
-        MenuEvent::SEARCH => 'top nav / right',
-        MenuEvent::AUTH => 'top nav / right',
-        MenuEvent::NAVBAR_MENU => 'secondary nav / main',
-        MenuEvent::NAVBAR_MENU_END => 'secondary nav / right',
-        MenuEvent::BREADCRUMB => 'page header / breadcrumb',
-        MenuEvent::PAGE_ACTIONS => 'page header / actions',
-        MenuEvent::PAGE_NAV => 'page header / tabs',
-        MenuEvent::SIDEBAR => 'page body / sidebar',
-        MenuEvent::FOOTER => 'footer / left',
-        MenuEvent::FOOTER_END => 'footer / right',
+        MenuSlot::BANNER => 'banner',
+        MenuSlot::NAVBAR_START => 'top nav / left',
+        MenuSlot::NAVBAR_THEME => 'top nav / right',
+        MenuSlot::NAVBAR_NOTIFICATIONS => 'top nav / right',
+        MenuSlot::NAVBAR_APPS => 'top nav / right',
+        MenuSlot::NAVBAR_LANGUAGE => 'top nav / right',
+        MenuSlot::NAVBAR_END => 'top nav / right',
+        MenuSlot::SEARCH => 'top nav / right',
+        MenuSlot::AUTH => 'top nav / right',
+        MenuSlot::NAVBAR_MENU => 'secondary nav / main',
+        MenuSlot::NAVBAR_MENU_END => 'secondary nav / right',
+        MenuSlot::BREADCRUMB => 'page header / breadcrumb',
+        MenuSlot::PAGE_ACTIONS => 'page header / actions',
+        MenuSlot::PAGE_NAV => 'page header / tabs',
+        MenuSlot::SIDEBAR => 'page body / sidebar',
+        MenuSlot::FOOTER => 'footer / left',
+        MenuSlot::FOOTER_END => 'footer / right',
     ];
 
     private function formatMenuOptionValue(mixed $value): ?string
