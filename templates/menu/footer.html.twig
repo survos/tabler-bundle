@@ -14,7 +14,7 @@
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     {% if not item.getExtra('debug_menu_slot') %}
     <li class="list-inline-item"{{ attrs.attrs(item.attributes, ['class']) }}>
-            <a class="link-secondary" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}>
+            <a class="link-secondary" href="{{ item.uri }}"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href']) }}>
                 {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
                 {{ block('label') }}
             </a>

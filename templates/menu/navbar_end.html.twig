@@ -15,7 +15,7 @@
     {# A parent with children is a dropdown: a theme picker, an apps list, ... Children are ordinary items, so their
        link attributes (data-*, data-action) reach the browser. #}
     <div class="nav-item dropdown me-3"{{ attrs.attrs(item.attributes, ['class']) }}>
-        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center lh-1 p-0 px-2" data-bs-toggle="dropdown" aria-expanded="false"{% if tooltip %} title="{{ tooltip }}"{% endif %}{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'aria-expanded']) }}>
+        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center lh-1 p-0 px-2" data-bs-toggle="dropdown" aria-expanded="false"{% if tooltip %} title="{{ tooltip }}"{% endif %}{{ attrs.attrs(menu_link_attributes(item), ['class', 'href', 'aria-expanded']) }}>
             {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {% if item.label %}<span class="nav-link-title ms-1 d-none d-lg-inline">{{ block('label') }}</span>{% endif %}
         </a>
@@ -24,7 +24,7 @@
                 {% if child.displayed %}
                     {% set childIcon = child.getExtra('icon') %}
                     {% set childDomain = child.extra('translation_domain', 'messages') %}
-                    <a href="{{ child.uri }}" class="dropdown-item{% if matcher.isCurrent(child) %} active{% endif %}"{{ attrs.attrs(child.linkAttributes, ['class', 'href']) }}>
+                    <a href="{{ child.uri }}" class="dropdown-item{% if matcher.isCurrent(child) %} active{% endif %}"{{ attrs.attrs(menu_link_attributes(child), ['class', 'href']) }}>
                         {% if childIcon %}{{ ux_icon(':' in childIcon ? childIcon : 'tabler:' ~ childIcon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
                         {{ childDomain is same as(false) ? child.label : child.label|trans({}, childDomain) }}
                     </a>
@@ -34,7 +34,7 @@
     </div>
     {% elseif not item.getExtra('debug_menu_slot') %}
     <div class="nav-item d-none d-md-flex me-3"{{ attrs.attrs(item.attributes, ['class']) }}>
-        <a href="{{ item.uri }}" class="nav-link px-0"{% if tooltip %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip }}"{% endif %}{% for name, value in item.linkAttributes|filter((v, k) => k != 'class' and v is not same as(false) and v is not null) %} {{ name }}="{{ value is same as(true) ? name : value }}"{% endfor %}>
+        <a href="{{ item.uri }}" class="nav-link px-0"{% if tooltip %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip }}"{% endif %}{% for name, value in menu_link_attributes(item)|filter((v, k) => k != 'class' and v is not same as(false) and v is not null) %} {{ name }}="{{ value is same as(true) ? name : value }}"{% endfor %}>
             {% if resolvedIcon %}{{ ux_icon(resolvedIcon, {class: 'icon'}) }}{% endif %}
             {% if item.label %}<span class="ms-1">{{ block('label') }}</span>{% endif %}
         </a>

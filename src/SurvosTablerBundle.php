@@ -9,9 +9,11 @@ use Knp\Menu\Matcher\MatcherInterface;
 use Survos\Kit\AbstractUxBundle;
 use Survos\Kit\Traits\HasConfigurableRoutes;
 use Survos\MenuBundle\MenuSlot;
+use Survos\MenuBundle\Renderer\MenuViewFactory;
 use Survos\MenuBundle\Service\MenuDispatcher as MenuBundleDispatcher;
 use Survos\MenuBundle\Service\MenuOptionsResolverInterface;
 use Survos\MenuBundle\Service\Menus;
+use Survos\MenuBundle\Twig\MenuLinkExtension;
 use Survos\TablerBundle\Compiler\Configuration;
 use Survos\TablerBundle\Components\CardComponent;
 use Survos\TablerBundle\Components\DividerComponent;
@@ -54,6 +56,7 @@ use Survos\TablerBundle\Twig\RouteAliasExtension;
 use Survos\TablerBundle\Twig\TwigExtension;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -198,6 +201,18 @@ class SurvosTablerBundle extends AbstractUxBundle
 
         // kit-bundle: autoscans src/Controller (and src/Command) as services.
         parent::loadExtension($config, $container, $builder);
+
+        // Legacy Knp installations need the same generic link decoration hook,
+        // even when SurvosMenuBundle itself is not enabled.
+        if (!$builder->hasDefinition(MenuViewFactory::class)) {
+            $builder->register(MenuViewFactory::class, MenuViewFactory::class)
+                ->setArgument('$matcher', new Reference('knp_menu.matcher'))
+                ->setArgument('$translator', new Reference('translator', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+                ->setArgument('$linkDecorators', new TaggedIteratorArgument('survos_menu.link_attributes_decorator'));
+            $builder->register(MenuLinkExtension::class, MenuLinkExtension::class)
+                ->setArgument('$views', new Reference(MenuViewFactory::class))
+                ->addTag('twig.extension');
+        }
 
         $builder->setParameter('survos_tabler.app', $config['app'] ?? []);
 

@@ -182,3 +182,9 @@ all filtered out are dropped in every slot (not only the navbar), `dividerBefore
 dividers, the sidebar marks the current page and carries link attributes, and dropdowns in the breadcrumb,
 footer and banner are flattened instead of printing a dead link. `{{ menu(SLOT) }}` and `<twig:menu name="SLOT"/>`
 draw the same menus as `tabler_menu()`.
+
+## Optional menu tours
+
+With the coordinated `survos/tour-bundle` integration, `MenuBuilderTrait::add()` and `addSubmenu()` accept `tour: ['name' => 'page', 'id' => 'stable-step', 'order' => 20]`. Metadata attaches only to created items; denied, missing and conditional items cannot mark the parent accidentally. `add()` preserves the destination route in `tourRoute` for copy lookup. Add one `<twig:Tour name="page" offer="once" />` to the layout; public copy can come from `<route>.tour` in `routes`. See tour-bundle's README for copy precedence, explicit steps and dismissal configuration.
+
+Both `knp` and `survos` modes pass annotations through their normal attribute paths. Legacy templates call the generic `menu_link_attributes(item)` renderer hook, including installations without SurvosMenuBundle registered. Custom legacy themes must adopt that hook. `tourOptions()` remains supported as metadata; it uses the tour bundle's configured/per-item domain when the tour adapter resolves its legacy keys. Closed dropdown/mobile children are skipped until visible on replay; annotate the visible parent for their initial explanation.

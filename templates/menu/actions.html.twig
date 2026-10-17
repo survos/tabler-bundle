@@ -12,7 +12,7 @@
     {% set resolvedIcon = icon ? (':' in icon ? icon : 'tabler:' ~ icon) : null %}
     <li class="nav-item">
         <a href="{{ item.uri }}"
-           class="nav-link rounded {{ item.linkAttribute('class') }}{% if matcher.isCurrent(item) %} active{% endif %}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}>
+           class="nav-link rounded {{ item.linkAttribute('class') }}{% if matcher.isCurrent(item) %} active{% endif %}"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href']) }}>
 
             {% if resolvedIcon %}
                 {{ ux_icon(resolvedIcon, {class: 'icon me-1'}) }}

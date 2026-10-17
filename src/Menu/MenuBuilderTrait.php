@@ -126,6 +126,7 @@ trait MenuBuilderTrait
         // (menu/auth.html.twig, menu/navbar.html.twig, ...) silently degrades to a dead
         // href="" link -- see the assert() below.
         bool $allowNoLink = false,
+        ?array $tour = null,
     ): ItemInterface {
         if (!$if) {
             return $menu;
@@ -203,6 +204,10 @@ trait MenuBuilderTrait
         }
 
         $child->setExtra('safe_label', true);
+        $child->setExtra('tourRoute', $route);
+        if (null !== $tour) {
+            $child->setExtra('tour', $tour);
+        }
 
         return $child;
     }
@@ -247,11 +252,15 @@ trait MenuBuilderTrait
         string $label,
         ?string $icon = null,
         string|false|null $translationDomain = 'messages',
+        ?array $tour = null,
     ): ItemInterface {
         $id = self::slugger()->slug($label)->toString().'_'.bin2hex(random_bytes(4));
 
         $child = $menu->addChild($id, ['label' => $label]);
         $child->setExtra('submenu', true);
+        if (null !== $tour) {
+            $child->setExtra('tour', $tour);
+        }
         $child->setExtra('safe_label', true);
 
         $iconService = $this->iconService ?? $this->tablerMenuIcons;

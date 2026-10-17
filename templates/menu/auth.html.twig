@@ -36,7 +36,7 @@
             <a
                 class="dropdown-item"
                 href="{{ item.uri }}"
-                {% for attr, value in item.linkAttributes %}
+                {% for attr, value in menu_link_attributes(item) %}
                     {{ attr }}="{{ value }}"
                 {% endfor %}
             >

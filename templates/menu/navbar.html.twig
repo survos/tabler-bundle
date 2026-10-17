@@ -37,7 +37,7 @@
                    data-bs-toggle="dropdown"
                    data-bs-auto-close="outside"
                    role="button"
-                   aria-expanded="false"{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
+                   aria-expanded="false"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                 </a>
@@ -50,7 +50,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
+                <a class="nav-link{% if compact %} py-0 px-1{% elseif dense %} py-2 px-2{% endif %} {% if matcher.isCurrent(item) or matcher.isAncestor(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href']) }}>
                     {% if icon %}{{ ux_icon(icon, {class: 'icon icon-1'}) }}{% endif %}
                     <span class="nav-link-title">{{ block('label') }}</span>
                     {% if badgeValue %}
@@ -76,7 +76,7 @@
                data-bs-toggle="dropdown"
                data-bs-auto-close="outside"
                role="button"
-               aria-expanded="false"{{ attrs.attrs(item.linkAttributes, ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
+               aria-expanded="false"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href', 'role', 'aria-expanded', 'target']) }}>
                 {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
                 {{ block('label') }}
             </a>
@@ -90,7 +90,7 @@
             </div>
         </div>
     {% else %}
-        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(item.linkAttributes, ['class', 'href']) }}{% for attrName, attrValue in item.getExtra('data_attributes', {}) %} data-{{ attrName }}="{{ attrValue }}"{% endfor %}>
+        <a class="dropdown-item {% if matcher.isCurrent(item) %} active{% endif %}" href="{{ item.uri }}"{{ attrs.attrs(menu_link_attributes(item), ['class', 'href']) }}>
             {% if icon %}{{ ux_icon(icon, {class: 'icon dropdown-item-icon'}) }}{% endif %}
             {{ block('label') }}
             {% if badgeValue %}
