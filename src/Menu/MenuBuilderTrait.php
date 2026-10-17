@@ -10,6 +10,7 @@ use Survos\TablerBundle\Dto\MenuBadge;
 use Survos\TablerBundle\Service\IconService;
 use Survos\TablerBundle\Service\MenuService;
 use Survos\TablerBundle\Service\RouteAliasService;
+use Survos\TourBundle\Model\TourStep;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -126,7 +127,7 @@ trait MenuBuilderTrait
         // (menu/auth.html.twig, menu/navbar.html.twig, ...) silently degrades to a dead
         // href="" link -- see the assert() below.
         bool $allowNoLink = false,
-        ?array $tour = null,
+        TourStep|array|null $tour = null,
     ): ItemInterface {
         if (!$if) {
             return $menu;
@@ -252,7 +253,7 @@ trait MenuBuilderTrait
         string $label,
         ?string $icon = null,
         string|false|null $translationDomain = 'messages',
-        ?array $tour = null,
+        TourStep|array|null $tour = null,
     ): ItemInterface {
         $id = self::slugger()->slug($label)->toString().'_'.bin2hex(random_bytes(4));
 
